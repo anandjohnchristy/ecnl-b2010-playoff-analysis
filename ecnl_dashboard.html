@@ -322,6 +322,7 @@
   .gl-result.D { background:#8b949e22; color:var(--muted); }
   .gl-source { font-size:10px; color:var(--muted); text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .gl-source.showcase { color:var(--green); }
+  .gl-source.tournament { color:#f5a623; }
   .gl-note { font-size:11px; color:var(--muted); margin-top:10px; padding:8px 12px;
     background:var(--surface); border:1px solid var(--border); border-radius:6px; }
 </style>
@@ -501,6 +502,7 @@
       <button class="gl-tab active" data-tab="all" onclick="switchGLTab('all')">All Games</button>
       <button class="gl-tab" data-tab="conf" onclick="switchGLTab('conf')">Conference</button>
       <button class="gl-tab" data-tab="showcase" onclick="switchGLTab('showcase')">Showcase</button>
+      <button class="gl-tab" data-tab="tourn" onclick="switchGLTab('tourn')">Tournaments</button>
     </div>
   </div>
 
@@ -1221,6 +1223,19 @@ const H2H_MAP = {
 };
 
 // ============================================================
+// TOURNAMENT DATA — open tournaments (GotSport / other platforms)
+// ============================================================
+const TOURNAMENT_MAP = {
+  // Jefferson Cup 2026 — U16 Championship — Mar 27-29, 2026 — Richmond, VA
+  "Boston Bolts B2010|||Charlotte SA Academy": [{"date":"2026-03-27","home":"Boston Bolts B2010","away":"Charlotte SA Academy","hScore":1,"aScore":3,"tourn":"Jefferson Cup"}],
+  "Charlotte SA Academy|||SAC Boys 2010": [{"date":"2026-03-28","home":"Charlotte SA Academy","away":"SAC Boys 2010","hScore":4,"aScore":0,"tourn":"Jefferson Cup"}],
+  "Charlotte SA Academy|||Potomac Soccer ECNL": [{"date":"2026-03-29","home":"Potomac Soccer ECNL","away":"Charlotte SA Academy","hScore":0,"aScore":3,"tourn":"Jefferson Cup"}],
+  "Coppermine SC|||Richmond United": [{"date":"2026-03-27","home":"Coppermine SC","away":"Richmond United","hScore":0,"aScore":3,"tourn":"Jefferson Cup"}],
+  "Oakwood SC|||Richmond United": [{"date":"2026-03-28","home":"Richmond United","away":"Oakwood SC","hScore":3,"aScore":3,"tourn":"Jefferson Cup"}],
+  "Richmond United|||SAC Boys 2010": [{"date":"2026-03-29","home":"SAC Boys 2010","away":"Richmond United","hScore":1,"aScore":2,"tourn":"Jefferson Cup"}]
+};
+
+// ============================================================
 // H2H LOOKUP FUNCTION
 // ============================================================
 function getH2HGames(nameA, nameB) {
@@ -1575,7 +1590,7 @@ function initGameLogSelector() {
 }
 
 function getTeamGameLog(teamName) {
-  const conf = [], showcase = [];
+  const conf = [], showcase = [], tourn = [];
   for (const [key, games] of Object.entries(H2H_MAP)) {
     const [tA, tB] = key.split('|||');
     if (tA !== teamName && tB !== teamName) continue;
@@ -1590,12 +1605,24 @@ function getTeamGameLog(teamName) {
       else showcase.push(entry);
     });
   }
+  for (const [key, games] of Object.entries(TOURNAMENT_MAP)) {
+    const [tA, tB] = key.split('|||');
+    if (tA !== teamName && tB !== teamName) continue;
+    games.forEach(g => {
+      const isHome = g.home === teamName;
+      const opponent = isHome ? g.away : g.home;
+      const gf = isHome ? g.hScore : g.aScore;
+      const ga = isHome ? g.aScore : g.hScore;
+      const result = gf > ga ? 'W' : ga > gf ? 'L' : 'D';
+      tourn.push({ date: g.date, opponent, isHome, gf, ga, result, source: g.tourn, isShowcase: false, isTournament: true });
+    });
+  }
   const parseDate = s => {
     const d = new Date(s);
     return isNaN(d.getTime()) ? new Date(s.replace(/(\w+)\s+(\d+),\s+(\d+)/, '$2 $1 $3')) : d;
   };
   const byDate = (a, b) => parseDate(a.date) - parseDate(b.date);
-  return { conf: conf.sort(byDate), showcase: showcase.sort(byDate) };
+  return { conf: conf.sort(byDate), showcase: showcase.sort(byDate), tourn: tourn.sort(byDate) };
 }
 
 function glStatsHtml(games) {
@@ -1631,7 +1658,7 @@ function glListHtml(games) {
         ${oppHtml}
         <span><span class="gl-result ${g.result}">${g.result}</span></span>
         <span style="font-weight:700;text-align:center;font-size:14px">${g.gf} – ${g.ga}</span>
-        <span class="gl-source ${g.isShowcase ? 'showcase' : ''}">${g.source}</span>
+        <span class="gl-source ${g.isTournament ? 'tournament' : g.isShowcase ? 'showcase' : ''}">${g.source}</span>
       </div>`;
     }).join('');
 }
@@ -1643,12 +1670,16 @@ function switchGLTab(tab) {
   const parseDate = s => { const d = new Date(s); return isNaN(d.getTime()) ? new Date(s.replace(/(\w+)\s+(\d+),\s+(\d+)/, '$2 $1 $3')) : d; };
   const games = tab === 'conf' ? _glData.conf
               : tab === 'showcase' ? _glData.showcase
-              : [..._glData.conf, ..._glData.showcase].sort((a,b) => parseDate(a.date) - parseDate(b.date));
+              : tab === 'tourn' ? _glData.tourn
+              : [..._glData.conf, ..._glData.showcase, ..._glData.tourn].sort((a,b) => parseDate(a.date) - parseDate(b.date));
   document.getElementById('gameLogStats').innerHTML = glStatsHtml(games);
   document.getElementById('gameLogList').innerHTML = glListHtml(games);
   const note = document.getElementById('gameLogNote');
   if (tab === 'conf') {
     note.textContent = '⚠ Conference results here only include games played against other nationally qualified teams. Each team\'s full conference schedule includes additional opponents not captured in this dataset.';
+    note.style.display = 'block';
+  } else if (tab === 'tourn') {
+    note.textContent = '⚠ Tournament coverage is partial. Currently includes: Jefferson Cup 2026 (Charlotte SA Academy, Richmond United). More tournaments will be added as data is sourced.';
     note.style.display = 'block';
   } else {
     note.style.display = 'none';
