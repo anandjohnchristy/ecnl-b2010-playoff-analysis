@@ -1,0 +1,1202 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 ECNL Boys B2010 Playoff Analysis — San Diego</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
+    --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+    --accent: #58a6ff; --green: #3fb950; --red: #f85149;
+    --yellow: #d29922; --purple: #bc8cff; --orange: #e3a835;
+    --gold: #ffd700; --silver: #c0c0c0; --bronze: #cd7f32;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  .hero { background: linear-gradient(135deg, #0d1117 0%, #1a2332 50%, #0d2137 100%);
+    border-bottom: 2px solid #1f6feb; padding: 28px 24px 24px; }
+  .hero-inner { max-width: 1400px; margin: 0 auto; }
+  .hero-badge { display:inline-block; background:#1f6feb22; border:1px solid #1f6feb;
+    color:var(--accent); padding:4px 12px; border-radius:20px; font-size:12px;
+    font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; }
+  .hero h1 { font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 800;
+    background: linear-gradient(90deg, #58a6ff, #79c0ff); -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent; line-height:1.2; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 12px; }
+  .hero-meta span { font-size: 13px; color: var(--muted); display:flex; align-items:center; gap:5px; }
+  .hero-meta span b { color: var(--text); }
+
+  /* STATS CARDS */
+  .stats-bar { max-width: 1400px; margin: 20px auto; padding: 0 24px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px; }
+  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.6px; margin-bottom: 4px; }
+  .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* CONTROLS */
+  .controls { max-width: 1400px; margin: 16px auto; padding: 0 24px;
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .controls input, .controls select {
+    background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none; }
+  .controls input:focus, .controls select:focus { border-color: var(--accent); }
+  .controls input { flex: 1; min-width: 180px; }
+  .score-toggle { background: var(--surface2); border: 1px solid var(--border);
+    color: var(--muted); padding: 8px 14px; border-radius: 6px; font-size: 12px;
+    cursor: pointer; font-weight: 600; letter-spacing: 0.5px; transition: all .2s; }
+  .score-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .legend-pill { display:inline-flex; align-items:center; gap:5px; background:var(--surface);
+    border:1px solid var(--border); padding:5px 10px; border-radius:20px; font-size:11px; }
+
+  /* TABLE WRAPPER */
+  .table-wrap { max-width: 1400px; margin: 0 auto; padding: 0 24px 24px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th { background: var(--surface); position: sticky; top: 0; z-index: 10;
+    padding: 10px 8px; text-align: left; color: var(--muted); font-weight: 600;
+    border-bottom: 2px solid var(--border); cursor: pointer; white-space: nowrap;
+    user-select: none; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  thead th:hover { color: var(--accent); }
+  thead th.sorted { color: var(--accent); }
+  thead th .sort-arrow { opacity: 0.4; }
+  thead th.sorted .sort-arrow { opacity: 1; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
+  tbody tr:hover { background: var(--surface2); }
+  tbody td { padding: 9px 8px; vertical-align: middle; }
+  td.rank { color: var(--muted); font-size: 12px; width: 28px; }
+  td.team-name { font-weight: 600; color: var(--text); min-width: 200px; white-space: nowrap; }
+  td.team-name .conf-badge { font-size: 10px; font-weight: 500; color: var(--muted);
+    background: var(--surface2); border-radius: 4px; padding: 1px 6px; margin-left: 6px; }
+  td.seed { font-size: 12px; color: var(--muted); width: 40px; }
+  td.seed .seed-num { font-weight: 700; }
+  td.seed .seed-num.top10 { color: var(--accent); }
+  td.seed .seed-num.top3 { color: var(--gold); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.win-pct { text-align: right; }
+  td.gd-pos { color: var(--green); font-weight: 600; }
+  td.gd-neg { color: var(--red); }
+  td.score-cell { text-align: right; }
+  .score-bar-wrap { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+  .score-bar { height: 6px; background: var(--border); border-radius: 3px; width: 60px; overflow:hidden; }
+  .score-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #1f6feb, #58a6ff); }
+  .score-num { font-weight: 700; font-size: 13px; min-width: 35px; text-align: right; }
+  .score-top { color: #79c0ff; }
+
+  /* FLAGS */
+  .flag { display:inline-flex; align-items:center; font-size:10px; font-weight:600;
+    padding:2px 5px; border-radius:4px; margin-left:3px; }
+  .flag-def { background:#1f6feb22; color:#58a6ff; border:1px solid #1f6feb44; }
+  .flag-off { background:#3fb95022; color:#3fb950; border:1px solid #3fb95044; }
+  .flag-champ { background:#ffd70022; color:#ffd700; border:1px solid #ffd70044; }
+  .flag-final { background:#bc8cff22; color:#bc8cff; border:1px solid #bc8cff44; }
+  .flag-semi { background:#e3a83522; color:#e3a835; border:1px solid #e3a83544; }
+  .flag-qf { background:#8b949e22; color:#8b949e; border:1px solid #8b949e44; }
+
+  /* PLAYOFF HISTORY */
+  .hist-pill { display:inline-block; font-size:10px; padding:2px 7px; border-radius:12px; font-weight:600; }
+  .hist-champ { background:#ffd70033; color:#ffd700; }
+  .hist-final { background:#bc8cff33; color:#bc8cff; }
+  .hist-semi { background:#e3a83533; color:#e3a835; }
+  .hist-qf { background:#8b949e33; color:#8b949e; }
+  .hist-none { color:#8b949e; font-size:11px; }
+
+  /* SECTION HEADERS */
+  .section { max-width: 1400px; margin: 32px auto 0; padding: 0 24px; }
+  .section-title { font-size: 1.1rem; font-weight: 700; color: var(--text);
+    border-left: 3px solid var(--accent); padding-left: 12px; margin-bottom: 16px; }
+  .section-sub { font-size: 12px; color: var(--muted); margin-bottom: 20px; margin-top: -10px; }
+
+  /* SCORE METHODOLOGY */
+  .methodology { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+  .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 12px; }
+  .method-item { background: var(--surface2); border-radius: 6px; padding: 12px 14px; }
+  .method-item .pct { font-size: 1.2rem; font-weight: 800; color: var(--accent); }
+  .method-item .label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* TOP 10 CARDS */
+  .top10-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .team-card { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px 20px; transition: border-color .2s; }
+  .team-card:hover { border-color: var(--accent); }
+  .card-rank { font-size: 11px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 6px; }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .card-name { font-size: 1rem; font-weight: 700; color: var(--text); }
+  .card-conf { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .card-score { font-size: 1.8rem; font-weight: 800;
+    background: linear-gradient(90deg, #58a6ff, #79c0ff); -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent; }
+  .card-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+  .card-stat { text-align: center; background: var(--surface2); border-radius: 6px; padding: 6px; }
+  .card-stat .v { font-size: 1rem; font-weight: 700; color: var(--text); }
+  .card-stat .l { font-size: 10px; color: var(--muted); }
+  .card-record { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .record-w { color: var(--green); font-weight: 700; }
+  .record-l { color: var(--red); }
+  .record-d { color: var(--muted); }
+  .card-history { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .card-profile { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .card-flags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+
+  /* FLAGS SECTION */
+  .flags-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+  .flag-panel { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 18px; }
+  .flag-panel h3 { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+  .flag-item { display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+  .flag-item:last-child { border-bottom: none; }
+  .flag-item .team-n { font-weight: 600; color: var(--text); }
+  .flag-item .metric { font-weight: 700; color: var(--accent); }
+  .flag-item .metric-def { color: #58a6ff; }
+  .flag-item .metric-off { color: var(--green); }
+
+  /* H2H COMPARISON */
+  .h2h-pickers { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; flex-wrap: wrap; }
+  .h2h-picker { flex: 1; min-width: 220px; }
+  .h2h-picker label { display: block; font-size: 11px; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+  .h2h-picker select { width: 100%; background: var(--surface); border: 2px solid var(--border);
+    color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 14px;
+    outline: none; cursor: pointer; transition: border-color .2s; }
+  .h2h-picker select:focus { border-color: var(--accent); }
+  .h2h-vs { font-size: 1.4rem; font-weight: 900; color: var(--muted); text-align: center;
+    min-width: 48px; margin-top: 22px; }
+  .h2h-content { display: none; }
+  .h2h-compare-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; margin-bottom: 20px; }
+  .h2h-team-header { padding: 16px 20px; font-weight: 700; font-size: 1rem; }
+  .h2h-team-header.a { background: #1f6feb22; color: var(--accent); border-right: 1px solid var(--border); }
+  .h2h-team-header.b { background: #3fb95022; color: var(--green); text-align: right; }
+  .h2h-metric-row { display: contents; }
+  .h2h-val { padding: 9px 20px; border-top: 1px solid var(--border); font-size: 13px;
+    font-variant-numeric: tabular-nums; font-weight: 600; }
+  .h2h-val.a { color: var(--accent); border-right: 1px solid var(--border); }
+  .h2h-val.b { color: var(--green); text-align: right; }
+  .h2h-val.mid { text-align: center; color: var(--muted); font-size: 11px; font-weight: 500;
+    padding: 9px 10px; border-top: 1px solid var(--border); white-space: nowrap; }
+  .h2h-val.winner-a { background: #1f6feb11; }
+  .h2h-val.winner-b { background: #3fb95011; }
+  .h2h-games-panel { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; }
+  .h2h-games-title { font-size: 12px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 12px; }
+  .h2h-game-item { display: flex; align-items: center; gap: 10px; padding: 8px 0;
+    border-bottom: 1px solid var(--border); font-size: 12px; }
+  .h2h-game-item:last-child { border-bottom: none; }
+  .h2h-game-date { color: var(--muted); min-width: 90px; }
+  .h2h-game-conf { font-size: 10px; color: var(--muted); background: var(--surface2);
+    padding: 2px 6px; border-radius: 4px; }
+  .h2h-game-home { flex: 1; text-align: right; font-weight: 600; }
+  .h2h-game-score { font-weight: 800; font-size: 14px; color: var(--text);
+    background: var(--surface2); padding: 4px 10px; border-radius: 6px; min-width: 60px; text-align: center; }
+  .h2h-game-away { flex: 1; font-weight: 600; }
+  .h2h-game-home.won, .h2h-game-away.won { color: var(--green); }
+  .h2h-game-home.lost, .h2h-game-away.lost { color: var(--red); }
+  .h2h-no-games { color: var(--muted); font-size: 13px; font-style: italic; padding: 8px 0; }
+
+  /* H2H SUMMARY BLOCK */
+  .h2h-summary { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; margin-bottom: 20px; }
+  .h2h-sum-team { padding: 20px 24px; }
+  .h2h-sum-team.a { background: #1f6feb18; border-right: 1px solid var(--border); }
+  .h2h-sum-team.b { background: #3fb95018; text-align: right; }
+  .h2h-sum-name { font-size: 1rem; font-weight: 800; margin-bottom: 4px; }
+  .h2h-sum-team.a .h2h-sum-name { color: var(--accent); }
+  .h2h-sum-team.b .h2h-sum-name { color: var(--green); }
+  .h2h-sum-sub { font-size: 11px; color: var(--muted); margin-bottom: 16px; }
+  .h2h-record-big { font-size: 2rem; font-weight: 900; line-height: 1; margin-bottom: 4px; }
+  .h2h-sum-team.a .h2h-record-big { color: var(--accent); }
+  .h2h-sum-team.b .h2h-record-big { color: var(--green); }
+  .h2h-record-label { font-size: 11px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.6px; margin-bottom: 14px; }
+  .h2h-mini-stats { display: flex; flex-direction: column; gap: 6px; }
+  .h2h-sum-team.b .h2h-mini-stats { align-items: flex-end; }
+  .h2h-mini-stat { display: flex; gap: 8px; align-items: center; font-size: 12px; }
+  .h2h-mini-stat .msv { font-weight: 700; color: var(--text); min-width: 36px; }
+  .h2h-sum-team.b .h2h-mini-stat { flex-direction: row-reverse; }
+  .h2h-mini-stat .msl { color: var(--muted); font-size: 11px; }
+  .h2h-sum-mid { display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 20px 16px; gap: 10px; }
+  .h2h-goals-display { font-size: 1.6rem; font-weight: 900; color: var(--text);
+    background: var(--surface2); border-radius: 8px; padding: 8px 16px;
+    border: 1px solid var(--border); white-space: nowrap; letter-spacing: 2px; }
+  .h2h-goals-label { font-size: 10px; color: var(--muted); text-align: center;
+    text-transform: uppercase; letter-spacing: 0.5px; }
+  .h2h-form-row { display: flex; gap: 4px; margin-top: 2px; }
+  .h2h-form-pill { width: 22px; height: 22px; border-radius: 50%; font-size: 10px;
+    font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .h2h-form-pill.W { background: #3fb95033; color: var(--green); border: 1px solid #3fb95066; }
+  .h2h-form-pill.D { background: #8b949e22; color: var(--muted); border: 1px solid #8b949e44; }
+  .h2h-form-pill.L { background: #f8514922; color: var(--red); border: 1px solid #f8514944; }
+  .h2h-sum-team.b .h2h-form-row { flex-direction: row-reverse; }
+  .h2h-no-meetings { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 24px; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 14px; }
+  .h2h-no-meetings-icon { font-size: 2rem; }
+  .h2h-no-meetings-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .h2h-no-meetings-text b { color: var(--text); }
+
+  /* PREDICTION */
+  .pred-panel { background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; }
+  .pred-title { font-size: 13px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 16px; }
+  .pred-bars { display: flex; gap: 0; border-radius: 8px; overflow: hidden;
+    height: 44px; margin-bottom: 12px; font-weight: 800; }
+  .pred-bar-a { background: linear-gradient(90deg, #1f6feb, #58a6ff);
+    display: flex; align-items: center; justify-content: center; color: #fff;
+    font-size: 15px; transition: width .5s ease; }
+  .pred-bar-d { background: var(--surface2); display: flex; align-items: center;
+    justify-content: center; color: var(--muted); font-size: 13px; min-width: 48px; }
+  .pred-bar-b { background: linear-gradient(90deg, #3fb950, #2ea043);
+    display: flex; align-items: center; justify-content: center; color: #fff;
+    font-size: 15px; transition: width .5s ease; }
+  .pred-labels { display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 16px; font-size: 12px; }
+  .pred-label-a { color: var(--accent); font-weight: 700; }
+  .pred-label-d { color: var(--muted); text-align: center; }
+  .pred-label-b { color: var(--green); font-weight: 700; text-align: right; }
+  .pred-score { text-align: center; font-size: 1.1rem; font-weight: 800;
+    color: var(--text); margin-bottom: 16px; }
+  .pred-score span { color: var(--muted); font-size: 12px; font-weight: 400; margin-left: 8px; }
+  .pred-factors { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px; margin-top: 12px; }
+  .pred-factor { background: var(--surface2); border-radius: 8px; padding: 10px 12px; }
+  .pred-factor .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 4px; }
+  .pred-factor .bar-wrap { height: 6px; background: var(--border); border-radius: 3px;
+    overflow: hidden; margin: 4px 0; }
+  .pred-factor .bar-fill { height: 100%; border-radius: 3px; }
+  .pred-factor .bar-fill.a { background: var(--accent); }
+  .pred-factor .bar-fill.b { background: var(--green); }
+  .pred-factor .bar-fill.d { background: var(--muted); }
+  .pred-factor .desc { font-size: 11px; color: var(--text); font-weight: 600; }
+  .pred-verdict { text-align: center; font-size: 14px; font-weight: 700;
+    padding: 10px; background: var(--surface2); border-radius: 8px; margin-bottom: 14px; }
+
+  @media (max-width: 700px) {
+    .flags-grid { grid-template-columns: 1fr; }
+    .top10-grid { grid-template-columns: 1fr; }
+    .hero-meta { gap: 10px; }
+    .h2h-vs { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">2026 ECNL Playoff Preview</div>
+    <h1>2010 Boys (B10) National Playoff Analysis</h1>
+    <div class="hero-meta">
+      <span>📍 <b>San Diego, CA</b></span>
+      <span>📅 <b>June 25, 2026</b></span>
+      <span>🏆 <b>54 Qualified Teams</b></span>
+      <span>⚽ <b>15 Conferences</b></span>
+      <span>📊 <b>Live 2025-26 regular season data</b></span>
+    </div>
+  </div>
+</div>
+
+<!-- STATS CARDS -->
+<div class="stats-bar" id="statsBar"></div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <input type="text" id="searchInput" placeholder="🔍  Search team name...">
+  <select id="confFilter">
+    <option value="">All Conferences</option>
+    <option>Far West</option><option>Florida</option><option>Heartland</option>
+    <option>Mid-America</option><option>Mid-Atlantic</option><option>Mountain</option>
+    <option>New England</option><option>North Atlantic</option><option>Northern Cal</option>
+    <option>Northwest</option><option>Ohio Valley</option><option>Southeast</option>
+    <option>Southwest</option><option>Texas</option>
+  </select>
+  <select id="flagFilter">
+    <option value="">All Teams</option>
+    <option value="def">Elite Defense (GA/G &lt; 0.65)</option>
+    <option value="off">Elite Offense (GF/G &gt; 2.50)</option>
+    <option value="champ">2025 Champion</option>
+    <option value="playoff">Any Playoff Pedigree</option>
+  </select>
+  <div class="legend-pill">🔵 Elite Defense</div>
+  <div class="legend-pill">🟢 Elite Offense</div>
+  <div class="legend-pill">🥇 2025 Champ</div>
+  <div class="legend-pill">🥈 2025 Final</div>
+  <div class="legend-pill">🏅 Semifinal</div>
+</div>
+
+<!-- TABLE -->
+<div class="table-wrap">
+  <table id="mainTable">
+    <thead>
+      <tr>
+        <th data-col="rank" class="sorted">Rank<span class="sort-arrow"> ↑</span></th>
+        <th data-col="seed">Seed<span class="sort-arrow"> ↕</span></th>
+        <th data-col="name">Team<span class="sort-arrow"> ↕</span></th>
+        <th data-col="conf">Conference<span class="sort-arrow"> ↕</span></th>
+        <th data-col="gp">GP<span class="sort-arrow"> ↕</span></th>
+        <th data-col="w">W<span class="sort-arrow"> ↕</span></th>
+        <th data-col="l">L<span class="sort-arrow"> ↕</span></th>
+        <th data-col="d">D<span class="sort-arrow"> ↕</span></th>
+        <th data-col="gf">GF<span class="sort-arrow"> ↕</span></th>
+        <th data-col="ga">GA<span class="sort-arrow"> ↕</span></th>
+        <th data-col="gd">GD<span class="sort-arrow"> ↕</span></th>
+        <th data-col="gfpg">GF/G<span class="sort-arrow"> ↕</span></th>
+        <th data-col="gapg">GA/G<span class="sort-arrow"> ↕</span></th>
+        <th data-col="winpct">Win%<span class="sort-arrow"> ↕</span></th>
+        <th data-col="ppg">PPG<span class="sort-arrow"> ↕</span></th>
+        <th data-col="h2024">2024<span class="sort-arrow"> ↕</span></th>
+        <th data-col="h2025">2025<span class="sort-arrow"> ↕</span></th>
+        <th data-col="score">Score<span class="sort-arrow"> ↕</span></th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<!-- METHODOLOGY -->
+<div class="section">
+  <div class="section-title">Performance Score Methodology</div>
+  <div class="methodology">
+    <p style="font-size:12px;color:var(--muted);margin-bottom:4px;">
+      Each team is scored on a <b style="color:var(--text)">0–100 scale</b> combining five normalized components. All metrics are ranked relative to the full 54-team field.
+    </p>
+    <div class="method-grid">
+      <div class="method-item"><div class="pct">30%</div><div class="label">Win Rate (W/GP) — current season form</div></div>
+      <div class="method-item"><div class="pct">15%</div><div class="label">Goals For per Game — offensive output</div></div>
+      <div class="method-item"><div class="pct">15%</div><div class="label">Defensive Efficiency — inverse of GA/G</div></div>
+      <div class="method-item"><div class="pct">15%</div><div class="label">Conference Strength — avg PPG of conf qualifiers</div></div>
+      <div class="method-item"><div class="pct">25%</div><div class="label">Playoff Pedigree — 2024 + 2025 tournament runs</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOP 10 -->
+<div class="section">
+  <div class="section-title">Top 10 Team Profiles</div>
+  <div class="section-sub">Full profile for each top-ranked team — strengths, playing style, and postseason background.</div>
+  <div class="top10-grid" id="top10Grid"></div>
+</div>
+
+<!-- FLAGS -->
+<div class="section">
+  <div class="section-title">Tactical Flags</div>
+  <div class="flags-grid">
+    <div class="flag-panel">
+      <h3 style="color:#58a6ff">🔵 Elite Defense — Clean Sheet Leaders (GA/G &lt; 0.65)</h3>
+      <div id="defLeaders"></div>
+    </div>
+    <div class="flag-panel">
+      <h3 style="color:#3fb950">🟢 Consistent Offense — Offensive Leaders (GF/G &gt; 2.50)</h3>
+      <div id="offLeaders"></div>
+    </div>
+  </div>
+</div>
+
+<!-- H2H COMPARISON & PREDICTOR -->
+<div class="section" style="margin-top:32px">
+  <div class="section-title">Head-to-Head Comparison &amp; Match Predictor</div>
+  <div class="section-sub">Select any two teams from the 54 qualified teams to view their head-to-head regular season record and get a matchup prediction for San Diego.</div>
+
+  <div class="h2h-pickers">
+    <div class="h2h-picker">
+      <label>Team A</label>
+      <select id="h2hTeamA" onchange="runH2H()">
+        <option value="">— Select Team —</option>
+      </select>
+    </div>
+    <div class="h2h-vs">VS</div>
+    <div class="h2h-picker">
+      <label>Team B</label>
+      <select id="h2hTeamB" onchange="runH2H()">
+        <option value="">— Select Team —</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="h2h-content" id="h2hContent">
+    <!-- H2H Summary (derived from actual matchups) -->
+    <div id="h2hSummary"></div>
+
+    <!-- H2H Games -->
+    <div class="h2h-games-panel">
+      <div class="h2h-games-title">Previous Meetings — Full Results</div>
+      <div id="h2hGamesList"></div>
+    </div>
+
+    <!-- Season Stats Comparison -->
+    <div class="h2h-compare-grid" id="h2hCompareGrid"></div>
+
+    <!-- Prediction -->
+    <div class="pred-panel">
+      <div class="pred-title">Match Prediction — San Diego Playoffs</div>
+      <div class="pred-verdict" id="predVerdict"></div>
+      <div class="pred-bars" id="predBars"></div>
+      <div class="pred-labels" id="predLabels"></div>
+      <div class="pred-score" id="predScore"></div>
+      <div class="pred-factors" id="predFactors"></div>
+    </div>
+  </div>
+</div>
+
+<div style="height:48px"></div>
+
+<script>
+// ============================================================
+// DATA — [name, seed, conf, confRank, gp, w, l, d, gf, ga, h2024, h2025]
+// h2024/h2025: "Champion","Finalist","Semi","QF","—"
+// ============================================================
+const RAW = [
+  ["XF Academy",              1,  "Northwest",    1, 16, 16, 0, 0, 52,  5,  "—",        "—"],
+  ["STA",                     2,  "New England",  1, 13, 12, 0, 1, 31,  8,  "—",        "Finalist"],
+  ["Davis Legacy",            3,  "Northern Cal", 1, 20, 18, 0, 2, 88, 11,  "—",        "—"],
+  ["Gretna Elite Academy",    4,  "Heartland",    1, 10,  9, 0, 1, 32,  2,  "—",        "—"],
+  ["FC Wichita",              5,  "Heartland",    1, 14, 13, 1, 0, 43, 11,  "—",        "—"],
+  ["OK Energy FC",            6,  "Texas",        1, 19, 17, 1, 1, 71, 21,  "—",        "—"],
+  ["FL Premier FC",           8,  "Florida",      1, 18, 14, 0, 4, 57, 10,  "—",        "—"],
+  ["Delaware FC",             9,  "North Atlantic",1,11,  9, 1, 1, 29,  7,  "—",        "—"],
+  ["BVBIA",                  10,  "Texas",        2, 19, 15, 1, 3, 62, 18,  "—",        "—"],
+  ["Ohio Elite SA",          11,  "Ohio Valley",  1, 14, 11, 1, 2, 33,  9,  "—",        "—"],
+  ["Utah Avalanche",         12,  "Mountain",     1, 14, 11, 1, 2, 37,  9,  "—",        "—"],
+  ["NM Rapids",              13,  "Mountain",     1, 14, 11, 1, 2, 39, 13,  "—",        "—"],
+  ["Pipeline SC",            14,  "North Atlantic",2,11,  8, 0, 3, 25,  5,  "—",        "—"],
+  ["CCV Stars",              15,  "Mountain",     2, 15, 12, 3, 0, 32,  9,  "—",        "—"],
+  ["Slammers FC",            16,  "Southwest",    1, 22, 16, 2, 4, 51, 22,  "—",        "—"],
+  ["Oregon Premier",         17,  "Far West",     1, 12,  9, 2, 1, 35,  6,  "—",        "—"],
+  ["El Camino Futbol Club Salinas",18,"Northern Cal",2,20,15,4,1,44,22, "—",        "—"],
+  ["FL Kraze Krush",         21,  "Florida",      2, 18, 13, 3, 2, 47, 16,  "—",        "—"],
+  ["NCFC Youth Academy",     23,  "Mid-Atlantic", 1, 18, 12, 2, 4, 47, 13,  "—",        "—"],
+  ["Alabama FC",             24,  "Mid-America",  1, 14,  9, 1, 4, 27,  9,  "—",        "—"],
+  ["Concorde Fire Platinum", 25,  "Southeast",    1, 16, 10, 1, 5, 45, 11,  "—",        "QF"],
+  ["LAFC So Cal",            26,  "Southwest",    2, 23, 15, 3, 5, 41, 15,  "Champion", "—"],
+  ["River Islands Surf",     27,  "Northern Cal", 3, 20, 14, 5, 1, 55, 18,  "—",        "—"],
+  ["Real Colorado Academy",  28,  "Texas",        3, 19, 13, 4, 2, 42, 20,  "—",        "—"],
+  ["Albion Hurricanes FC",   29,  "Texas",        4, 19, 13, 4, 2, 54, 28,  "—",        "QF"],
+  ["Santa Clara Sporting",   30,  "Northern Cal", 1, 21, 14, 4, 3, 53, 14,  "—",        "—"],
+  ["Louisiana Fire SC",      31,  "Mid-America",  2, 14,  9, 2, 3, 25,  8,  "—",        "—"],
+  ["Marin FC",               32,  "Northern Cal", 2, 21, 14, 4, 3, 60, 35,  "—",        "—"],
+  ["SAFC",                   33,  "Texas",        5, 19, 13, 5, 1, 55, 28,  "—",        "—"],
+  ["HTX",                    34,  "Texas",        6, 19, 13, 5, 1, 56, 27,  "—",        "—"],
+  ["Boise Timbers FC",       36,  "Far West",     2, 12,  7, 1, 4, 33,  8,  "—",        "—"],
+  ["Charlotte SA Academy",   37,  "Mid-Atlantic", 2, 18, 12, 5, 1, 50, 19,  "—",        "—"],
+  ["Dallas Texans Academy",  38,  "Texas",        7, 18, 11, 3, 4, 43, 14,  "Finalist", "—"],
+  ["Pateadores",             39,  "Southwest",    3, 22, 13, 4, 5, 53, 14,  "—",        "—"],
+  ["San Diego Surf",         40,  "Southwest",    4, 21, 13, 5, 3, 46, 21,  "—",        "Semi"],
+  ["South Carolina Surf",    41,  "Southeast",    2, 16,  9, 2, 5, 20, 10,  "—",        "—"],
+  ["Beach FC (VA)",          42,  "Mid-Atlantic", 3, 17,  9, 2, 6, 31, 12,  "—",        "—"],
+  ["Tennessee SC",           44,  "Mid-America",  3, 14,  8, 3, 3, 20, 10,  "—",        "—"],
+  ["Ohio Premier",           45,  "Ohio Valley",  3, 14,  8, 3, 3, 23, 19,  "—",        "—"],
+  ["Rebels SC",              46,  "Southwest",    5, 22, 13, 6, 3, 40, 33,  "—",        "QF"],
+  ["Seattle United",         47,  "Northwest",    2, 16,  9, 4, 3, 30, 19,  "—",        "—"],
+  ["Parkland SC",            48,  "Florida",      3, 18, 10, 5, 3, 34, 18,  "—",        "—"],
+  ["Richmond United",        49,  "Mid-Atlantic", 4, 17,  9, 4, 4, 32, 17,  "—",        "—"],
+  ["3RSC",                   51,  "Northwest",    3, 16,  9, 5, 2, 26, 22,  "—",        "—"],
+  ["Beach FC (CA)",          52,  "Southwest",    6, 24, 14, 9, 1, 47, 23,  "—",        "Semi"],
+  ["Arlington Soccer",       53,  "Mid-Atlantic", 6, 17,  9, 5, 3, 33, 23,  "—",        "—"],
+  ["DKSC",                   54,  "Texas",        8, 19, 10, 6, 3, 32, 28,  "—",        "—"],
+  ["Lobos Rush",             57,  "Mid-America",  4, 14,  6, 3, 5, 22, 17,  "—",        "—"],
+  ["Legends FC",             58,  "Southwest",    7, 22, 10, 6, 6, 27, 20,  "—",        "Champion"],
+  ["Concorde Fire Premier",  59,  "Southeast",    3, 16,  8, 6, 2, 28, 23,  "—",        "—"],
+  ["PacNW SC",               61,  "Northwest",    4, 16,  8, 7, 1, 28, 25,  "—",        "—"],
+  ["RISE SC",                62,  "Texas",        9, 19,  9, 8, 2, 31, 34,  "—",        "—"],
+  ["CESA Triumph",           63,  "Southeast",    4, 16,  6, 4, 6, 31, 19,  "—",        "—"],
+  ["NTH-NASA",               65,  "Southeast",    5, 16,  5, 4, 7, 23, 22,  "—",        "QF"],
+];
+
+// Conference strength (avg PPG of qualified teams per conf)
+const CONF_STR = {
+  "New England": 2.84, "Heartland": 2.79, "North Atlantic": 2.495, "Mountain": 2.467,
+  "Northern Cal": 2.306, "Florida": 2.217, "Far West": 2.205, "Ohio Valley": 2.210,
+  "Texas": 2.117, "Northwest": 2.06, "Mid-America": 1.978, "Southwest": 1.979,
+  "Mid-Atlantic": 1.958, "Southeast": 1.734
+};
+const CONF_MIN = 1.734, CONF_MAX = 2.84;
+
+// Playoff experience score (0-100)
+const HIST_SCORE = { "Champion":100, "Finalist":85, "Semi":70, "QF":55, "—":0 };
+
+// Build enriched team objects
+const teams = RAW.map(r => {
+  const [name, seed, conf, confRank, gp, w, l, d, gf, ga, h2024, h2025] = r;
+  const winPct = w / gp;
+  const gfpg = gf / gp;
+  const gapg = ga / gp;
+  const gd = gf - ga;
+  const ppg = parseFloat(((w*3 + d) / gp).toFixed(2));
+  const confStr = (CONF_STR[conf] - CONF_MIN) / (CONF_MAX - CONF_MIN);
+  const playoffExp = Math.max(HIST_SCORE[h2024], HIST_SCORE[h2025]) / 100;
+  return { name, seed, conf, confRank, gp, w, l, d, gf, ga, gd, ppg,
+           winPct, gfpg, gapg, confStr, h2024, h2025, playoffExp,
+           isEliteDef: gapg < 0.65, isEliteOff: gfpg > 2.50 };
+});
+
+// Normalize 0-1 across field
+function norm(arr, key, invert=false) {
+  const vals = arr.map(t => t[key]);
+  const mn = Math.min(...vals), mx = Math.max(...vals);
+  arr.forEach(t => {
+    let v = (t[key] - mn) / (mx - mn || 1);
+    t['_n_'+key] = invert ? 1 - v : v;
+  });
+}
+norm(teams, 'winPct'); norm(teams, 'gfpg'); norm(teams, 'gapg', true);
+norm(teams, 'confStr'); norm(teams, 'playoffExp');
+
+// Compute seed score — lower seed # is better
+teams.forEach(t => { t._n_seed = (66 - t.seed) / 65; });
+
+// Final composite score
+teams.forEach(t => {
+  t.score = Math.round(
+    t._n_winPct   * 30 +
+    t._n_gfpg     * 15 +
+    t._n_gapg     * 15 +
+    t._n_confStr  * 15 +
+    t._n_playoffExp * 25
+  );
+});
+
+// Sort by score desc as initial order
+teams.sort((a,b) => b.score - a.score);
+teams.forEach((t, i) => t.rank = i + 1);
+
+// ============================================================
+// STATS BAR
+// ============================================================
+function buildStats() {
+  const totalGF = teams.reduce((s,t) => s+t.gf, 0);
+  const totalGP = teams.reduce((s,t) => s+t.gp, 0);
+  const avgPPG = (teams.reduce((s,t) => s+t.ppg*t.gp, 0)/totalGP).toFixed(2);
+  const topOff = teams.slice().sort((a,b)=>b.gfpg-a.gfpg)[0];
+  const topDef = teams.slice().sort((a,b)=>a.gapg-b.gapg)[0];
+  const confs = [...new Set(teams.map(t=>t.conf))].length;
+  document.getElementById('statsBar').innerHTML = [
+    ['54', 'Qualified Teams', `${confs} conferences`],
+    [totalGF.toLocaleString(), 'Total Goals Scored', `${(totalGF/totalGP).toFixed(2)} per game`],
+    [avgPPG, 'Avg PPG (Field)', 'All 54 teams'],
+    [topOff.gfpg.toFixed(2), 'Top GF/G', topOff.name],
+    [topDef.gapg.toFixed(2), 'Lowest GA/G', topDef.name],
+    ['Legends FC', '2025 Champion', 'Defending title'],
+    ['LAFC So Cal', '2024 Champion', '2023-24 U14'],
+    ['XF Academy', '#1 Seed', `${teams.find(t=>t.name==='XF Academy').score} pts score`],
+  ].map(([v,l,s]) => `<div class="stat-card"><div class="stat-label">${l}</div>
+    <div class="stat-value" style="font-size:${v.length>8?'1rem':'1.4rem'}">${v}</div>
+    <div class="stat-sub">${s}</div></div>`).join('');
+}
+
+// ============================================================
+// TABLE
+// ============================================================
+let sortCol = 'rank', sortDir = 1;
+let filtered = [...teams];
+
+function histPill(val) {
+  if (!val || val === '—') return '<span class="hist-none">—</span>';
+  const cls = {Champion:'hist-champ',Finalist:'hist-final',Semi:'hist-semi',QF:'hist-qf'}[val];
+  return `<span class="hist-pill ${cls}">${val}</span>`;
+}
+
+function seedBadge(seed) {
+  const cls = seed <= 3 ? 'top3' : seed <= 10 ? 'top10' : '';
+  return `<span class="seed-num ${cls}">#${seed}</span>`;
+}
+
+function gdCell(gd) {
+  const cls = gd > 0 ? 'gd-pos' : gd < 0 ? 'gd-neg' : '';
+  const prefix = gd > 0 ? '+' : '';
+  return `<td class="num ${cls}">${prefix}${gd}</td>`;
+}
+
+function flagsHtml(t) {
+  let f = '';
+  if (t.isEliteDef) f += '<span class="flag flag-def">🔵 DEF</span>';
+  if (t.isEliteOff) f += '<span class="flag flag-off">🟢 OFF</span>';
+  if (t.h2025 === 'Champion') f += '<span class="flag flag-champ">🥇 2025</span>';
+  else if (t.h2025 === 'Finalist') f += '<span class="flag flag-final">🥈 2025F</span>';
+  else if (t.h2025 === 'Semi') f += '<span class="flag flag-semi">🏅 2025SF</span>';
+  else if (t.h2025 === 'QF') f += '<span class="flag flag-qf">⬛ 2025QF</span>';
+  if (t.h2024 === 'Champion') f += '<span class="flag flag-champ">🥇 2024</span>';
+  else if (t.h2024 === 'Finalist') f += '<span class="flag flag-final">🥈 2024F</span>';
+  return f;
+}
+
+function renderTable() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const conf = document.getElementById('confFilter').value;
+  const flag = document.getElementById('flagFilter').value;
+
+  filtered = teams.filter(t => {
+    if (search && !t.name.toLowerCase().includes(search)) return false;
+    if (conf && t.conf !== conf) return false;
+    if (flag === 'def' && !t.isEliteDef) return false;
+    if (flag === 'off' && !t.isEliteOff) return false;
+    if (flag === 'champ' && t.h2025 !== 'Champion') return false;
+    if (flag === 'playoff' && t.h2024 === '—' && t.h2025 === '—') return false;
+    return true;
+  });
+
+  filtered.sort((a,b) => {
+    let va = a[sortCol], vb = b[sortCol];
+    if (typeof va === 'string') return sortDir * va.localeCompare(vb);
+    return sortDir * (va - vb);
+  });
+
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = filtered.map((t, i) => {
+    const winPctStr = (t.winPct*100).toFixed(1)+'%';
+    const fillPct = t.score;
+    const scCls = t.score >= 70 ? 'score-top' : '';
+    return `<tr>
+      <td class="rank">${t.rank}</td>
+      <td class="seed">${seedBadge(t.seed)}</td>
+      <td class="team-name">${t.name}${flagsHtml(t)}<span class="conf-badge">${t.conf}</span></td>
+      <td style="color:var(--muted);font-size:12px">#${t.confRank} in conf</td>
+      <td class="num">${t.gp}</td>
+      <td class="num record-w">${t.w}</td>
+      <td class="num record-l">${t.l}</td>
+      <td class="num record-d">${t.d}</td>
+      <td class="num">${t.gf}</td>
+      <td class="num">${t.ga}</td>
+      ${gdCell(t.gd)}
+      <td class="num">${t.gfpg.toFixed(2)}</td>
+      <td class="num">${t.gapg.toFixed(2)}</td>
+      <td class="num win-pct">${winPctStr}</td>
+      <td class="num">${t.ppg}</td>
+      <td>${histPill(t.h2024)}</td>
+      <td>${histPill(t.h2025)}</td>
+      <td class="score-cell">
+        <div class="score-bar-wrap">
+          <div class="score-bar"><div class="score-bar-fill" style="width:${fillPct}%"></div></div>
+          <div class="score-num ${scCls}">${t.score}</div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// Column sort
+document.querySelectorAll('thead th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
+    document.querySelectorAll('thead th').forEach(h => {
+      h.classList.remove('sorted');
+      h.querySelector('.sort-arrow').textContent = ' ↕';
+    });
+    th.classList.add('sorted');
+    th.querySelector('.sort-arrow').textContent = sortDir === 1 ? ' ↑' : ' ↓';
+    renderTable();
+  });
+});
+
+document.getElementById('searchInput').addEventListener('input', renderTable);
+document.getElementById('confFilter').addEventListener('change', renderTable);
+document.getElementById('flagFilter').addEventListener('change', renderTable);
+
+// ============================================================
+// TOP 10 PROFILES
+// ============================================================
+const PROFILES = {
+  "XF Academy": {
+    style: "High-intensity press, defensive compactness, elite GK coaching",
+    bg: "Pacific Northwest powerhouse (Kirkland, WA). XF Academy set the standard in 2025-26 with a flawless 16-0-0 record — the only team in the 54-team field to not drop a single point. Their B08 cohort won the 2025 U17 National Championship, demonstrating elite club-wide infrastructure. The B10 squad enters San Diego as the #1 overall seed.",
+    strengths: "Perfect record, elite defense (0.31 GA/G), multi-age-group club dominance"
+  },
+  "Davis Legacy": {
+    style: "High-octane attacking, relentless forward pressing, quick combinations",
+    bg: "Northern California's most prolific attacking team (Davis, CA). An extraordinary 88 goals in 20 games (4.40/G) — the highest offensive output in the entire field. Their 77-goal differential is unmatched nationally. The 18-0-2 unbeaten run in the competitive NorCal conference makes them a genuine title threat.",
+    strengths: "Nation's top offense, near-perfect record, 77 GD in 20 games"
+  },
+  "STA": {
+    style: "Disciplined defensive shape, patient build-up, clinical counter-attack",
+    bg: "Elite New England club, seed #2 nationally. The 2025 U15 Finalists fell 1-5 to Legends FC in the championship game but return with a dominant 12-0-1 record this season. Their GK Vayun Swamy saved a PK in the 2025 QFs — this is a mentally resilient group with deep playoff experience and a point to prove.",
+    strengths: "2025 National Finalist, 12-0-1 record, elite defensive structure, GK quality"
+  },
+  "Gretna Elite Academy": {
+    style: "Defensive organization, quick transition, efficient use of possession",
+    bg: "Nebraska-based club with the best defensive record in the entire 54-team field: only 2 goals allowed in 10 games (0.20 GA/G). Combined with 32 goals scored, Gretna's +30 goal difference in just 10 games is extraordinary. The Heartland conference is one of the strongest in the country.",
+    strengths: "Best defensive record nationally, 0.20 GA/G, Heartland conference champion"
+  },
+  "FC Wichita": {
+    style: "High-tempo attacking, pressing from the front, wing-based offense",
+    bg: "Kansas-based club dominating the Heartland conference Div 2 with a 13-1-0 record and 43 goals (3.07/G). The Texas/Heartland corridor is arguably the most competitive region in ECNL Boys. FC Wichita's near-perfect record in that environment earns them a top-5 national seed.",
+    strengths: "13-1-0 record, 3.07 GF/G, Heartland conference — one of strongest nationally"
+  },
+  "Legends FC": {
+    style: "Compact block, deadly counter-attack, proven playoff surge",
+    bg: "The defending 2025 U15 National Champions from Southern California. Legends FC's regular season (10-6-6, seed #58) doesn't reflect their championship quality — they've proven they are a tournament team that peaks at the right moment. In 2025 playoffs: beat Albion 4-1 (QF), beat Beach FC (CA) 3-0 (SF), won 5-1 over STA in the final. Enter as the team every top seed will not want to face.",
+    strengths: "2025 U15 Champion, lethal in playoffs, proven mental toughness, 5-1 championship win"
+  },
+  "OK Energy FC": {
+    style: "Dynamic attack, high-energy play, dominant in transition",
+    bg: "Oklahoma City-based club that dominated the Texas conference — the deepest conference in the country with 9 qualifiers. Their 17-1-1 record and 71 goals (3.74/G) made them the clear Texas champion. The sheer volume of competitive games against top-tier Texas and Oklahoma clubs makes them battle-tested going into San Diego.",
+    strengths: "Texas conf champion, 17-1-1, 71 GF, prolific offense in toughest conference"
+  },
+  "FL Premier FC": {
+    style: "Organized defense, quick transitions, technical midfield play",
+    bg: "Florida-based club with an unbeaten-in-regulation 14-0-4 record (57 GF, only 10 GA). The parent club Florida Premier won the 2025 U16 Boys National Championship, defeating Pateadores 3-0 — demonstrating the club infrastructure at the highest level. The B10 squad enters as Florida conference champions with one of the cleanest defensive records in the field (0.56 GA/G).",
+    strengths: "14-0-4 unbeaten in regulation, elite defense, club won 2025 U16 national title"
+  },
+  "LAFC So Cal": {
+    style: "Possession-based, technical, structured build-up from the back",
+    bg: "The 2024 U14 National Champions (defeated Dallas Texans Academy on penalty kicks). LAFC So Cal brings proven championship pedigree into 2026. Their 15-3-5 record in the demanding Southwest conference (23 games, tied for 2nd) shows they've remained elite across two full seasons. The club also won the 2024 U16 Boys National Championship (their B2008 squad).",
+    strengths: "2024 U14 National Champions, deep playoff experience, 15-3-5 in tough SW conf"
+  },
+  "Dallas Texans Academy": {
+    style: "Physical, disciplined defending, direct attacking transitions, set piece threat",
+    bg: "The 2024 U14 National Finalists (lost on PKs to LAFC So Cal) return with renewed motivation. Dallas Texans Academy is backed by one of the largest and most resourced soccer clubs in the country, with multi-team representation across all age groups. Their 11-3-4 record in the deep Texas conference (9 qualifiers) and #38 seed is balanced by exceptional playoff experience — they know exactly what it takes to reach a national final. Defending champions Legends FC beat them in the QF was not them in 2025 (they were U16 in 2025). Their 2024 run established them as one of the top programs in the Midwest/South corridor.",
+    strengths: "2024 U14 National Finalist, Texas conference depth battle-tested, large elite club infrastructure"
+  },
+  "Pipeline SC": {
+    style: "Disciplined defensive block, effective set pieces, strong GK",
+    bg: "Maryland/DC-area club with one of the best defensive records in the country: only 5 goals allowed in 11 games (0.45 GA/G). Their 8-0-3 unbeaten league record and North Atlantic conference runners-up spot (seed #14) reflects consistency. Pipeline's B2011 cohort won the 2024 U13 Boys National Championship, showing the club culture of winning.",
+    strengths: "0.45 GA/G (2nd best in field), 8-0-3 record, club championship DNA across age groups"
+  },
+  "Delaware FC": {
+    style: "Balanced play, high work rate, effective in tight spaces",
+    bg: "North Atlantic conference champions with a 9-1-1 record and only 7 goals allowed (0.64 GA/G). Delaware FC finished ahead of Pipeline SC in a stacked North Atlantic conference. Their seed #9 reflects a well-rounded team that doesn't concede much and converts efficiently.",
+    strengths: "Conf champion, 9-1-1 record, 7 GA in 11 games, top North Atlantic seed"
+  },
+};
+
+function buildTop10() {
+  const top10 = teams.slice(0, 10);
+  const grid = document.getElementById('top10Grid');
+  grid.innerHTML = top10.map((t, i) => {
+    const prof = PROFILES[t.name] || {};
+    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+    const hist2024 = t.h2024 !== '—' ? `<span class="hist-pill hist-${t.h2024.toLowerCase()}">${t.h2024} 2024</span>` : '';
+    const hist2025 = t.h2025 !== '—' ? `<span class="hist-pill hist-${t.h2025.toLowerCase()}">${t.h2025} 2025</span>` : '';
+    return `<div class="team-card">
+      <div class="card-rank">${medal} Performance Rank</div>
+      <div class="card-header">
+        <div>
+          <div class="card-name">${t.name}</div>
+          <div class="card-conf">${t.conf} Conference · Seed #${t.seed}</div>
+        </div>
+        <div class="card-score">${t.score}</div>
+      </div>
+      <div class="card-stats">
+        <div class="card-stat"><div class="v">${(t.winPct*100).toFixed(0)}%</div><div class="l">Win Rate</div></div>
+        <div class="card-stat"><div class="v">${t.gfpg.toFixed(2)}</div><div class="l">GF/Game</div></div>
+        <div class="card-stat"><div class="v">${t.gapg.toFixed(2)}</div><div class="l">GA/Game</div></div>
+        <div class="card-stat"><div class="v">+${Math.max(0,t.gd)}</div><div class="l">Goal Diff</div></div>
+      </div>
+      <div class="card-record">
+        <span class="record-w">${t.w}W</span> /
+        <span class="record-l">${t.l}L</span> /
+        <span class="record-d">${t.d}D</span>
+        <span style="color:var(--muted);font-size:11px">· ${t.gp} GP · ${t.ppg} PPG</span>
+      </div>
+      ${hist2024 || hist2025 ? `<div class="card-history">${hist2024}${hist2025}</div>` : ''}
+      ${prof.style ? `<div style="font-size:11px;color:var(--accent);margin-bottom:6px">⚡ ${prof.style}</div>` : ''}
+      <div class="card-profile">${prof.bg || ''}</div>
+      ${prof.strengths ? `<div style="font-size:11px;color:var(--green);margin-top:8px">✅ ${prof.strengths}</div>` : ''}
+      <div class="card-flags">${flagsHtml(t)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// FLAGS PANELS
+// ============================================================
+function buildFlags() {
+  const defList = teams.filter(t => t.isEliteDef).sort((a,b) => a.gapg - b.gapg);
+  const offList = teams.filter(t => t.isEliteOff).sort((a,b) => b.gfpg - a.gfpg);
+
+  document.getElementById('defLeaders').innerHTML = defList.map(t =>
+    `<div class="flag-item">
+      <div>
+        <span class="team-n">${t.name}</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:6px">${t.conf} · Seed #${t.seed}</span>
+      </div>
+      <div>
+        <span class="metric metric-def">${t.ga} GA / ${t.gp} GP = ${t.gapg.toFixed(2)}/G</span>
+        ${t.isEliteOff ? '<span class="flag flag-off" style="margin-left:6px">+OFF</span>' : ''}
+      </div>
+    </div>`
+  ).join('');
+
+  document.getElementById('offLeaders').innerHTML = offList.map(t =>
+    `<div class="flag-item">
+      <div>
+        <span class="team-n">${t.name}</span>
+        <span style="font-size:10px;color:var(--muted);margin-left:6px">${t.conf} · Seed #${t.seed}</span>
+      </div>
+      <div>
+        <span class="metric metric-off">${t.gf} GF / ${t.gp} GP = ${t.gfpg.toFixed(2)}/G</span>
+        ${t.isEliteDef ? '<span class="flag flag-def" style="margin-left:6px">+DEF</span>' : ''}
+      </div>
+    </div>`
+  ).join('');
+}
+
+// ============================================================
+// H2H DATA — 339 games, 289 matchups (144 conference + 195 showcase)
+// ============================================================
+const H2H_MAP = {"Boise Timbers FC|||Oregon Premier":[{"date":"Feb 22, 2026","home":"Oregon Premier","away":"Boise Timbers FC","hScore":1,"aScore":1,"conf":"Far West"},{"date":"Mar 01, 2026","home":"Boise Timbers FC","away":"Oregon Premier","hScore":2,"aScore":0,"conf":"Far West"}],"FL Premier FC|||Parkland SC":[{"date":"Sep 06, 2025","home":"Parkland SC","away":"FL Premier FC","hScore":1,"aScore":1,"conf":"Florida"},{"date":"Sep 21, 2025","home":"FL Premier FC","away":"Parkland SC","hScore":4,"aScore":1,"conf":"Florida"}],"FL Kraze Krush|||Parkland SC":[{"date":"Sep 07, 2025","home":"Parkland SC","away":"FL Kraze Krush","hScore":2,"aScore":0,"conf":"Florida"},{"date":"Sep 20, 2025","home":"FL Kraze Krush","away":"Parkland SC","hScore":1,"aScore":0,"conf":"Florida"}],"FL Kraze Krush|||FL Premier FC":[{"date":"Oct 26, 2025","home":"FL Premier FC","away":"FL Kraze Krush","hScore":1,"aScore":1,"conf":"Florida"},{"date":"Mar 28, 2026","home":"FL Kraze Krush","away":"FL Premier FC","hScore":0,"aScore":3,"conf":"Florida"}],"Alabama FC|||Louisiana Fire SC":[{"date":"Aug 23, 2025","home":"Louisiana Fire SC","away":"Alabama FC","hScore":2,"aScore":2,"conf":"Mid-America"},{"date":"Oct 05, 2025","home":"Alabama FC","away":"Louisiana Fire SC","hScore":1,"aScore":1,"conf":"Mid-America"}],"Louisiana Fire SC|||Tennessee SC":[{"date":"Aug 24, 2025","home":"Louisiana Fire SC","away":"Tennessee SC","hScore":2,"aScore":1,"conf":"Mid-America"},{"date":"Oct 04, 2025","home":"Tennessee SC","away":"Louisiana Fire SC","hScore":2,"aScore":1,"conf":"Mid-America"}],"Lobos Rush|||Tennessee SC":[{"date":"Sep 06, 2025","home":"Lobos Rush","away":"Tennessee SC","hScore":1,"aScore":1,"conf":"Mid-America"},{"date":"Nov 08, 2025","home":"Tennessee SC","away":"Lobos Rush","hScore":2,"aScore":1,"conf":"Mid-America"}],"Alabama FC|||Lobos Rush":[{"date":"Sep 07, 2025","home":"Lobos Rush","away":"Alabama FC","hScore":1,"aScore":1,"conf":"Mid-America"},{"date":"Nov 09, 2025","home":"Alabama FC","away":"Lobos Rush","hScore":2,"aScore":0,"conf":"Mid-America"}],"Lobos Rush|||Louisiana Fire SC":[{"date":"Sep 20, 2025","home":"Lobos Rush","away":"Louisiana Fire SC","hScore":0,"aScore":0,"conf":"Mid-America"},{"date":"Oct 19, 2025","home":"Louisiana Fire SC","away":"Lobos Rush","hScore":1,"aScore":0,"conf":"Mid-America"}],"Alabama FC|||Tennessee SC":[{"date":"Sep 28, 2025","home":"Tennessee SC","away":"Alabama FC","hScore":0,"aScore":0,"conf":"Mid-America"},{"date":"Nov 23, 2025","home":"Alabama FC","away":"Tennessee SC","hScore":2,"aScore":0,"conf":"Mid-America"}],"Arlington Soccer|||Beach FC (VA)":[{"date":"Sep 06, 2025","home":"Arlington Soccer","away":"Beach FC (VA)","hScore":0,"aScore":3,"conf":"Mid-Atlantic"},{"date":"Nov 08, 2025","home":"Beach FC (VA)","away":"Arlington Soccer","hScore":1,"aScore":2,"conf":"Mid-Atlantic"}],"NCFC Youth Academy|||Richmond United":[{"date":"Sep 13, 2025","home":"Richmond United","away":"NCFC Youth Academy","hScore":1,"aScore":2,"conf":"Mid-Atlantic"}],"Charlotte SA Academy|||Richmond United":[{"date":"Sep 27, 2025","home":"Charlotte SA Academy","away":"Richmond United","hScore":3,"aScore":0,"conf":"Mid-Atlantic"}],"Beach FC (VA)|||Charlotte SA Academy":[{"date":"Sep 28, 2025","home":"Charlotte SA Academy","away":"Beach FC (VA)","hScore":0,"aScore":2,"conf":"Mid-Atlantic"}],"Beach FC (VA)|||Richmond United":[{"date":"Oct 04, 2025","home":"Beach FC (VA)","away":"Richmond United","hScore":0,"aScore":0,"conf":"Mid-Atlantic"},{"date":"Oct 25, 2025","home":"Richmond United","away":"Beach FC (VA)","hScore":0,"aScore":1,"conf":"Mid-Atlantic"}],"Charlotte SA Academy|||NCFC Youth Academy":[{"date":"Oct 05, 2025","home":"Charlotte SA Academy","away":"NCFC Youth Academy","hScore":0,"aScore":1,"conf":"Mid-Atlantic"},{"date":"Jan 17, 2026","home":"NCFC Youth Academy","away":"Charlotte SA Academy","hScore":2,"aScore":3,"conf":"Mid-Atlantic"}],"Arlington Soccer|||NCFC Youth Academy":[{"date":"Oct 25, 2025","home":"Arlington Soccer","away":"NCFC Youth Academy","hScore":2,"aScore":0,"conf":"Mid-Atlantic"}],"Arlington Soccer|||Richmond United":[{"date":"Nov 09, 2025","home":"Richmond United","away":"Arlington Soccer","hScore":1,"aScore":5,"conf":"Mid-Atlantic"},{"date":"May 03, 2026","home":"Arlington Soccer","away":"Richmond United","hScore":2,"aScore":2,"conf":"Mid-Atlantic"}],"Beach FC (VA)|||NCFC Youth Academy":[{"date":"Feb 08, 2026","home":"NCFC Youth Academy","away":"Beach FC (VA)","hScore":1,"aScore":1,"conf":"Mid-Atlantic"}],"Arlington Soccer|||Charlotte SA Academy":[{"date":"Apr 18, 2026","home":"Arlington Soccer","away":"Charlotte SA Academy","hScore":1,"aScore":2,"conf":"Mid-Atlantic"}],"Delaware FC|||Pipeline SC":[{"date":"May 03, 2026","home":"Pipeline SC","away":"Delaware FC","hScore":0,"aScore":0,"conf":"North Atlantic"}],"PacNW SC|||XF Academy":[{"date":"Sep 21, 2025","home":"XF Academy","away":"PacNW SC","hScore":1,"aScore":0,"conf":"Northwest"},{"date":"Dec 13, 2025","home":"PacNW SC","away":"XF Academy","hScore":0,"aScore":3,"conf":"Northwest"}],"Seattle United|||XF Academy":[{"date":"Sep 28, 2025","home":"Seattle United","away":"XF Academy","hScore":1,"aScore":3,"conf":"Northwest"},{"date":"Nov 16, 2025","home":"XF Academy","away":"Seattle United","hScore":2,"aScore":0,"conf":"Northwest"}],"3RSC|||PacNW SC":[{"date":"Sep 28, 2025","home":"PacNW SC","away":"3RSC","hScore":2,"aScore":4,"conf":"Northwest"},{"date":"Feb 21, 2026","home":"3RSC","away":"PacNW SC","hScore":1,"aScore":0,"conf":"Northwest"}],"3RSC|||XF Academy":[{"date":"Nov 01, 2025","home":"3RSC","away":"XF Academy","hScore":1,"aScore":3,"conf":"Northwest"},{"date":"Feb 15, 2026","home":"XF Academy","away":"3RSC","hScore":3,"aScore":0,"conf":"Northwest"}],"3RSC|||Seattle United":[{"date":"Nov 09, 2025","home":"Seattle United","away":"3RSC","hScore":2,"aScore":1,"conf":"Northwest"},{"date":"Feb 07, 2026","home":"3RSC","away":"Seattle United","hScore":2,"aScore":0,"conf":"Northwest"}],"PacNW SC|||Seattle United":[{"date":"Dec 07, 2025","home":"Seattle United","away":"PacNW SC","hScore":2,"aScore":1,"conf":"Northwest"},{"date":"Jan 17, 2026","home":"PacNW SC","away":"Seattle United","hScore":2,"aScore":2,"conf":"Northwest"}],"Ohio Elite SA|||Ohio Premier":[{"date":"Mar 15, 2026","home":"Ohio Premier","away":"Ohio Elite SA","hScore":2,"aScore":4,"conf":"Ohio Valley"},{"date":"May 10, 2026","home":"Ohio Elite SA","away":"Ohio Premier","hScore":2,"aScore":0,"conf":"Ohio Valley"}],"Concorde Fire Platinum|||South Carolina Surf":[{"date":"Aug 17, 2025","home":"South Carolina Surf","away":"Concorde Fire Platinum","hScore":0,"aScore":0,"conf":"Southeast"},{"date":"Jan 10, 2026","home":"Concorde Fire Platinum","away":"South Carolina Surf","hScore":0,"aScore":0,"conf":"Southeast"}],"CESA Triumph|||Concorde Fire Premier":[{"date":"Aug 23, 2025","home":"Concorde Fire Premier","away":"CESA Triumph","hScore":2,"aScore":3,"conf":"Southeast"},{"date":"Oct 05, 2025","home":"CESA Triumph","away":"Concorde Fire Premier","hScore":1,"aScore":2,"conf":"Southeast"}],"CESA Triumph|||Concorde Fire Platinum":[{"date":"Aug 24, 2025","home":"Concorde Fire Platinum","away":"CESA Triumph","hScore":2,"aScore":0,"conf":"Southeast"},{"date":"Oct 04, 2025","home":"CESA Triumph","away":"Concorde Fire Platinum","hScore":2,"aScore":2,"conf":"Southeast"}],"NTH-NASA|||South Carolina Surf":[{"date":"Sep 06, 2025","home":"NTH-NASA","away":"South Carolina Surf","hScore":0,"aScore":2,"conf":"Southeast"},{"date":"Nov 23, 2025","home":"South Carolina Surf","away":"NTH-NASA","hScore":1,"aScore":1,"conf":"Southeast"}],"Concorde Fire Platinum|||Concorde Fire Premier":[{"date":"Sep 07, 2025","home":"Concorde Fire Platinum","away":"Concorde Fire Premier","hScore":2,"aScore":3,"conf":"Southeast"},{"date":"Oct 26, 2025","home":"Concorde Fire Premier","away":"Concorde Fire Platinum","hScore":1,"aScore":5,"conf":"Southeast"}],"CESA Triumph|||NTH-NASA":[{"date":"Oct 11, 2025","home":"NTH-NASA","away":"CESA Triumph","hScore":0,"aScore":5,"conf":"Southeast"},{"date":"Nov 09, 2025","home":"CESA Triumph","away":"NTH-NASA","hScore":2,"aScore":2,"conf":"Southeast"}],"Concorde Fire Premier|||South Carolina Surf":[{"date":"Oct 25, 2025","home":"South Carolina Surf","away":"Concorde Fire Premier","hScore":0,"aScore":1,"conf":"Southeast"},{"date":"Jan 11, 2026","home":"Concorde Fire Premier","away":"South Carolina Surf","hScore":1,"aScore":2,"conf":"Southeast"}],"CESA Triumph|||South Carolina Surf":[{"date":"Nov 01, 2025","home":"CESA Triumph","away":"South Carolina Surf","hScore":0,"aScore":1,"conf":"Southeast"},{"date":"Nov 22, 2025","home":"South Carolina Surf","away":"CESA Triumph","hScore":2,"aScore":1,"conf":"Southeast"}],"Concorde Fire Platinum|||NTH-NASA":[{"date":"Nov 01, 2025","home":"Concorde Fire Platinum","away":"NTH-NASA","hScore":1,"aScore":0,"conf":"Southeast"},{"date":"Nov 15, 2025","home":"NTH-NASA","away":"Concorde Fire Platinum","hScore":1,"aScore":1,"conf":"Southeast"}],"Concorde Fire Premier|||NTH-NASA":[{"date":"Nov 02, 2025","home":"Concorde Fire Premier","away":"NTH-NASA","hScore":0,"aScore":2,"conf":"Southeast"},{"date":"Nov 16, 2025","home":"NTH-NASA","away":"Concorde Fire Premier","hScore":2,"aScore":2,"conf":"Southeast"}],"Pateadores|||Slammers FC":[{"date":"Sep 06, 2025","home":"Slammers FC","away":"Pateadores","hScore":1,"aScore":0,"conf":"Southwest"},{"date":"Apr 25, 2026","home":"Pateadores","away":"Slammers FC","hScore":1,"aScore":2,"conf":"Southwest"}],"Beach FC (CA)|||San Diego Surf":[{"date":"Sep 06, 2025","home":"San Diego Surf","away":"Beach FC (CA)","hScore":2,"aScore":1,"conf":"Southwest"},{"date":"May 09, 2026","home":"Beach FC (CA)","away":"San Diego Surf","hScore":3,"aScore":2,"conf":"Southwest"}],"LAFC So Cal|||Rebels SC":[{"date":"Sep 13, 2025","home":"Rebels SC","away":"LAFC So Cal","hScore":1,"aScore":3,"conf":"Southwest"},{"date":"Apr 25, 2026","home":"LAFC So Cal","away":"Rebels SC","hScore":0,"aScore":2,"conf":"Southwest"}],"Legends FC|||Pateadores":[{"date":"Sep 13, 2025","home":"Legends FC","away":"Pateadores","hScore":2,"aScore":1,"conf":"Southwest"},{"date":"Apr 07, 2026","home":"Pateadores","away":"Legends FC","hScore":0,"aScore":0,"conf":"Southwest"}],"Beach FC (CA)|||Legends FC":[{"date":"Sep 20, 2025","home":"Beach FC (CA)","away":"Legends FC","hScore":0,"aScore":2,"conf":"Southwest"},{"date":"Apr 18, 2026","home":"Legends FC","away":"Beach FC (CA)","hScore":0,"aScore":3,"conf":"Southwest"}],"San Diego Surf|||Slammers FC":[{"date":"Sep 20, 2025","home":"San Diego Surf","away":"Slammers FC","hScore":2,"aScore":4,"conf":"Southwest"},{"date":"Sep 27, 2025","home":"Slammers FC","away":"San Diego Surf","hScore":2,"aScore":3,"conf":"Southwest"}],"LAFC So Cal|||Pateadores":[{"date":"Sep 20, 2025","home":"LAFC So Cal","away":"Pateadores","hScore":1,"aScore":2,"conf":"Southwest"},{"date":"Mar 28, 2026","home":"Pateadores","away":"LAFC So Cal","hScore":0,"aScore":0,"conf":"Southwest"}],"Beach FC (CA)|||Rebels SC":[{"date":"Oct 04, 2025","home":"Beach FC (CA)","away":"Rebels SC","hScore":1,"aScore":0,"conf":"Southwest"},{"date":"May 16, 2026","home":"Rebels SC","away":"Beach FC (CA)","hScore":2,"aScore":1,"conf":"Southwest"}],"Pateadores|||San Diego Surf":[{"date":"Oct 04, 2025","home":"San Diego Surf","away":"Pateadores","hScore":2,"aScore":0,"conf":"Southwest"},{"date":"Mar 21, 2026","home":"Pateadores","away":"San Diego Surf","hScore":1,"aScore":0,"conf":"Southwest"}],"LAFC So Cal|||Slammers FC":[{"date":"Oct 04, 2025","home":"Slammers FC","away":"LAFC So Cal","hScore":2,"aScore":2,"conf":"Southwest"},{"date":"Mar 14, 2026","home":"LAFC So Cal","away":"Slammers FC","hScore":2,"aScore":1,"conf":"Southwest"}],"Beach FC (CA)|||LAFC So Cal":[{"date":"Oct 25, 2025","home":"Beach FC (CA)","away":"LAFC So Cal","hScore":1,"aScore":0,"conf":"Southwest"},{"date":"Mar 21, 2026","home":"LAFC So Cal","away":"Beach FC (CA)","hScore":3,"aScore":0,"conf":"Southwest"}],"Legends FC|||Slammers FC":[{"date":"Oct 28, 2025","home":"Legends FC","away":"Slammers FC","hScore":1,"aScore":1,"conf":"Southwest"},{"date":"Mar 28, 2026","home":"Slammers FC","away":"Legends FC","hScore":2,"aScore":0,"conf":"Southwest"}],"Legends FC|||San Diego Surf":[{"date":"Nov 01, 2025","home":"Legends FC","away":"San Diego Surf","hScore":0,"aScore":1,"conf":"Southwest"},{"date":"Apr 25, 2026","home":"San Diego Surf","away":"Legends FC","hScore":1,"aScore":1,"conf":"Southwest"}],"Pateadores|||Rebels SC":[{"date":"Nov 01, 2025","home":"Pateadores","away":"Rebels SC","hScore":4,"aScore":0,"conf":"Southwest"},{"date":"May 09, 2026","home":"Rebels SC","away":"Pateadores","hScore":1,"aScore":1,"conf":"Southwest"}],"Rebels SC|||San Diego Surf":[{"date":"Nov 03, 2025","home":"Rebels SC","away":"San Diego Surf","hScore":2,"aScore":1,"conf":"Southwest"}],"Legends FC|||Rebels SC":[{"date":"Nov 08, 2025","home":"Legends FC","away":"Rebels SC","hScore":2,"aScore":0,"conf":"Southwest"},{"date":"May 17, 2026","home":"Rebels SC","away":"Legends FC","hScore":1,"aScore":3,"conf":"Southwest"}],"Beach FC (CA)|||Pateadores":[{"date":"Nov 08, 2025","home":"Pateadores","away":"Beach FC (CA)","hScore":0,"aScore":0,"conf":"Southwest"},{"date":"Mar 14, 2026","home":"Beach FC (CA)","away":"Pateadores","hScore":1,"aScore":2,"conf":"Southwest"}],"LAFC So Cal|||San Diego Surf":[{"date":"Nov 09, 2025","home":"LAFC So Cal","away":"San Diego Surf","hScore":1,"aScore":1,"conf":"Southwest"},{"date":"Apr 18, 2026","home":"San Diego Surf","away":"LAFC So Cal","hScore":0,"aScore":1,"conf":"Southwest"}],"Rebels SC|||Slammers FC":[{"date":"Mar 22, 2026","home":"Rebels SC","away":"Slammers FC","hScore":3,"aScore":3,"conf":"Southwest"}],"Beach FC (CA)|||Slammers FC":[{"date":"Mar 29, 2026","home":"Beach FC (CA)","away":"Slammers FC","hScore":1,"aScore":2,"conf":"Southwest"},{"date":"May 02, 2026","home":"Slammers FC","away":"Beach FC (CA)","hScore":2,"aScore":1,"conf":"Southwest"}],"LAFC So Cal|||Legends FC":[{"date":"May 16, 2026","home":"Legends FC","away":"LAFC So Cal","hScore":0,"aScore":0,"conf":"Southwest"}],"Albion Hurricanes FC|||RISE SC":[{"date":"Aug 30, 2025","home":"RISE SC","away":"Albion Hurricanes FC","hScore":1,"aScore":6,"conf":"Texas"}],"DKSC|||OK Energy FC":[{"date":"Aug 31, 2025","home":"OK Energy FC","away":"DKSC","hScore":5,"aScore":1,"conf":"Texas"}],"Dallas Texans Academy|||Real Colorado Academy":[{"date":"Sep 06, 2025","home":"Dallas Texans Academy","away":"Real Colorado Academy","hScore":1,"aScore":0,"conf":"Texas"}],"HTX|||OK Energy FC":[{"date":"Sep 13, 2025","home":"HTX","away":"OK Energy FC","hScore":1,"aScore":6,"conf":"Texas"}],"Albion Hurricanes FC|||SAFC":[{"date":"Sep 13, 2025","home":"SAFC","away":"Albion Hurricanes FC","hScore":0,"aScore":2,"conf":"Texas"}],"Albion Hurricanes FC|||DKSC":[{"date":"Sep 20, 2025","home":"DKSC","away":"Albion Hurricanes FC","hScore":4,"aScore":2,"conf":"Texas"}],"BVBIA|||RISE SC":[{"date":"Sep 20, 2025","home":"BVBIA","away":"RISE SC","hScore":2,"aScore":3,"conf":"Texas"}],"DKSC|||RISE SC":[{"date":"Sep 21, 2025","home":"DKSC","away":"RISE SC","hScore":1,"aScore":1,"conf":"Texas"}],"Albion Hurricanes FC|||BVBIA":[{"date":"Sep 21, 2025","home":"BVBIA","away":"Albion Hurricanes FC","hScore":2,"aScore":2,"conf":"Texas"}],"Dallas Texans Academy|||HTX":[{"date":"Sep 21, 2025","home":"HTX","away":"Dallas Texans Academy","hScore":0,"aScore":1,"conf":"Texas"}],"HTX|||Real Colorado Academy":[{"date":"Sep 27, 2025","home":"Real Colorado Academy","away":"HTX","hScore":1,"aScore":3,"conf":"Texas"}],"OK Energy FC|||Real Colorado Academy":[{"date":"Oct 04, 2025","home":"OK Energy FC","away":"Real Colorado Academy","hScore":3,"aScore":1,"conf":"Texas"}],"BVBIA|||DKSC":[{"date":"Oct 05, 2025","home":"BVBIA","away":"DKSC","hScore":3,"aScore":2,"conf":"Texas"}],"Dallas Texans Academy|||OK Energy FC":[{"date":"Oct 12, 2025","home":"Dallas Texans Academy","away":"OK Energy FC","hScore":0,"aScore":2,"conf":"Texas"}],"Albion Hurricanes FC|||Real Colorado Academy":[{"date":"Oct 18, 2025","home":"Real Colorado Academy","away":"Albion Hurricanes FC","hScore":4,"aScore":0,"conf":"Texas"}],"HTX|||SAFC":[{"date":"Oct 19, 2025","home":"SAFC","away":"HTX","hScore":4,"aScore":0,"conf":"Texas"}],"RISE SC|||Real Colorado Academy":[{"date":"Oct 19, 2025","home":"Real Colorado Academy","away":"RISE SC","hScore":3,"aScore":1,"conf":"Texas"}],"Dallas Texans Academy|||SAFC":[{"date":"Oct 25, 2025","home":"SAFC","away":"Dallas Texans Academy","hScore":3,"aScore":2,"conf":"Texas"}],"BVBIA|||HTX":[{"date":"Oct 26, 2025","home":"HTX","away":"BVBIA","hScore":1,"aScore":3,"conf":"Texas"}],"OK Energy FC|||RISE SC":[{"date":"Nov 01, 2025","home":"OK Energy FC","away":"RISE SC","hScore":4,"aScore":1,"conf":"Texas"}],"Albion Hurricanes FC|||OK Energy FC":[{"date":"Nov 02, 2025","home":"OK Energy FC","away":"Albion Hurricanes FC","hScore":3,"aScore":1,"conf":"Texas"}],"DKSC|||Dallas Texans Academy":[{"date":"Nov 02, 2025","home":"DKSC","away":"Dallas Texans Academy","hScore":0,"aScore":3,"conf":"Texas"}],"OK Energy FC|||SAFC":[{"date":"Nov 09, 2025","home":"SAFC","away":"OK Energy FC","hScore":2,"aScore":3,"conf":"Texas"}],"DKSC|||SAFC":[{"date":"Nov 15, 2025","home":"SAFC","away":"DKSC","hScore":4,"aScore":1,"conf":"Texas"}],"BVBIA|||SAFC":[{"date":"Nov 16, 2025","home":"SAFC","away":"BVBIA","hScore":0,"aScore":4,"conf":"Texas"}],"BVBIA|||OK Energy FC":[{"date":"Mar 01, 2026","home":"OK Energy FC","away":"BVBIA","hScore":1,"aScore":2,"conf":"Texas"}],"Albion Hurricanes FC|||HTX":[{"date":"Mar 28, 2026","home":"Albion Hurricanes FC","away":"HTX","hScore":3,"aScore":1,"conf":"Texas"}],"HTX|||RISE SC":[{"date":"Apr 04, 2026","home":"RISE SC","away":"HTX","hScore":0,"aScore":3,"conf":"Texas"}],"Albion Hurricanes FC|||Dallas Texans Academy":[{"date":"Apr 18, 2026","home":"Dallas Texans Academy","away":"Albion Hurricanes FC","hScore":1,"aScore":1,"conf":"Texas"}],"Dallas Texans Academy|||RISE SC":[{"date":"Apr 19, 2026","home":"Dallas Texans Academy","away":"RISE SC","hScore":0,"aScore":1,"conf":"Texas"}],"Real Colorado Academy|||SAFC":[{"date":"Apr 25, 2026","home":"Real Colorado Academy","away":"SAFC","hScore":3,"aScore":2,"conf":"Texas"}],"DKSC|||HTX":[{"date":"Apr 25, 2026","home":"HTX","away":"DKSC","hScore":1,"aScore":0,"conf":"Texas"}],"DKSC|||Real Colorado Academy":[{"date":"May 02, 2026","home":"DKSC","away":"Real Colorado Academy","hScore":1,"aScore":1,"conf":"Texas"}],"BVBIA|||Real Colorado Academy":[{"date":"May 03, 2026","home":"BVBIA","away":"Real Colorado Academy","hScore":2,"aScore":1,"conf":"Texas"}],"BVBIA|||Dallas Texans Academy":[{"date":"May 09, 2026","home":"Dallas Texans Academy","away":"BVBIA","hScore":1,"aScore":1,"conf":"Texas"}],"RISE SC|||SAFC":[{"date":"May 10, 2026","home":"RISE SC","away":"SAFC","hScore":1,"aScore":4,"conf":"Texas"}],"Mustang SC|||Rebels SC":[{"date":"2025-11-21","home":"Mustang SC","away":"Rebels SC","hScore":0,"aScore":2,"evt":"Phoenix Showcase"}],"MVLA|||PacNW SC":[{"date":"2025-11-21","home":"MVLA","away":"PacNW SC","hScore":1,"aScore":8,"evt":"Phoenix Showcase"}],"Slammers FC|||Utah Avalanche":[{"date":"2025-11-21","home":"Utah Avalanche","away":"Slammers FC","hScore":3,"aScore":4,"evt":"Phoenix Showcase"}],"Pateadores|||River Islands Surf B10 ECNL":[{"date":"2025-11-21","home":"Pateadores","away":"River Islands Surf B10 ECNL","hScore":2,"aScore":2,"evt":"Phoenix Showcase"},{"date":"2026-04-11","home":"Pateadores","away":"River Islands Surf B10 ECNL","hScore":2,"aScore":1,"evt":"Indy Showcase"}],"OK Energy FC|||San Diego Surf":[{"date":"2025-11-21","home":"OK Energy FC","away":"San Diego Surf","hScore":1,"aScore":0,"evt":"Phoenix Showcase"}],"Beach FC (CA)|||Davis Legacy":[{"date":"2025-11-21","home":"Davis Legacy","away":"Beach FC (CA)","hScore":2,"aScore":1,"evt":"Phoenix Showcase"}],"NM Rapids|||Real Colorado Academy":[{"date":"2025-11-21","home":"NM Rapids","away":"Real Colorado Academy","hScore":1,"aScore":3,"evt":"Phoenix Showcase"}],"HTX|||Placer United":[{"date":"2025-11-21","home":"Placer United","away":"HTX","hScore":2,"aScore":3,"evt":"Phoenix Showcase"}],"Legends FC|||XF Academy":[{"date":"2025-11-21","home":"XF Academy","away":"Legends FC","hScore":4,"aScore":1,"evt":"Phoenix Showcase"}],"San Francisco Elite Academy|||XF Academy":[{"date":"2025-11-21","home":"XF Academy","away":"San Francisco Elite Academy","hScore":1,"aScore":2,"evt":"Phoenix Showcase"}],"Seattle United|||Solar SC Academy":[{"date":"2025-11-21","home":"Seattle United","away":"Solar SC Academy","hScore":1,"aScore":3,"evt":"Phoenix Showcase"}],"Dallas Texans Academy|||Santa Clara Sporting":[{"date":"2025-11-21","home":"Dallas Texans Academy","away":"Santa Clara Sporting","hScore":2,"aScore":0,"evt":"Phoenix Showcase"}],"Oregon Premier|||SAFC":[{"date":"2025-11-21","home":"SAFC","away":"Oregon Premier","hScore":6,"aScore":2,"evt":"Phoenix Showcase"}],"3RSC|||Santa Rosa United":[{"date":"2025-11-21","home":"Santa Rosa United","away":"3RSC","hScore":0,"aScore":1,"evt":"Phoenix Showcase"}],"Beach FC (CA)|||Boise Timbers FC":[{"date":"2025-11-21","home":"Beach FC (CA)","away":"Boise Timbers FC","hScore":1,"aScore":2,"evt":"Phoenix Showcase"}],"LAFC So Cal|||RISE SC":[{"date":"2025-11-21","home":"LAFC So Cal","away":"RISE SC","hScore":0,"aScore":0,"evt":"Phoenix Showcase"}],"Davis Legacy|||San Diego Surf":[{"date":"2025-11-22","home":"San Diego Surf","away":"Davis Legacy","hScore":0,"aScore":1,"evt":"Phoenix Showcase"}],"LAFC So Cal|||Marin FC":[{"date":"2025-11-22","home":"Marin FC","away":"LAFC So Cal","hScore":0,"aScore":0,"evt":"Phoenix Showcase"}],"La Roca FC|||Oregon Premier":[{"date":"2025-11-22","home":"La Roca FC","away":"Oregon Premier","hScore":0,"aScore":1,"evt":"Phoenix Showcase"}],"Beach FC (CA)|||Utah Avalanche":[{"date":"2025-11-22","home":"Beach FC (CA)","away":"Utah Avalanche","hScore":3,"aScore":0,"evt":"Phoenix Showcase"}],"Mustang SC|||PacNW SC":[{"date":"2025-11-22","home":"PacNW SC","away":"Mustang SC","hScore":5,"aScore":2,"evt":"Phoenix Showcase"}],"Rockford Raptors|||Seattle United":[{"date":"2025-11-22","home":"Seattle United","away":"Rockford Raptors","hScore":2,"aScore":3,"evt":"Phoenix Showcase"}],"Gretna Elite Academy|||Real Colorado Academy":[{"date":"2025-11-22","home":"Gretna Elite Academy","away":"Real Colorado Academy","hScore":0,"aScore":0,"evt":"Phoenix Showcase"}],"Arizona Arsenal|||XF Academy":[{"date":"2025-11-22","home":"XF Academy","away":"Arizona Arsenal","hScore":6,"aScore":1,"evt":"Phoenix Showcase"}],"Legends FC|||Santa Clara Sporting":[{"date":"2025-11-22","home":"Santa Clara Sporting","away":"Legends FC","hScore":0,"aScore":3,"evt":"Phoenix Showcase"}],"Placer United|||XF Academy":[{"date":"2025-11-22","home":"Placer United","away":"XF Academy","hScore":2,"aScore":1,"evt":"Phoenix Showcase"}],"Colorado Rush Academy Blue|||SAFC":[{"date":"2025-11-22","home":"Colorado Rush Academy Blue","away":"SAFC","hScore":0,"aScore":2,"evt":"Phoenix Showcase"}],"Dallas Texans Academy|||El Camino Futbol Club Salinas":[{"date":"2025-11-22","home":"El Camino Futbol Club Salinas","away":"Dallas Texans Academy","hScore":1,"aScore":3,"evt":"Phoenix Showcase"}],"OK Energy FC|||Slammers FC":[{"date":"2025-11-22","home":"Slammers FC","away":"OK Energy FC","hScore":1,"aScore":2,"evt":"Phoenix Showcase"}],"Pateadores|||RISE SC":[{"date":"2025-11-22","home":"RISE SC","away":"Pateadores","hScore":0,"aScore":1,"evt":"Phoenix Showcase"}],"3RSC|||Boise Timbers FC":[{"date":"2025-11-22","home":"Boise Timbers FC","away":"3RSC","hScore":2,"aScore":1,"evt":"Phoenix Showcase"}],"El Paso Locomotive|||Rebels SC":[{"date":"2025-11-22","home":"Rebels SC","away":"El Paso Locomotive","hScore":0,"aScore":1,"evt":"Phoenix Showcase"}],"DKSC|||United Futbol Academy":[{"date":"2025-12-05","home":"United Futbol Academy","away":"DKSC","hScore":1,"aScore":2,"evt":"SC Showcase"}],"Ohio Premier|||Sporting Jax":[{"date":"2025-12-05","home":"Sporting Jax","away":"Ohio Premier","hScore":0,"aScore":3,"evt":"SC Showcase"}],"Eclipse Select SC|||NTH-NASA":[{"date":"2025-12-05","home":"NTH-NASA","away":"Eclipse Select SC","hScore":2,"aScore":0,"evt":"SC Showcase"}],"Baltimore Celtic|||Ohio Elite SA":[{"date":"2025-12-05","home":"Baltimore Celtic","away":"Ohio Elite SA","hScore":1,"aScore":2,"evt":"SC Showcase"}],"CESA Triumph|||FC Westlake":[{"date":"2025-12-05","home":"CESA Triumph","away":"FC Westlake","hScore":3,"aScore":1,"evt":"SC Showcase"}],"Germantown Legends|||South Carolina Surf":[{"date":"2025-12-05","home":"Germantown Legends","away":"South Carolina Surf","hScore":2,"aScore":2,"evt":"SC Showcase"}],"Beach FC (VA)|||St Croix":[{"date":"2025-12-05","home":"Beach FC (VA)","away":"St Croix","hScore":2,"aScore":0,"evt":"SC Showcase"}],"Charlotte SA Academy|||Lobos Rush":[{"date":"2025-12-05","home":"Charlotte SA Academy","away":"Lobos Rush","hScore":5,"aScore":2,"evt":"SC Showcase"}],"Delaware FC|||Highland FC":[{"date":"2025-12-05","home":"Delaware FC","away":"Highland FC","hScore":5,"aScore":0,"evt":"SC Showcase"}],"Alabama FC|||Cleveland Force SC":[{"date":"2025-12-05","home":"Alabama FC","away":"Cleveland Force SC","hScore":0,"aScore":1,"evt":"SC Showcase"}],"Concorde Fire Platinum|||FL Kraze Krush":[{"date":"2025-12-05","home":"Concorde Fire Platinum","away":"FL Kraze Krush","hScore":2,"aScore":1,"evt":"SC Showcase"}],"NCFC Youth Academy|||Slammers FC":[{"date":"2025-12-05","home":"Slammers FC","away":"NCFC Youth Academy","hScore":1,"aScore":2,"evt":"SC Showcase"}],"Parkland SC|||World Class FC":[{"date":"2025-12-05","home":"World Class FC","away":"Parkland SC","hScore":2,"aScore":1,"evt":"SC Showcase"}],"Concorde Fire Premier|||Fairfax VA Union":[{"date":"2025-12-05","home":"Concorde Fire Premier","away":"Fairfax VA Union","hScore":2,"aScore":2,"evt":"SC Showcase"}],"HTX|||South Carolina United":[{"date":"2025-12-05","home":"South Carolina United","away":"HTX","hScore":0,"aScore":5,"evt":"SC Showcase"}],"Arlington Soccer|||HEX FC Dominion":[{"date":"2025-12-05","home":"Arlington Soccer","away":"HEX FC Dominion","hScore":2,"aScore":2,"evt":"SC Showcase"}],"Concorde Fire Platinum|||St Croix":[{"date":"2025-12-06","home":"St Croix","away":"Concorde Fire Platinum","hScore":1,"aScore":1,"evt":"SC Showcase"}],"Charlotte SA Academy|||Cleveland Force SC":[{"date":"2025-12-06","home":"Cleveland Force SC","away":"Charlotte SA Academy","hScore":1,"aScore":0,"evt":"SC Showcase"}],"Fairfax VA Union|||Lobos Rush":[{"date":"2025-12-06","home":"Lobos Rush","away":"Fairfax VA Union","hScore":0,"aScore":5,"evt":"SC Showcase"}],"Delaware FC|||FC Pride Elite":[{"date":"2025-12-06","home":"FC Pride Elite","away":"Delaware FC","hScore":0,"aScore":1,"evt":"SC Showcase"}],"Highland FC|||Louisiana Fire SC":[{"date":"2025-12-06","home":"Highland FC","away":"Louisiana Fire SC","hScore":1,"aScore":3,"evt":"SC Showcase"}],"NCFC Youth Academy|||World Class FC":[{"date":"2025-12-06","home":"NCFC Youth Academy","away":"World Class FC","hScore":1,"aScore":0,"evt":"SC Showcase"}],"NTH-NASA|||Ohio Elite SA":[{"date":"2025-12-06","home":"Ohio Elite SA","away":"NTH-NASA","hScore":1,"aScore":0,"evt":"SC Showcase"}],"Parkland SC|||Slammers FC":[{"date":"2025-12-06","home":"Parkland SC","away":"Slammers FC","hScore":2,"aScore":4,"evt":"SC Showcase"}],"Arlington Soccer|||HTX":[{"date":"2025-12-06","home":"HTX","away":"Arlington Soccer","hScore":1,"aScore":0,"evt":"SC Showcase"}],"Alabama FC|||Baltimore Celtic":[{"date":"2025-12-06","home":"Baltimore Celtic","away":"Alabama FC","hScore":0,"aScore":3,"evt":"SC Showcase"}],"PSA Monmouth|||South Carolina Surf":[{"date":"2025-12-06","home":"PSA Monmouth","away":"South Carolina Surf","hScore":1,"aScore":0,"evt":"SC Showcase"}],"CESA Triumph|||Louisville City Academy":[{"date":"2025-12-06","home":"Louisville City Academy","away":"CESA Triumph","hScore":3,"aScore":3,"evt":"SC Showcase"}],"DKSC|||Ohio Premier":[{"date":"2025-12-06","home":"Ohio Premier","away":"DKSC","hScore":1,"aScore":1,"evt":"SC Showcase"}],"Concorde Fire Premier|||Eclipse Select SC":[{"date":"2025-12-06","home":"Eclipse Select SC","away":"Concorde Fire Premier","hScore":1,"aScore":4,"evt":"SC Showcase"}],"Beach FC (VA)|||FL Kraze Krush":[{"date":"2025-12-07","home":"Beach FC (VA)","away":"FL Kraze Krush","hScore":1,"aScore":0,"evt":"SC Showcase"}],"NCFC Youth Academy|||Parkland SC":[{"date":"2025-12-07","home":"NCFC Youth Academy","away":"Parkland SC","hScore":1,"aScore":2,"evt":"SC Showcase"}],"HEX FC Dominion|||HTX":[{"date":"2025-12-07","home":"HTX","away":"HEX FC Dominion","hScore":0,"aScore":2,"evt":"SC Showcase"}],"Cleveland Force SC|||Lobos Rush":[{"date":"2025-12-07","home":"Lobos Rush","away":"Cleveland Force SC","hScore":1,"aScore":3,"evt":"SC Showcase"}],"Alabama FC|||Concorde Fire Premier":[{"date":"2025-12-07","home":"Alabama FC","away":"Concorde Fire Premier","hScore":1,"aScore":2,"evt":"SC Showcase"}],"GSA|||Ohio Premier":[{"date":"2025-12-07","home":"GSA","away":"Ohio Premier","hScore":4,"aScore":1,"evt":"SC Showcase"}],"Ohio Elite SA|||SUSA FC":[{"date":"2025-12-07","home":"Ohio Elite SA","away":"SUSA FC","hScore":3,"aScore":2,"evt":"SC Showcase"}],"Charlotte SA Academy|||Slammers FC":[{"date":"2025-12-07","home":"Slammers FC","away":"Charlotte SA Academy","hScore":1,"aScore":1,"evt":"SC Showcase"}],"Baltimore Celtic|||NTH-NASA":[{"date":"2025-12-07","home":"NTH-NASA","away":"Baltimore Celtic","hScore":2,"aScore":0,"evt":"SC Showcase"}],"Arlington Soccer|||Penn Fusion SA":[{"date":"2025-12-07","home":"Arlington Soccer","away":"Penn Fusion SA","hScore":2,"aScore":2,"evt":"SC Showcase"}],"Delaware FC|||Louisiana Fire SC":[{"date":"2025-12-07","home":"Louisiana Fire SC","away":"Delaware FC","hScore":1,"aScore":2,"evt":"SC Showcase"}],"CESA Triumph|||FC Alliance":[{"date":"2025-12-07","home":"CESA Triumph","away":"FC Alliance","hScore":5,"aScore":1,"evt":"SC Showcase"}],"Charlotte SA|||South Carolina Surf":[{"date":"2025-12-07","home":"South Carolina Surf","away":"Charlotte SA","hScore":1,"aScore":0,"evt":"SC Showcase"}],"DKSC|||Indiana Elite FC":[{"date":"2025-12-07","home":"DKSC","away":"Indiana Elite FC","hScore":2,"aScore":0,"evt":"SC Showcase"}],"Delaware FC|||Fort Lauderdale United FC":[{"date":"2026-01-03","home":"Delaware FC","away":"Fort Lauderdale United FC","hScore":1,"aScore":1,"evt":"Florida Showcase"}],"DKSC|||FC Wisconsin":[{"date":"2026-01-03","home":"FC Wisconsin","away":"DKSC","hScore":3,"aScore":3,"evt":"Florida Showcase"}],"Concorde Fire Platinum|||STA":[{"date":"2026-01-03","home":"Concorde Fire Platinum","away":"STA","hScore":0,"aScore":1,"evt":"Florida Showcase"}],"Baltimore Celtic|||Lobos Rush":[{"date":"2026-01-03","home":"Lobos Rush","away":"Baltimore Celtic","hScore":6,"aScore":1,"evt":"Florida Showcase"}],"Lonestar Soccer Club Red|||NCFC Youth Academy":[{"date":"2026-01-03","home":"NCFC Youth Academy","away":"Lonestar Soccer Club Red","hScore":0,"aScore":2,"evt":"Florida Showcase"}],"Kansas City Athletics|||Ohio Premier":[{"date":"2026-01-03","home":"Ohio Premier","away":"Kansas City Athletics","hScore":2,"aScore":0,"evt":"Florida Showcase"}],"Concorde Fire Premier|||SUSA FC ACADEMY":[{"date":"2026-01-03","home":"SUSA FC ACADEMY","away":"Concorde Fire Premier","hScore":0,"aScore":0,"evt":"Florida Showcase"}],"Alabama FC|||Union KC":[{"date":"2026-01-03","home":"Union KC","away":"Alabama FC","hScore":0,"aScore":2,"evt":"Florida Showcase"}],"FL Premier FC|||Pipeline SC":[{"date":"2026-01-03","home":"Pipeline SC","away":"FL Premier FC","hScore":0,"aScore":0,"evt":"Florida Showcase"}],"FL Kraze Krush|||Tennessee SC":[{"date":"2026-01-03","home":"FL Kraze Krush","away":"Tennessee SC","hScore":4,"aScore":0,"evt":"Florida Showcase"}],"BVBIA|||Richmond United":[{"date":"2026-01-03","home":"BVBIA","away":"Richmond United","hScore":2,"aScore":1,"evt":"Florida Showcase"}],"Louisiana Fire SC|||Penn Fusion SA":[{"date":"2026-01-03","home":"Penn Fusion SA","away":"Louisiana Fire SC","hScore":1,"aScore":2,"evt":"Florida Showcase"}],"Beach FC (VA)|||Tulsa SC":[{"date":"2026-01-03","home":"Beach FC (VA)","away":"Tulsa SC","hScore":5,"aScore":1,"evt":"Florida Showcase"}],"Nationals Soccer Club|||Parkland SC":[{"date":"2026-01-03","home":"Nationals Soccer Club","away":"Parkland SC","hScore":0,"aScore":0,"evt":"Florida Showcase"}],"Arlington Soccer|||Match Fit Surf":[{"date":"2026-01-03","home":"Match Fit Surf","away":"Arlington Soccer","hScore":1,"aScore":1,"evt":"Florida Showcase"}],"CESA Triumph|||East Meadow SC":[{"date":"2026-01-03","home":"CESA Triumph","away":"East Meadow SC","hScore":4,"aScore":0,"evt":"Florida Showcase"}],"South Carolina Surf|||Sporting Iowa":[{"date":"2026-01-03","home":"South Carolina Surf","away":"Sporting Iowa","hScore":3,"aScore":1,"evt":"Florida Showcase"}],"Concorde Fire Platinum|||FL Premier FC":[{"date":"2026-01-04","home":"FL Premier FC","away":"Concorde Fire Platinum","hScore":2,"aScore":2,"evt":"Florida Showcase"}],"Concorde Fire Premier|||Nationals Soccer Club":[{"date":"2026-01-04","home":"Concorde Fire Premier","away":"Nationals Soccer Club","hScore":0,"aScore":3,"evt":"Florida Showcase"}],"Pipeline SC|||STA":[{"date":"2026-01-04","home":"STA","away":"Pipeline SC","hScore":1,"aScore":2,"evt":"Florida Showcase"}],"Dallas Texans|||Tennessee SC":[{"date":"2026-01-04","home":"Dallas Texans","away":"Tennessee SC","hScore":0,"aScore":3,"evt":"Florida Showcase"}],"FL Kraze Krush|||St Croix":[{"date":"2026-01-04","home":"St Croix","away":"FL Kraze Krush","hScore":0,"aScore":2,"evt":"Florida Showcase"}],"Delaware FC|||Missouri Rush":[{"date":"2026-01-04","home":"Missouri Rush","away":"Delaware FC","hScore":0,"aScore":6,"evt":"Florida Showcase"}],"Arlington Soccer|||CESA Triumph":[{"date":"2026-01-04","home":"Arlington Soccer","away":"CESA Triumph","hScore":0,"aScore":2,"evt":"Florida Showcase"}],"Louisiana Fire SC|||Scorpions SC":[{"date":"2026-01-04","home":"Louisiana Fire SC","away":"Scorpions SC","hScore":2,"aScore":0,"evt":"Florida Showcase"}],"East Coast Surf SC|||South Carolina Surf":[{"date":"2026-01-04","home":"East Coast Surf SC","away":"South Carolina Surf","hScore":0,"aScore":2,"evt":"Florida Showcase"}],"Lobos Rush|||Lonestar Soccer Club Red":[{"date":"2026-01-04","home":"Lonestar Soccer Club Red","away":"Lobos Rush","hScore":4,"aScore":3,"evt":"Florida Showcase"}],"Beach FC (VA)|||Parkland SC":[{"date":"2026-01-04","home":"Parkland SC","away":"Beach FC (VA)","hScore":2,"aScore":1,"evt":"Florida Showcase"}],"Alabama FC|||BVBIA":[{"date":"2026-01-04","home":"Alabama FC","away":"BVBIA","hScore":2,"aScore":1,"evt":"Florida Showcase"}],"Atlanta Fire United|||Ohio Premier":[{"date":"2026-01-04","home":"Atlanta Fire United","away":"Ohio Premier","hScore":0,"aScore":1,"evt":"Florida Showcase"}],"Richmond United|||Union KC":[{"date":"2026-01-04","home":"Richmond United","away":"Union KC","hScore":4,"aScore":0,"evt":"Florida Showcase"}],"FSA FC|||NCFC Youth Academy":[{"date":"2026-01-04","home":"FSA FC","away":"NCFC Youth Academy","hScore":1,"aScore":2,"evt":"Florida Showcase"}],"AC Connecticut|||Louisiana Fire SC":[{"date":"2026-01-05","home":"AC Connecticut","away":"Louisiana Fire SC","hScore":1,"aScore":5,"evt":"Florida Showcase"}],"Concorde Fire Platinum|||Pipeline SC":[{"date":"2026-01-05","home":"Concorde Fire Platinum","away":"Pipeline SC","hScore":2,"aScore":1,"evt":"Florida Showcase"}],"St Croix|||Tennessee SC":[{"date":"2026-01-05","home":"Tennessee SC","away":"St Croix","hScore":1,"aScore":1,"evt":"Florida Showcase"}],"Delaware FC|||Sporting Nebraska FC":[{"date":"2026-01-05","home":"Sporting Nebraska FC","away":"Delaware FC","hScore":3,"aScore":3,"evt":"Florida Showcase"}],"DKSC|||Palm Beach United":[{"date":"2026-01-05","home":"Palm Beach United","away":"DKSC","hScore":0,"aScore":2,"evt":"Florida Showcase"}],"BVBIA|||Union KC":[{"date":"2026-01-05","home":"Union KC","away":"BVBIA","hScore":1,"aScore":5,"evt":"Florida Showcase"}],"Beach FC (VA)|||Concorde Fire Premier":[{"date":"2026-01-05","home":"Beach FC (VA)","away":"Concorde Fire Premier","hScore":3,"aScore":2,"evt":"Florida Showcase"}],"Parkland SC|||SUSA FC ACADEMY":[{"date":"2026-01-05","home":"SUSA FC ACADEMY","away":"Parkland SC","hScore":1,"aScore":1,"evt":"Florida Showcase"}],"Highland FC|||South Carolina Surf":[{"date":"2026-01-05","home":"South Carolina Surf","away":"Highland FC","hScore":3,"aScore":0,"evt":"Florida Showcase"}],"Arlington Soccer|||United Futbol Academy":[{"date":"2026-01-05","home":"United Futbol Academy","away":"Arlington Soccer","hScore":0,"aScore":2,"evt":"Florida Showcase"}],"Alabama FC|||Richmond United":[{"date":"2026-01-05","home":"Richmond United","away":"Alabama FC","hScore":1,"aScore":2,"evt":"Florida Showcase"}],"FL Premier FC|||STA":[{"date":"2026-01-05","home":"FL Premier FC","away":"STA","hScore":1,"aScore":1,"evt":"Florida Showcase"}],"CESA Triumph|||Match Fit Surf":[{"date":"2026-01-05","home":"Match Fit Surf","away":"CESA Triumph","hScore":0,"aScore":1,"evt":"Florida Showcase"}],"Lobos Rush|||NCFC Youth Academy":[{"date":"2026-01-05","home":"NCFC Youth Academy","away":"Lobos Rush","hScore":1,"aScore":0,"evt":"Florida Showcase"}],"FL Kraze Krush|||FSA FC":[{"date":"2026-01-05","home":"FL Kraze Krush","away":"FSA FC","hScore":1,"aScore":0,"evt":"Florida Showcase"}],"Colorado Rapids Central|||PacNW SC":[{"date":"2026-01-23","home":"PacNW SC","away":"Colorado Rapids Central","hScore":2,"aScore":0,"evt":"Las Vegas Showcase"}],"Minnesota Thunder|||XF Academy":[{"date":"2026-01-23","home":"XF Academy","away":"Minnesota Thunder","hScore":1,"aScore":3,"evt":"Las Vegas Showcase"}],"3RSC|||Colorado Rush Academy Blue":[{"date":"2026-01-23","home":"Colorado Rush Academy Blue","away":"3RSC","hScore":0,"aScore":1,"evt":"Las Vegas Showcase"}],"Gretna Elite Academy|||Pipeline SC":[{"date":"2026-01-23","home":"Gretna Elite Academy","away":"Pipeline SC","hScore":0,"aScore":1,"evt":"Las Vegas Showcase"}],"RISE SC|||Washington Premier":[{"date":"2026-01-23","home":"Washington Premier","away":"RISE SC","hScore":4,"aScore":1,"evt":"Las Vegas Showcase"}],"Real Colorado Academy|||Utah Avalanche":[{"date":"2026-01-23","home":"Utah Avalanche","away":"Real Colorado Academy","hScore":2,"aScore":1,"evt":"Las Vegas Showcase"}],"NM Rapids|||Seattle United":[{"date":"2026-01-23","home":"NM Rapids","away":"Seattle United","hScore":1,"aScore":5,"evt":"Las Vegas Showcase"}],"Chattanooga Red Wolves SC|||Oregon Premier":[{"date":"2026-01-23","home":"Oregon Premier","away":"Chattanooga Red Wolves SC","hScore":2,"aScore":0,"evt":"Las Vegas Showcase"}],"Ohio Elite SA|||Rockford Raptors":[{"date":"2026-01-23","home":"Rockford Raptors","away":"Ohio Elite SA","hScore":1,"aScore":3,"evt":"Las Vegas Showcase"}],"OK Energy FC|||XF Academy":[{"date":"2026-01-23","home":"XF Academy","away":"OK Energy FC","hScore":1,"aScore":0,"evt":"Las Vegas Showcase"}],"Charlotte SA Academy|||El Paso Locomotive":[{"date":"2026-01-23","home":"El Paso Locomotive","away":"Charlotte SA Academy","hScore":1,"aScore":2,"evt":"Las Vegas Showcase"}],"NM Rapids|||Oregon Premier":[{"date":"2026-01-24","home":"Oregon Premier","away":"NM Rapids","hScore":2,"aScore":0,"evt":"Las Vegas Showcase"}],"Real Colorado Academy|||VSA Rush":[{"date":"2026-01-24","home":"VSA Rush","away":"Real Colorado Academy","hScore":0,"aScore":0,"evt":"Las Vegas Showcase"}],"3RSC|||Pride SC":[{"date":"2026-01-24","home":"3RSC","away":"Pride SC","hScore":0,"aScore":0,"evt":"Las Vegas Showcase"}],"Gretna Elite Academy|||OK Energy FC":[{"date":"2026-01-24","home":"OK Energy FC","away":"Gretna Elite Academy","hScore":1,"aScore":2,"evt":"Las Vegas Showcase"}],"El Paso Locomotive|||Seattle United":[{"date":"2026-01-24","home":"Seattle United","away":"El Paso Locomotive","hScore":2,"aScore":2,"evt":"Las Vegas Showcase"}],"Pipeline SC|||XF Academy":[{"date":"2026-01-24","home":"Pipeline SC","away":"XF Academy","hScore":0,"aScore":2,"evt":"Las Vegas Showcase"}],"Charlotte SA Academy|||Utah Avalanche":[{"date":"2026-01-24","home":"Charlotte SA Academy","away":"Utah Avalanche","hScore":0,"aScore":1,"evt":"Las Vegas Showcase"}],"Boise Timbers FC|||Minnesota Thunder":[{"date":"2026-01-24","home":"Minnesota Thunder","away":"Boise Timbers FC","hScore":1,"aScore":1,"evt":"Las Vegas Showcase"}],"Chattanooga Red Wolves SC|||XF Academy":[{"date":"2026-01-24","home":"Chattanooga Red Wolves SC","away":"XF Academy","hScore":0,"aScore":0,"evt":"Las Vegas Showcase"}],"Ohio Elite SA|||PacNW SC":[{"date":"2026-01-24","home":"Ohio Elite SA","away":"PacNW SC","hScore":0,"aScore":1,"evt":"Las Vegas Showcase"}],"OK Energy FC|||Pipeline SC":[{"date":"2026-01-25","home":"Pipeline SC","away":"OK Energy FC","hScore":0,"aScore":1,"evt":"Las Vegas Showcase"}],"Baltimore Celtic|||RISE SC":[{"date":"2026-01-25","home":"RISE SC","away":"Baltimore Celtic","hScore":2,"aScore":0,"evt":"Las Vegas Showcase"}],"Charlotte SA Academy|||NM Rapids":[{"date":"2026-01-25","home":"NM Rapids","away":"Charlotte SA Academy","hScore":2,"aScore":3,"evt":"Las Vegas Showcase"}],"VSA Rush|||XF Academy":[{"date":"2026-01-25","home":"XF Academy","away":"VSA Rush","hScore":1,"aScore":2,"evt":"Las Vegas Showcase"}],"Gretna Elite Academy|||XF Academy":[{"date":"2026-01-25","home":"XF Academy","away":"Gretna Elite Academy","hScore":3,"aScore":4,"evt":"Las Vegas Showcase"}],"Boise Timbers FC|||Chattanooga Red Wolves SC":[{"date":"2026-01-25","home":"Boise Timbers FC","away":"Chattanooga Red Wolves SC","hScore":1,"aScore":1,"evt":"Las Vegas Showcase"}],"Seattle United|||Utah Avalanche":[{"date":"2026-01-25","home":"Utah Avalanche","away":"Seattle United","hScore":2,"aScore":0,"evt":"Las Vegas Showcase"}],"Eastside FC|||Ohio Elite SA":[{"date":"2026-01-25","home":"Eastside FC","away":"Ohio Elite SA","hScore":0,"aScore":1,"evt":"Las Vegas Showcase"}],"El Paso Locomotive|||Real Colorado Academy":[{"date":"2026-01-25","home":"Real Colorado Academy","away":"El Paso Locomotive","hScore":3,"aScore":1,"evt":"Las Vegas Showcase"}],"Minnesota Thunder|||Oregon Premier":[{"date":"2026-01-25","home":"Minnesota Thunder","away":"Oregon Premier","hScore":0,"aScore":4,"evt":"Las Vegas Showcase"}],"FC Wichita|||PacNW SC":[{"date":"2026-01-25","home":"PacNW SC","away":"FC Wichita","hScore":3,"aScore":3,"evt":"Las Vegas Showcase"}],"Beach FC (VA)|||FL Premier FC":[{"date":"2026-05-23","home":"FL Premier FC","away":"Beach FC (VA)","hScore":1,"aScore":4,"evt":"Virginia Showcase"}],"Richmond United|||SUSA FC":[{"date":"2026-05-23","home":"SUSA FC","away":"Richmond United","hScore":1,"aScore":4,"evt":"Virginia Showcase"}],"Arlington Soccer|||NTH-NASA":[{"date":"2026-05-23","home":"NTH-NASA","away":"Arlington Soccer","hScore":1,"aScore":2,"evt":"Virginia Showcase"}],"Penn Fusion SA|||Rebels SC":[{"date":"2026-05-23","home":"Rebels SC","away":"Penn Fusion SA","hScore":5,"aScore":1,"evt":"Virginia Showcase"}],"Charlotte SA Academy|||WNY Flash":[{"date":"2026-05-23","home":"WNY Flash","away":"Charlotte SA Academy","hScore":1,"aScore":3,"evt":"Virginia Showcase"}],"Concorde Fire Platinum|||Dallas Texans Academy":[{"date":"2026-05-23","home":"Concorde Fire Platinum","away":"Dallas Texans Academy","hScore":1,"aScore":1,"evt":"Virginia Showcase"}],"NCFC Youth Academy|||STA":[{"date":"2026-05-23","home":"NCFC Youth Academy","away":"STA","hScore":2,"aScore":2,"evt":"Virginia Showcase"}],"Charlotte SA Academy|||FSA FC":[{"date":"2026-05-24","home":"Charlotte SA Academy","away":"FSA FC","hScore":0,"aScore":3,"evt":"Virginia Showcase"}],"Concorde Fire Platinum|||NCFC Youth Academy":[{"date":"2026-05-24","home":"Concorde Fire Platinum","away":"NCFC Youth Academy","hScore":3,"aScore":1,"evt":"Virginia Showcase"}],"Arlington Soccer|||Rebels SC":[{"date":"2026-05-24","home":"Arlington Soccer","away":"Rebels SC","hScore":2,"aScore":2,"evt":"Virginia Showcase"}],"Dallas Texans Academy|||FL Premier FC":[{"date":"2026-05-24","home":"Dallas Texans Academy","away":"FL Premier FC","hScore":0,"aScore":1,"evt":"Virginia Showcase"}],"Beach FC (VA)|||STA":[{"date":"2026-05-24","home":"STA","away":"Beach FC (VA)","hScore":1,"aScore":0,"evt":"Virginia Showcase"}],"Concorde Fire Platinum|||Manhattan SC":[{"date":"2026-05-24","home":"Manhattan SC","away":"Concorde Fire Platinum","hScore":2,"aScore":1,"evt":"Virginia Showcase"}],"NTH-NASA|||Richmond United":[{"date":"2026-05-24","home":"NTH-NASA","away":"Richmond United","hScore":1,"aScore":1,"evt":"Virginia Showcase"}],"Concorde Fire Platinum|||Real Colorado Academy":[{"date":"2026-04-10","home":"Real Colorado Academy","away":"Concorde Fire Platinum","hScore":2,"aScore":0,"evt":"Indy Showcase"}],"Colorado Rapids|||Ohio Premier":[{"date":"2026-04-10","home":"Colorado Rapids","away":"Ohio Premier","hScore":1,"aScore":0,"evt":"Indy Showcase"}],"Beach FC (CA)|||FC Dallas Red":[{"date":"2026-04-10","home":"Beach FC (CA)","away":"FC Dallas Red","hScore":1,"aScore":2,"evt":"Indy Showcase"}],"Albion Hurricanes FC|||Davis Legacy":[{"date":"2026-04-10","home":"Albion Hurricanes FC","away":"Davis Legacy","hScore":4,"aScore":0,"evt":"Indy Showcase"}],"LAFC So Cal|||Rockford Raptors":[{"date":"2026-04-10","home":"Rockford Raptors","away":"LAFC So Cal","hScore":1,"aScore":1,"evt":"Indy Showcase"}],"BVBIA|||San Diego Surf":[{"date":"2026-04-10","home":"San Diego Surf","away":"BVBIA","hScore":1,"aScore":1,"evt":"Indy Showcase"}],"Pateadores|||SOLAR SC":[{"date":"2026-04-10","home":"SOLAR SC","away":"Pateadores","hScore":1,"aScore":2,"evt":"Indy Showcase"}],"Arizona Arsenal|||San Diego Surf":[{"date":"2026-04-11","home":"Arizona Arsenal","away":"San Diego Surf","hScore":1,"aScore":3,"evt":"Indy Showcase"}],"BVBIA|||Davis Legacy":[{"date":"2026-04-11","home":"Davis Legacy","away":"BVBIA","hScore":0,"aScore":2,"evt":"Indy Showcase"}],"Beach FC (CA)|||NCFC Youth":[{"date":"2026-04-11","home":"NCFC Youth","away":"Beach FC (CA)","hScore":0,"aScore":2,"evt":"Indy Showcase"}],"Ohio Premier|||Rockford Raptors":[{"date":"2026-04-11","home":"Rockford Raptors","away":"Ohio Premier","hScore":1,"aScore":1,"evt":"Indy Showcase"}],"Concorde Fire Platinum|||Missouri Rush":[{"date":"2026-04-11","home":"Concorde Fire Platinum","away":"Missouri Rush","hScore":3,"aScore":0,"evt":"Indy Showcase"}],"Colorado Rapids|||LAFC So Cal":[{"date":"2026-04-11","home":"LAFC So Cal","away":"Colorado Rapids","hScore":0,"aScore":0,"evt":"Indy Showcase"}],"BVBIA|||El Camino Futbol Club Salinas":[{"date":"2026-04-11","home":"BVBIA","away":"El Camino Futbol Club Salinas","hScore":1,"aScore":0,"evt":"Indy Showcase"}],"Albion Hurricanes FC|||COSC":[{"date":"2026-04-11","home":"COSC","away":"Albion Hurricanes FC","hScore":0,"aScore":5,"evt":"Indy Showcase"}],"Eclipse Select SC|||Real Colorado Academy":[{"date":"2026-04-11","home":"Eclipse Select SC","away":"Real Colorado Academy","hScore":0,"aScore":0,"evt":"Indy Showcase"}],"Ohio Premier|||Solar SC Academy":[{"date":"2026-04-12","home":"Ohio Premier","away":"Solar SC Academy","hScore":0,"aScore":1,"evt":"Indy Showcase"}],"Louisville City Academy|||Pateadores":[{"date":"2026-04-12","home":"Pateadores","away":"Louisville City Academy","hScore":3,"aScore":0,"evt":"Indy Showcase"}],"LAFC So Cal|||Real Colorado National":[{"date":"2026-04-12","home":"Real Colorado National","away":"LAFC So Cal","hScore":0,"aScore":1,"evt":"Indy Showcase"}],"Arizona Arsenal|||BVBIA":[{"date":"2026-04-12","home":"BVBIA","away":"Arizona Arsenal","hScore":3,"aScore":0,"evt":"Indy Showcase"}],"El Camino Futbol Club Salinas|||San Diego Surf":[{"date":"2026-04-12","home":"El Camino Futbol Club Salinas","away":"San Diego Surf","hScore":0,"aScore":1,"evt":"Indy Showcase"}],"Beach FC (CA)|||Union KC":[{"date":"2026-04-12","home":"Beach FC (CA)","away":"Union KC","hScore":2,"aScore":0,"evt":"Indy Showcase"}],"Concorde Fire Platinum|||Eugene Metro FC":[{"date":"2026-04-12","home":"Eugene Metro FC","away":"Concorde Fire Platinum","hScore":0,"aScore":7,"evt":"Indy Showcase"}],"Albion Hurricanes FC|||Placer United":[{"date":"2026-04-12","home":"Albion Hurricanes FC","away":"Placer United","hScore":0,"aScore":1,"evt":"Indy Showcase"}],"Pateadores|||Real Colorado Academy":[{"date":"2026-04-12","home":"Pateadores","away":"Real Colorado Academy","hScore":0,"aScore":2,"evt":"Indy Showcase"}]};
+
+// ============================================================
+// H2H LOOKUP FUNCTION
+// ============================================================
+function getH2HGames(nameA, nameB) {
+  const key1 = [nameA, nameB].sort().join('|||');
+  return H2H_MAP[key1] || [];
+}
+
+// ============================================================
+// PREDICTION ENGINE
+// ============================================================
+const _maxScore = Math.max(...teams.map(t => t.score));
+const _minScore = Math.min(...teams.map(t => t.score));
+
+function predictMatch(tA, tB) {
+  const games = getH2HGames(tA.name, tB.name);
+  let adv = 0;
+  let h2hWA = 0, h2hWB = 0, h2hDraw = 0;
+  let h2hGF_A = 0, h2hGF_B = 0;
+  const hasH2H = games.length > 0;
+
+  if (hasH2H) {
+    games.forEach(g => {
+      const aIsHome = g.home === tA.name;
+      const hWon = g.hScore > g.aScore;
+      const isDraw = g.hScore === g.aScore;
+      if (isDraw) { h2hDraw++; }
+      else if ((hWon && aIsHome) || (!hWon && !aIsHome)) { h2hWA++; }
+      else { h2hWB++; }
+      h2hGF_A += aIsHome ? g.hScore : g.aScore;
+      h2hGF_B += aIsHome ? g.aScore : g.hScore;
+    });
+    const h2hAdv = (h2hWA - h2hWB) / games.length;
+    adv += h2hAdv * 0.30;
+  }
+
+  // Performance score differential (normalized ±1)
+  const scoreAdv = Math.max(-1, Math.min(1, (tA.score - tB.score) / 60));
+  adv += scoreAdv * (hasH2H ? 0.25 : 0.35);
+
+  // Current form: win%, GF/G (norm), GA/G (norm inverted)
+  const formA = tA._n_winPct * 0.5 + tA._n_gfpg * 0.25 + tA._n_gapg * 0.25;
+  const formB = tB._n_winPct * 0.5 + tB._n_gfpg * 0.25 + tB._n_gapg * 0.25;
+  const formAdv = formA - formB; // already -1..+1
+  adv += formAdv * (hasH2H ? 0.30 : 0.40);
+
+  // Playoff pedigree
+  const pedAdv = tA.playoffExp - tB.playoffExp;
+  adv += pedAdv * (hasH2H ? 0.15 : 0.25);
+
+  adv = Math.max(-0.85, Math.min(0.85, adv));
+
+  // Convert advantage to 1X2 probabilities
+  const drawProb = Math.max(0.07, 0.25 * (1 - Math.abs(adv) * 1.1));
+  const winPool = 1 - drawProb;
+  const pA_raw = winPool * (0.5 + adv * 0.5);
+  const pB_raw = winPool - pA_raw;
+
+  // Clamp to minimum 5% and renormalize
+  let pA = Math.max(0.05, pA_raw);
+  let pD = Math.max(0.05, drawProb);
+  let pB = Math.max(0.05, pB_raw);
+  const total = pA + pD + pB;
+  pA = Math.round(pA / total * 100);
+  pD = Math.round(pD / total * 100);
+  pB = 100 - pA - pD;
+
+  // Expected goals
+  const xgA = ((tA.gfpg + tB.gapg) / 2 * (1 + adv * 0.25)).toFixed(1);
+  const xgB = ((tB.gfpg + tA.gapg) / 2 * (1 - adv * 0.25)).toFixed(1);
+
+  // Factor breakdown for display
+  const factors = [
+    {
+      label: 'Performance Score',
+      aVal: tA.score,
+      bVal: tB.score,
+      aBar: Math.round((tA.score / 100) * 100),
+      bBar: Math.round((tB.score / 100) * 100),
+      unit: 'pts'
+    },
+    {
+      label: 'Win Rate',
+      aVal: (tA.winPct * 100).toFixed(0) + '%',
+      bVal: (tB.winPct * 100).toFixed(0) + '%',
+      aBar: Math.round(tA._n_winPct * 100),
+      bBar: Math.round(tB._n_winPct * 100),
+    },
+    {
+      label: 'Offense (GF/G)',
+      aVal: tA.gfpg.toFixed(2),
+      bVal: tB.gfpg.toFixed(2),
+      aBar: Math.round(tA._n_gfpg * 100),
+      bBar: Math.round(tB._n_gfpg * 100),
+    },
+    {
+      label: 'Defense (GA/G)',
+      aVal: tA.gapg.toFixed(2),
+      bVal: tB.gapg.toFixed(2),
+      aBar: Math.round(tA._n_gapg * 100),
+      bBar: Math.round(tB._n_gapg * 100),
+      invert: true
+    },
+    {
+      label: 'Playoff Experience',
+      aVal: tA.h2024 !== '—' ? tA.h2024+' \'24' : tA.h2025 !== '—' ? tA.h2025+' \'25' : 'None',
+      bVal: tB.h2024 !== '—' ? tB.h2024+' \'24' : tB.h2025 !== '—' ? tB.h2025+' \'25' : 'None',
+      aBar: Math.round(tA.playoffExp * 100),
+      bBar: Math.round(tB.playoffExp * 100),
+    }
+  ];
+
+  return { pA, pD, pB, xgA, xgB, adv, games,
+           h2hWA, h2hWB, h2hDraw, h2hGF_A, h2hGF_B, factors };
+}
+
+// ============================================================
+// H2H UI
+// ============================================================
+function initH2HSelectors() {
+  const sorted = teams.slice().sort((a,b) => a.name.localeCompare(b.name));
+  const opts = sorted.map(t =>
+    `<option value="${t.name}">${t.name} (${t.conf})</option>`
+  ).join('');
+  document.getElementById('h2hTeamA').innerHTML =
+    '<option value="">— Select Team A —</option>' + opts;
+  document.getElementById('h2hTeamB').innerHTML =
+    '<option value="">— Select Team B —</option>' + opts;
+}
+
+function runH2H() {
+  const nameA = document.getElementById('h2hTeamA').value;
+  const nameB = document.getElementById('h2hTeamB').value;
+  const content = document.getElementById('h2hContent');
+
+  if (!nameA || !nameB || nameA === nameB) {
+    content.style.display = 'none';
+    return;
+  }
+
+  const tA = teams.find(t => t.name === nameA);
+  const tB = teams.find(t => t.name === nameB);
+  if (!tA || !tB) return;
+
+  content.style.display = 'block';
+  const pred = predictMatch(tA, tB);
+  const games = pred.games;
+
+  // ---- H2H SUMMARY (derived from actual matchup history) ----
+  const summaryEl = document.getElementById('h2hSummary');
+  if (games.length === 0) {
+    summaryEl.innerHTML = `
+      <div class="h2h-no-meetings">
+        <div class="h2h-no-meetings-icon">📋</div>
+        <div class="h2h-no-meetings-text">
+          <b>No previous meetings this season.</b><br>
+          ${tA.name} (${tA.conf}) and ${tB.name} (${tB.conf}) play in different conferences
+          and have not met in any tracked showcase or regular season game.
+          Prediction below is based on season metrics only.
+        </div>
+      </div>`;
+  } else {
+    // Derive all H2H stats from the games array
+    let aGF = 0, aGA = 0, aCS = 0, bCS = 0;
+    let bigWinA = null, bigWinB = null;
+    const formA = [], formB = [];
+    games.forEach(g => {
+      const aIsHome = g.home === tA.name;
+      const gA = aIsHome ? g.hScore : g.aScore;
+      const gB = aIsHome ? g.aScore : g.hScore;
+      aGF += gA; aGA += gB;
+      if (gB === 0) aCS++;
+      if (gA === 0) bCS++;
+      const isDraw = gA === gB;
+      const aWon = gA > gB;
+      formA.push(isDraw ? 'D' : aWon ? 'W' : 'L');
+      formB.push(isDraw ? 'D' : aWon ? 'L' : 'W');
+      const margin = Math.abs(gA - gB);
+      if (aWon && (!bigWinA || margin > bigWinA.margin))
+        bigWinA = { score: `${gA}–${gB}`, date: g.date, margin };
+      if (!aWon && !isDraw && (!bigWinB || margin > bigWinB.margin))
+        bigWinB = { score: `${gB}–${gA}`, date: g.date, margin };
+    });
+    const n = games.length;
+    const avgA = (aGF / n).toFixed(1), avgB = (aGA / n).toFixed(1);
+    const h2hGD = aGF - aGA;
+    const lastGame = games[games.length - 1];
+    const lastAIsHome = lastGame.home === tA.name;
+    const lastGA = lastAIsHome ? lastGame.hScore : lastGame.aScore;
+    const lastGB = lastAIsHome ? lastGame.aScore : lastGame.hScore;
+
+    const formPills = (arr) => arr.map(r =>
+      `<span class="h2h-form-pill ${r}">${r}</span>`).join('');
+
+    const miniStat = (label, valA, valB, higherWins = true) => {
+      const aEdge = higherWins ? valA > valB : valA < valB;
+      const bEdge = higherWins ? valB > valA : valB < valA;
+      return { label, valA, valB, aEdge, bEdge };
+    };
+
+    const statsA = [
+      miniStat('Goals scored', aGF, aGA),
+      miniStat('Avg per game', avgA, avgB),
+      miniStat('Clean sheets', aCS, bCS),
+      { label: 'Best result', valA: bigWinA ? bigWinA.score : '—',
+        valB: bigWinB ? bigWinB.score : '—', aEdge: !!bigWinA, bEdge: !!bigWinB },
+    ];
+
+    summaryEl.innerHTML = `
+      <div class="h2h-summary">
+        <div class="h2h-sum-team a">
+          <div class="h2h-sum-name">${tA.name}</div>
+          <div class="h2h-sum-sub">${tA.conf} · Seed #${tA.seed}</div>
+          <div class="h2h-record-big">${pred.h2hWA}W&nbsp;${pred.h2hDraw}D&nbsp;${pred.h2hWB}L</div>
+          <div class="h2h-record-label">H2H record vs ${tB.name.split(' ')[0]}</div>
+          <div class="h2h-mini-stats">
+            ${statsA.map(s => `<div class="h2h-mini-stat">
+              <span class="msv" style="${s.aEdge?'color:var(--accent)':''}">${s.valA}</span>
+              <span class="msl">${s.label}</span>
+            </div>`).join('')}
+          </div>
+          <div class="h2h-form-row" style="margin-top:12px">${formPills(formA)}</div>
+        </div>
+
+        <div class="h2h-sum-mid">
+          <div class="h2h-goals-label">${n} game${n>1?'s':''} played</div>
+          <div class="h2h-goals-display">${aGF} – ${aGA}</div>
+          <div class="h2h-goals-label">total goals</div>
+          <div style="margin-top:10px;font-size:10px;color:var(--muted);text-align:center">
+            Last meeting<br>
+            <b style="color:var(--text)">${lastGA} – ${lastGB}</b><br>
+            <span style="font-size:10px">${lastGame.date}</span>
+          </div>
+          <div style="margin-top:8px;font-size:10px;color:var(--muted);text-align:center">
+            Goal diff<br>
+            <b style="color:${h2hGD>0?'var(--accent)':h2hGD<0?'var(--green)':'var(--muted)'}">${h2hGD>0?'+':''}${h2hGD}</b>
+          </div>
+        </div>
+
+        <div class="h2h-sum-team b">
+          <div class="h2h-sum-name">${tB.name}</div>
+          <div class="h2h-sum-sub">${tB.conf} · Seed #${tB.seed}</div>
+          <div class="h2h-record-big">${pred.h2hWB}W&nbsp;${pred.h2hDraw}D&nbsp;${pred.h2hWA}L</div>
+          <div class="h2h-record-label">H2H record vs ${tA.name.split(' ')[0]}</div>
+          <div class="h2h-mini-stats">
+            ${statsA.map(s => `<div class="h2h-mini-stat">
+              <span class="msv" style="${s.bEdge?'color:var(--green)':''}">${s.valB}</span>
+              <span class="msl">${s.label}</span>
+            </div>`).join('')}
+          </div>
+          <div class="h2h-form-row" style="margin-top:12px">${formPills(formB)}</div>
+        </div>
+      </div>`;
+  }
+
+  // ---- GAMES LIST ----
+  const gamesList = document.getElementById('h2hGamesList');
+  if (games.length === 0) {
+    gamesList.innerHTML = `<div class="h2h-no-games">No regular season or tracked showcase games on record between these two teams.</div>`;
+  } else {
+    gamesList.innerHTML = games.map(g => {
+      const aIsHome = g.home === tA.name;
+      const aScore = aIsHome ? g.hScore : g.aScore;
+      const bScore = aIsHome ? g.aScore : g.hScore;
+      const aWon = aScore > bScore, bWon = bScore > aScore;
+      const homeCls = (aIsHome && aWon) || (!aIsHome && bWon) ? 'won' :
+                      (aIsHome && bWon) || (!aIsHome && aWon) ? 'lost' : '';
+      const awayCls = homeCls === 'won' ? 'lost' : homeCls === 'lost' ? 'won' : '';
+      return `<div class="h2h-game-item">
+        <span class="h2h-game-date">${g.date}</span>
+        <span class="h2h-game-conf">${g.evt ? '<span style="color:var(--green)">' + g.evt + '</span>' : g.conf || ''}</span>
+        <span class="h2h-game-home ${homeCls}">${g.home}</span>
+        <span class="h2h-game-score">${g.hScore} – ${g.aScore}</span>
+        <span class="h2h-game-away ${awayCls}">${g.away}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ---- SEASON STATS COMPARISON ----
+  const compareRows = [
+    ['Season Record', `${tA.w}W-${tA.l}L-${tA.d}D`, 'W-L-D', `${tB.w}W-${tB.l}L-${tB.d}D`,
+      tA.winPct > tB.winPct ? 'a' : tB.winPct > tA.winPct ? 'b' : ''],
+    ['Win Rate', (tA.winPct*100).toFixed(1)+'%', 'Win%', (tB.winPct*100).toFixed(1)+'%',
+      tA.winPct > tB.winPct ? 'a' : tB.winPct > tA.winPct ? 'b' : ''],
+    ['GF / Game', tA.gfpg.toFixed(2), 'Offense', tB.gfpg.toFixed(2),
+      tA.gfpg > tB.gfpg ? 'a' : tB.gfpg > tA.gfpg ? 'b' : ''],
+    ['GA / Game', tA.gapg.toFixed(2), 'Defense', tB.gapg.toFixed(2),
+      tA.gapg < tB.gapg ? 'a' : tB.gapg < tA.gapg ? 'b' : ''],
+    ['Goal Diff', (tA.gd > 0 ? '+' : '') + tA.gd, 'GD', (tB.gd > 0 ? '+' : '') + tB.gd,
+      tA.gd > tB.gd ? 'a' : tB.gd > tA.gd ? 'b' : ''],
+    ['PPG', tA.ppg, 'Pts/Game', tB.ppg,
+      tA.ppg > tB.ppg ? 'a' : tB.ppg > tA.ppg ? 'b' : ''],
+    ['Performance Score', tA.score, 'Score', tB.score,
+      tA.score > tB.score ? 'a' : tB.score > tA.score ? 'b' : ''],
+    ['Conf Seed', '#'+tA.seed+' ('+tA.conf+')', 'Seed', '#'+tB.seed+' ('+tB.conf+')', ''],
+    ['2024 Playoffs', tA.h2024, '2024', tB.h2024, ''],
+    ['2025 Playoffs', tA.h2025, '2025', tB.h2025, ''],
+  ];
+
+  document.getElementById('h2hCompareGrid').innerHTML =
+    `<div class="h2h-team-header a">${tA.name}<br><small style="font-weight:400;font-size:11px">${tA.conf} · Seed #${tA.seed} · Season stats</small></div>
+     <div class="h2h-team-header" style="background:var(--surface2);text-align:center;padding:16px 10px;border-left:1px solid var(--border);border-right:1px solid var(--border);font-size:11px;color:var(--muted);font-weight:600">SEASON<br>COMPARISON</div>
+     <div class="h2h-team-header b">${tB.name}<br><small style="font-weight:400;font-size:11px">${tB.conf} · Seed #${tB.seed} · Season stats</small></div>` +
+    compareRows.map(([la, va, mid, vb, win]) =>
+      `<div class="h2h-val a${win==='a'?' winner-a':win==='b'?' winner-b':''}">${va}</div>
+       <div class="h2h-val mid">${mid}</div>
+       <div class="h2h-val b${win==='b'?' winner-b':win==='a'?' winner-a':''}">${vb}</div>`
+    ).join('');
+
+  // Prediction display
+  const verdict = pred.pA > pred.pB + 10 ? `${tA.name} favored to win` :
+                  pred.pB > pred.pA + 10 ? `${tB.name} favored to win` :
+                  'Toss-up — very evenly matched';
+  document.getElementById('predVerdict').textContent = verdict;
+
+  document.getElementById('predBars').innerHTML =
+    `<div class="pred-bar-a" style="width:${pred.pA}%">${pred.pA}%</div>
+     <div class="pred-bar-d" style="width:${pred.pD}%">${pred.pD}%</div>
+     <div class="pred-bar-b" style="width:${pred.pB}%">${pred.pB}%</div>`;
+
+  document.getElementById('predLabels').innerHTML =
+    `<div class="pred-label-a">${tA.name}<br>Win ${pred.pA}%</div>
+     <div class="pred-label-d">Draw ${pred.pD}%</div>
+     <div class="pred-label-b">${tB.name}<br>Win ${pred.pB}%</div>`;
+
+  document.getElementById('predScore').innerHTML =
+    `Expected Score: <b>${tA.name}</b> ${pred.xgA} – ${pred.xgB} <b>${tB.name}</b>
+     <span>(based on season averages)</span>`;
+
+  document.getElementById('predFactors').innerHTML = pred.factors.map(f => {
+    const aAdv = f.invert ? f.aBar < f.bBar : f.aBar >= f.bBar;
+    const edge = f.aBar === f.bBar ? '' : (aAdv ? `▲ ${tA.name.split(' ')[0]} edge` : `▲ ${tB.name.split(' ')[0]} edge`);
+    return `<div class="pred-factor">
+      <div class="lbl">${f.label}</div>
+      <div class="desc">${f.aVal} vs ${f.bVal} ${edge ? '· <span style="color:var(--accent);font-size:10px">'+edge+'</span>' : ''}</div>
+      <div class="bar-wrap"><div class="bar-fill a" style="width:${f.aBar}%"></div></div>
+      <div class="bar-wrap"><div class="bar-fill b" style="width:${f.bBar}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+buildStats();
+renderTable();
+buildTop10();
+buildFlags();
+initH2HSelectors();
+</script>
+</body>
+</html>
