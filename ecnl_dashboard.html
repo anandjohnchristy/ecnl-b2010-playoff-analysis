@@ -339,7 +339,7 @@
       <span>📅 <b>June 25, 2026</b></span>
       <span>🏆 <b>54 Qualified Teams</b></span>
       <span>⚽ <b>15 Conferences</b></span>
-      <span>📊 <b>Live 2025-26 regular season data</b></span>
+      <span>📊 <b>Updated May 25, 2026 — Virginia &amp; Club America Cup added</b></span>
     </div>
   </div>
 </div>
@@ -406,14 +406,15 @@
   <div class="section-title">Performance Score Methodology</div>
   <div class="methodology">
     <p style="font-size:12px;color:var(--muted);margin-bottom:4px;">
-      Each team is scored on a <b style="color:var(--text)">0–100 scale</b> combining five normalized components. All metrics are ranked relative to the full 54-team field.
+      Each team is scored on a <b style="color:var(--text)">0–100 scale</b> combining six normalized components. All metrics are ranked relative to the full 54-team field. Updated May 25, 2026 to incorporate showcase cross-conference form vs qualified opponents.
     </p>
     <div class="method-grid">
-      <div class="method-item"><div class="pct">30%</div><div class="label">Win Rate (W/GP) — current season form</div></div>
+      <div class="method-item"><div class="pct">25%</div><div class="label">Win Rate (W/GP) — current season form</div></div>
       <div class="method-item"><div class="pct">15%</div><div class="label">Goals For per Game — offensive output</div></div>
       <div class="method-item"><div class="pct">15%</div><div class="label">Defensive Efficiency — inverse of GA/G</div></div>
       <div class="method-item"><div class="pct">15%</div><div class="label">Conference Strength — avg PPG of conf qualifiers</div></div>
-      <div class="method-item"><div class="pct">25%</div><div class="label">Playoff Pedigree — 2024 + 2025 tournament runs</div></div>
+      <div class="method-item"><div class="pct">20%</div><div class="label">Playoff Pedigree — 2024 + 2025 tournament runs</div></div>
+      <div class="method-item"><div class="pct">10%</div><div class="label">Showcase Form — cross-conf win% vs qualified opponents</div></div>
     </div>
   </div>
 </div>
@@ -619,8 +620,10 @@ norm(teams, 'confStr'); norm(teams, 'playoffExp');
 // Compute seed score — lower seed # is better
 teams.forEach(t => { t._n_seed = (66 - t.seed) / 65; });
 
-// Final composite score
+// Preliminary composite score (showcase form added below after H2H_MAP loads)
 teams.forEach(t => {
+  t.showcaseWinPct = 0.5;
+  t._n_showcaseWinPct = 0.5;
   t.score = Math.round(
     t._n_winPct   * 30 +
     t._n_gfpg     * 15 +
@@ -783,13 +786,13 @@ const PROFILES = {
   },
   "STA": {
     style: "Disciplined defensive shape, patient build-up, clinical counter-attack",
-    bg: "Elite New England club, seed #2 nationally. The 2025 U15 Finalists fell 1-5 to Legends FC in the championship game but return with a dominant 12-0-1 record this season. Their GK Vayun Swamy saved a PK in the 2025 QFs — this is a mentally resilient group with deep playoff experience and a point to prove.",
-    strengths: "2025 National Finalist, 12-0-1 record, elite defensive structure, GK quality"
+    bg: "Elite New England club, seed #2 nationally. The 2025 U15 Finalists fell 1-5 to Legends FC in the championship game but returned with a dominant 12-0-1 regular season. At ECNL Virginia Showcase (May 23–25, 2026), STA went unbeaten across all 5 games (3W-2D-0L total) — beating Beach FC (VA) 1-0, Select South 1-0, and Villarreal VA 1-0, while drawing NCFC Youth Academy 2-2 and Dallas Texans Academy 2-2. Their showcase form vs qualified opponents is among the strongest in the field, reinforcing their #2 seed. The GK who saved a PK in the 2025 QFs remains a key pillar for this mentally resilient group.",
+    strengths: "2025 National Finalist, 12-0-1 season, unbeaten at Virginia Showcase vs top opposition, elite GK"
   },
   "Gretna Elite Academy": {
     style: "Defensive organization, quick transition, efficient use of possession",
-    bg: "Nebraska-based club with the best defensive record in the entire 54-team field: only 2 goals allowed in 10 games (0.20 GA/G). Combined with 32 goals scored, Gretna's +30 goal difference in just 10 games is extraordinary. The Heartland conference is one of the strongest in the country.",
-    strengths: "Best defensive record nationally, 0.20 GA/G, Heartland conference champion"
+    bg: "Nebraska-based club with the best defensive record in the entire 54-team field: only 2 goals allowed in 10 games (0.20 GA/G). Combined with 32 goals scored, Gretna's +30 goal difference in just 10 games is extraordinary. At the Las Vegas Showcase (Jan 2026), they produced the tournament's biggest upset — beating #1 seed XF Academy 4-3 away from home — and also defeated OK Energy FC 2-1. Their showcase record vs qualified opponents is one of the strongest in the field, proving they can beat elite competition. The Heartland conference is one of the strongest in the country.",
+    strengths: "Best defensive record nationally (0.20 GA/G), upset XF Academy 4-3 at Las Vegas Showcase, Heartland champion"
   },
   "FC Wichita": {
     style: "High-tempo attacking, pressing from the front, wing-based offense",
@@ -798,7 +801,7 @@ const PROFILES = {
   },
   "Legends FC": {
     style: "Compact block, deadly counter-attack, proven playoff surge",
-    bg: "The defending 2025 U15 National Champions from Southern California. Legends FC's regular season (10-6-6, seed #58) doesn't reflect their championship quality — they've proven they are a tournament team that peaks at the right moment. In 2025 playoffs: beat Albion 4-1 (QF), beat Beach FC (CA) 3-0 (SF), won 5-1 over STA in the final. Enter as the team every top seed will not want to face.",
+    bg: "The defending 2025 U15 National Champions from Southern California. Legends FC's regular season (10-6-6, seed #58) doesn't reflect their championship quality — they've proven they are a tournament team that peaks at the right moment. In 2025 playoffs: beat Albion 4-1 (QF), beat Beach FC (CA) 3-0 (SF), won 5-1 over STA in the final. However, their showcase record is mixed — XF Academy beat them 4-1 at Phoenix and they lost 0-3 to Santa Clara Sporting. They have not participated in the May 2026 showcases. Enter as the team every top seed will not want to face in a single-elimination game.",
     strengths: "2025 U15 Champion, lethal in playoffs, proven mental toughness, 5-1 championship win"
   },
   "OK Energy FC": {
@@ -808,8 +811,8 @@ const PROFILES = {
   },
   "FL Premier FC": {
     style: "Organized defense, quick transitions, technical midfield play",
-    bg: "Florida-based club with an unbeaten-in-regulation 14-0-4 record (57 GF, only 10 GA). The parent club Florida Premier won the 2025 U16 Boys National Championship, defeating Pateadores 3-0 — demonstrating the club infrastructure at the highest level. The B10 squad enters as Florida conference champions with one of the cleanest defensive records in the field (0.56 GA/G).",
-    strengths: "14-0-4 unbeaten in regulation, elite defense, club won 2025 U16 national title"
+    bg: "Florida-based club with an unbeaten-in-regulation 14-0-4 record (57 GF, only 10 GA). The parent club Florida Premier won the 2025 U16 Boys National Championship, defeating Pateadores 3-0 — demonstrating the club infrastructure at the highest level. At ECNL Virginia Showcase (May 23–25, 2026), they went 2W-1L in games vs qualified opponents: beat Dallas Texans Academy 1-0 (away) and NCFC Youth Academy 3-2, but lost to Beach FC (VA) 1-4, exposing a vulnerability against pressing teams.",
+    strengths: "14-0-4 unbeaten in regulation, elite defense, club won 2025 U16 national title, 2W vs qualified at Virginia"
   },
   "LAFC So Cal": {
     style: "Possession-based, technical, structured build-up from the back",
@@ -1220,6 +1223,11 @@ const H2H_MAP = {
   "Albion Hurricanes FC|||Placer United": [{"date":"2026-04-12","home":"Albion Hurricanes FC","away":"Placer United","hScore":0,"aScore":1,"evt":"Indy Showcase"}],
   "Pateadores|||Real Colorado Academy": [{"date":"2026-04-12","home":"Pateadores","away":"Real Colorado Academy","hScore":0,"aScore":2,"evt":"Indy Showcase"}],
   "Cleveland Force SC|||Davis Legacy": [{"date":"2026-04-12","home":"Cleveland Force SC","away":"Davis Legacy","hScore":0,"aScore":0,"evt":"Indy Showcase"}],
+  // Virginia Showcase — Day 3 (May 25, 2026)
+  "Marin FC|||Richmond United": [{"date":"2026-05-25","home":"Marin FC","away":"Richmond United","hScore":2,"aScore":2,"evt":"Virginia Showcase"}],
+  "Dallas Texans Academy|||STA": [{"date":"2026-05-25","home":"Dallas Texans Academy","away":"STA","hScore":2,"aScore":2,"evt":"Virginia Showcase"}],
+  "FL Premier FC|||NCFC Youth Academy": [{"date":"2026-05-25","home":"FL Premier FC","away":"NCFC Youth Academy","hScore":3,"aScore":2,"evt":"Virginia Showcase"}],
+  "Beach FC (VA)|||Concorde Fire Platinum": [{"date":"2026-05-25","home":"Concorde Fire Platinum","away":"Beach FC (VA)","hScore":2,"aScore":0,"evt":"Virginia Showcase"}],
 };
 
 // ============================================================
@@ -1232,8 +1240,63 @@ const TOURNAMENT_MAP = {
   "Charlotte SA Academy|||Potomac Soccer ECNL": [{"date":"2026-03-29","home":"Potomac Soccer ECNL","away":"Charlotte SA Academy","hScore":0,"aScore":3,"tourn":"Jefferson Cup"}],
   "Coppermine SC|||Richmond United": [{"date":"2026-03-27","home":"Coppermine SC","away":"Richmond United","hScore":0,"aScore":3,"tourn":"Jefferson Cup"}],
   "Oakwood SC|||Richmond United": [{"date":"2026-03-28","home":"Richmond United","away":"Oakwood SC","hScore":3,"aScore":3,"tourn":"Jefferson Cup"}],
-  "Richmond United|||SAC Boys 2010": [{"date":"2026-03-29","home":"SAC Boys 2010","away":"Richmond United","hScore":1,"aScore":2,"tourn":"Jefferson Cup"}]
+  "Richmond United|||SAC Boys 2010": [{"date":"2026-03-29","home":"SAC Boys 2010","away":"Richmond United","hScore":1,"aScore":2,"tourn":"Jefferson Cup"}],
+  // Jefferson Cup 2026 — U16 Elite Orange — Mar 27-29, 2026 — Richmond, VA
+  "Delaware FC|||KH Elite Cincinnati": [{"date":"2026-03-27","home":"Delaware FC","away":"KH Elite Cincinnati","hScore":1,"aScore":3,"tourn":"Jefferson Cup"}],
+  "Delaware FC|||STA-MUSC": [{"date":"2026-03-28","home":"STA-MUSC","away":"Delaware FC","hScore":1,"aScore":2,"tourn":"Jefferson Cup"}],
+  "Delaware FC|||PSA Monmouth": [{"date":"2026-03-29","home":"Delaware FC","away":"PSA Monmouth","hScore":2,"aScore":2,"tourn":"Jefferson Cup"}],
+  // Club America Cup 2026 — Boys U16 Oro Division — May 23–25, 2026 — Southern California
+  "AC Brea EA U16|||San Diego Surf": [{"date":"2026-05-23","home":"San Diego Surf","away":"AC Brea EA U16","hScore":1,"aScore":1,"tourn":"Club America Cup"}],
+  "LA BULLS 2010 MLS NEXT|||San Diego Surf": [{"date":"2026-05-23","home":"LA BULLS 2010 MLS NEXT","away":"San Diego Surf","hScore":2,"aScore":0,"tourn":"Club America Cup"}],
+  "Phoenix Rising U16 MLS NEXT|||San Diego Surf": [{"date":"2026-05-24","home":"San Diego Surf","away":"Phoenix Rising U16 MLS NEXT","hScore":8,"aScore":0,"tourn":"Club America Cup"}],
+  "Beach FC (CA)|||Sporting CA Montoya 2010": [{"date":"2026-05-23","home":"Beach FC (CA)","away":"Sporting CA Montoya 2010","hScore":5,"aScore":1,"tourn":"Club America Cup"}],
+  "Beach FC (CA)|||SBSC B2010 MLS Next": [{"date":"2026-05-23","home":"SBSC B2010 MLS Next","away":"Beach FC (CA)","hScore":1,"aScore":4,"tourn":"Club America Cup"}],
+  "Beach FC (CA)|||Crossfire B10 ECNL": [{"date":"2026-05-24","home":"Beach FC (CA)","away":"Crossfire B10 ECNL","hScore":1,"aScore":2,"tourn":"Club America Cup"}],
+  "Beach FC B2010 ECRL|||LAFC So Cal": [{"date":"2026-05-23","home":"Beach FC B2010 ECRL","away":"LAFC So Cal","hScore":0,"aScore":2,"tourn":"Club America Cup"}],
+  "LAFC So Cal|||MVLA 10B": [{"date":"2026-05-23","home":"MVLA 10B","away":"LAFC So Cal","hScore":0,"aScore":4,"tourn":"Club America Cup"}],
+  "Chula Vista FC MLS Next|||LAFC So Cal": [{"date":"2026-05-24","home":"LAFC So Cal","away":"Chula Vista FC MLS Next","hScore":0,"aScore":1,"tourn":"Club America Cup"}],
 };
+
+// ============================================================
+// PHASE 2: SHOWCASE FORM — cross-conference win% vs qualified opponents
+// Placed here (after H2H_MAP) to avoid JavaScript TDZ error
+// ============================================================
+(function() {
+  const _qNames = new Set(RAW.map(r => r[0]));
+  const _sfW = {}, _sfGP = {};
+  RAW.forEach(r => { _sfW[r[0]] = 0; _sfGP[r[0]] = 0; });
+  Object.entries(H2H_MAP).forEach(([key, games]) => {
+    const [tA, tB] = key.split('|||');
+    if (!_qNames.has(tA) || !_qNames.has(tB)) return;
+    games.forEach(g => {
+      if (!g.evt) return;
+      _sfGP[tA]++; _sfGP[tB]++;
+      if (g.hScore > g.aScore) { if (g.home===tA) _sfW[tA]++; else _sfW[tB]++; }
+      else if (g.aScore > g.hScore) { if (g.away===tA) _sfW[tA]++; else _sfW[tB]++; }
+      else { _sfW[tA]+=0.5; _sfW[tB]+=0.5; }
+    });
+  });
+  teams.forEach(t => {
+    t.showcaseWinPct = _sfGP[t.name] > 0 ? _sfW[t.name] / _sfGP[t.name] : null;
+    t.showcaseGP = _sfGP[t.name] || 0;
+  });
+  const _swVals = teams.filter(t => t.showcaseWinPct !== null).map(t => t.showcaseWinPct);
+  const _swMean = _swVals.length ? _swVals.reduce((s,v) => s+v, 0) / _swVals.length : 0.5;
+  teams.forEach(t => { if (t.showcaseWinPct === null) t.showcaseWinPct = _swMean; });
+  norm(teams, 'showcaseWinPct');
+  teams.forEach(t => {
+    t.score = Math.round(
+      t._n_winPct          * 25 +
+      t._n_gfpg            * 15 +
+      t._n_gapg            * 15 +
+      t._n_confStr         * 15 +
+      t._n_playoffExp      * 20 +
+      t._n_showcaseWinPct  * 10
+    );
+  });
+  teams.sort((a,b) => b.score - a.score);
+  teams.forEach((t, i) => t.rank = i + 1);
+})();
 
 // ============================================================
 // H2H LOOKUP FUNCTION
@@ -1679,7 +1742,7 @@ function switchGLTab(tab) {
     note.textContent = '⚠ Conference results here only include games played against other nationally qualified teams. Each team\'s full conference schedule includes additional opponents not captured in this dataset.';
     note.style.display = 'block';
   } else if (tab === 'tourn') {
-    note.textContent = '⚠ Tournament coverage is partial. Currently includes: Jefferson Cup 2026 (Charlotte SA Academy, Richmond United). More tournaments will be added as data is sourced.';
+    note.textContent = '⚠ Tournament coverage is partial. Currently includes: Jefferson Cup 2026 (Charlotte SA Academy, Delaware FC, Richmond United), Club America Cup 2026 (San Diego Surf, Beach FC (CA), LAFC So Cal). More tournaments will be added as data is sourced.';
     note.style.display = 'block';
   } else {
     note.style.display = 'none';
