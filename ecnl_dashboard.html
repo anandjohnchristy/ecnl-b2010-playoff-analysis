@@ -290,6 +290,40 @@
     .hero-meta { gap: 10px; }
     .h2h-vs { display: none; }
   }
+
+  /* TEAM GAME LOG */
+  .gl-tabs { display:flex; gap:8px; margin-top:12px; }
+  .gl-tab { background:var(--surface2); border:1px solid var(--border); color:var(--muted);
+    padding:6px 16px; border-radius:6px; font-size:12px; cursor:pointer; font-weight:600;
+    letter-spacing:.5px; transition:all .15s; }
+  .gl-tab:hover { border-color:var(--accent); color:var(--accent); }
+  .gl-tab.active { background:#58a6ff22; border-color:var(--accent); color:var(--accent); }
+  .gl-stats-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:4px; }
+  .gl-stat { background:var(--surface); border:1px solid var(--border); border-radius:8px;
+    padding:10px 16px; text-align:center; min-width:68px; }
+  .gl-stat-val { font-size:1.25rem; font-weight:700; }
+  .gl-stat-lbl { font-size:10px; color:var(--muted); text-transform:uppercase;
+    letter-spacing:.5px; margin-top:2px; }
+  .gl-games-wrap { border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-top:12px; }
+  .gl-game { display:grid; grid-template-columns:110px 34px 1fr 46px 80px 130px;
+    gap:8px; align-items:center; padding:9px 14px; border-bottom:1px solid var(--border);
+    font-size:13px; transition:background .1s; }
+  .gl-game:last-child { border-bottom:none; }
+  .gl-game:hover { background:var(--surface2); }
+  .gl-game-hdr { background:var(--surface); font-size:10px; color:var(--muted);
+    font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  .gl-ha { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px;
+    background:var(--surface2); border-radius:4px; padding:2px 5px; text-align:center; }
+  .gl-ha.home { color:var(--accent); }
+  .gl-ha.away { color:var(--muted); }
+  .gl-result { font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; text-align:center; }
+  .gl-result.W { background:#3fb95022; color:var(--green); }
+  .gl-result.L { background:#f8514922; color:var(--red); }
+  .gl-result.D { background:#8b949e22; color:var(--muted); }
+  .gl-source { font-size:10px; color:var(--muted); text-align:right; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .gl-source.showcase { color:var(--green); }
+  .gl-note { font-size:11px; color:var(--muted); margin-top:10px; padding:8px 12px;
+    background:var(--surface); border:1px solid var(--border); border-radius:6px; }
 </style>
 </head>
 <body>
@@ -448,6 +482,32 @@
       <div class="pred-score" id="predScore"></div>
       <div class="pred-factors" id="predFactors"></div>
     </div>
+  </div>
+</div>
+
+<!-- TEAM GAME LOG -->
+<div class="section" style="margin-top:32px">
+  <div class="section-title">Team Game Log</div>
+  <div class="section-sub">Select any qualified team to view their game results — conference play (vs. qualified opponents) and all ECNL showcase events.</div>
+
+  <div style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-top:16px">
+    <div class="h2h-picker" style="flex:none">
+      <label>Team</label>
+      <select id="gameLogTeam" onchange="runGameLog()" style="min-width:230px">
+        <option value="">— Select Team —</option>
+      </select>
+    </div>
+    <div class="gl-tabs" id="gameLogTabs" style="display:none">
+      <button class="gl-tab active" data-tab="all" onclick="switchGLTab('all')">All Games</button>
+      <button class="gl-tab" data-tab="conf" onclick="switchGLTab('conf')">Conference</button>
+      <button class="gl-tab" data-tab="showcase" onclick="switchGLTab('showcase')">Showcase</button>
+    </div>
+  </div>
+
+  <div id="gameLogContent" style="display:none;margin-top:18px">
+    <div class="gl-stats-bar" id="gameLogStats"></div>
+    <div class="gl-games-wrap" id="gameLogList"></div>
+    <div class="gl-note" id="gameLogNote" style="display:none"></div>
   </div>
 </div>
 
@@ -1190,6 +1250,106 @@ function runH2H() {
 }
 
 // ============================================================
+// TEAM GAME LOG
+// ============================================================
+let _glTab = 'all';
+let _glData = null;
+
+function initGameLogSelector() {
+  const sorted = teams.slice().sort((a,b) => a.name.localeCompare(b.name));
+  document.getElementById('gameLogTeam').innerHTML =
+    '<option value="">— Select Team —</option>' +
+    sorted.map(t => `<option value="${t.name}">${t.name} (${t.conf})</option>`).join('');
+}
+
+function getTeamGameLog(teamName) {
+  const conf = [], showcase = [];
+  for (const [key, games] of Object.entries(H2H_MAP)) {
+    const [tA, tB] = key.split('|||');
+    if (tA !== teamName && tB !== teamName) continue;
+    games.forEach(g => {
+      const isHome = g.home === teamName;
+      const opponent = isHome ? g.away : g.home;
+      const gf = isHome ? g.hScore : g.aScore;
+      const ga = isHome ? g.aScore : g.hScore;
+      const result = gf > ga ? 'W' : ga > gf ? 'L' : 'D';
+      const entry = { date: g.date, opponent, isHome, gf, ga, result, source: g.conf || g.evt, isShowcase: !!g.evt };
+      if (g.conf) conf.push(entry);
+      else showcase.push(entry);
+    });
+  }
+  const parseDate = s => {
+    const d = new Date(s);
+    return isNaN(d.getTime()) ? new Date(s.replace(/(\w+)\s+(\d+),\s+(\d+)/, '$2 $1 $3')) : d;
+  };
+  const byDate = (a, b) => parseDate(a.date) - parseDate(b.date);
+  return { conf: conf.sort(byDate), showcase: showcase.sort(byDate) };
+}
+
+function glStatsHtml(games) {
+  const w = games.filter(g => g.result === 'W').length;
+  const d = games.filter(g => g.result === 'D').length;
+  const l = games.filter(g => g.result === 'L').length;
+  const gf = games.reduce((s, g) => s + g.gf, 0);
+  const ga = games.reduce((s, g) => s + g.ga, 0);
+  const gd = gf - ga;
+  const gdColor = gd > 0 ? 'var(--green)' : gd < 0 ? 'var(--red)' : 'var(--muted)';
+  return `
+    <div class="gl-stat"><div class="gl-stat-val">${games.length}</div><div class="gl-stat-lbl">GP</div></div>
+    <div class="gl-stat"><div class="gl-stat-val" style="color:var(--green)">${w}</div><div class="gl-stat-lbl">W</div></div>
+    <div class="gl-stat"><div class="gl-stat-val" style="color:var(--muted)">${d}</div><div class="gl-stat-lbl">D</div></div>
+    <div class="gl-stat"><div class="gl-stat-val" style="color:var(--red)">${l}</div><div class="gl-stat-lbl">L</div></div>
+    <div class="gl-stat"><div class="gl-stat-val">${gf}</div><div class="gl-stat-lbl">GF</div></div>
+    <div class="gl-stat"><div class="gl-stat-val">${ga}</div><div class="gl-stat-lbl">GA</div></div>
+    <div class="gl-stat"><div class="gl-stat-val" style="color:${gdColor}">${gd > 0 ? '+' : ''}${gd}</div><div class="gl-stat-lbl">GD</div></div>`;
+}
+
+function glListHtml(games) {
+  if (!games.length) return '<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No games on record for this selection.</div>';
+  return `<div class="gl-game gl-game-hdr"><span>Date</span><span></span><span>Opponent</span><span>Result</span><span style="text-align:center">Score</span><span style="text-align:right">Source</span></div>` +
+    games.map(g =>
+      `<div class="gl-game">
+        <span style="color:var(--muted);font-size:12px">${g.date}</span>
+        <span class="gl-ha ${g.isHome ? 'home' : 'away'}">${g.isHome ? 'H' : 'A'}</span>
+        <span style="font-weight:600">${g.opponent}</span>
+        <span><span class="gl-result ${g.result}">${g.result}</span></span>
+        <span style="font-weight:700;text-align:center;font-size:14px">${g.gf} – ${g.ga}</span>
+        <span class="gl-source ${g.isShowcase ? 'showcase' : ''}">${g.source}</span>
+      </div>`
+    ).join('');
+}
+
+function switchGLTab(tab) {
+  _glTab = tab;
+  document.querySelectorAll('.gl-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  if (!_glData) return;
+  const parseDate = s => { const d = new Date(s); return isNaN(d.getTime()) ? new Date(s.replace(/(\w+)\s+(\d+),\s+(\d+)/, '$2 $1 $3')) : d; };
+  const games = tab === 'conf' ? _glData.conf
+              : tab === 'showcase' ? _glData.showcase
+              : [..._glData.conf, ..._glData.showcase].sort((a,b) => parseDate(a.date) - parseDate(b.date));
+  document.getElementById('gameLogStats').innerHTML = glStatsHtml(games);
+  document.getElementById('gameLogList').innerHTML = glListHtml(games);
+  const note = document.getElementById('gameLogNote');
+  if (tab === 'conf') {
+    note.textContent = '⚠ Conference results here only include games played against other nationally qualified teams. Each team\'s full conference schedule includes additional opponents not captured in this dataset.';
+    note.style.display = 'block';
+  } else {
+    note.style.display = 'none';
+  }
+}
+
+function runGameLog() {
+  const name = document.getElementById('gameLogTeam').value;
+  const content = document.getElementById('gameLogContent');
+  const tabs = document.getElementById('gameLogTabs');
+  if (!name) { content.style.display = 'none'; tabs.style.display = 'none'; return; }
+  _glData = getTeamGameLog(name);
+  tabs.style.display = 'flex';
+  content.style.display = 'block';
+  switchGLTab(_glTab);
+}
+
+// ============================================================
 // INIT
 // ============================================================
 buildStats();
@@ -1197,6 +1357,7 @@ renderTable();
 buildTop10();
 buildFlags();
 initH2HSelectors();
+initGameLogSelector();
 </script>
 </body>
 </html>
