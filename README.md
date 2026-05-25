@@ -1,5 +1,7 @@
 # 2026 ECNL Boys B2010 National Playoff Analysis
 
+**[Live Dashboard →](https://anandjohnchristy.github.io/ecnl-b2010-playoff-analysis/ecnl_dashboard.html)**
+
 Interactive dashboard for analyzing the 54 teams qualified for the 2026 ECNL Boys B2010 (U16) National Playoffs in San Diego, CA (June 25, 2026).
 
 ## Features
@@ -48,4 +50,6 @@ Game results scraped from the [AthleteOne / TGS API](https://api.athleteone.com)
 
 ## Usage
 
-Open `ecnl_dashboard.html` directly in a browser — no server or dependencies required.
+**Hosted:** https://anandjohnchristy.github.io/ecnl-b2010-playoff-analysis/ecnl_dashboard.html
+
+**Local:** Open `ecnl_dashboard.html` directly in a browser — no server or dependencies required.
