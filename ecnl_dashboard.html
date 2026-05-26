@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2026 ECNL Boys B2010 Playoff Analysis — San Diego</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>2026 ECNL Boys B2010 Playoff Analysis — San Diego · v1.5</title>
 <style>
   :root {
     --bg: #0d1117; --surface: #161b22; --surface2: #21262d;
@@ -13,31 +16,51 @@
     --gold: #ffd700; --silver: #c0c0c0; --bronze: #cd7f32;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  body { font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--bg); color: var(--text); min-height: 100vh; }
 
   /* HEADER */
-  .hero { background: linear-gradient(135deg, #0d1117 0%, #1a2332 50%, #0d2137 100%);
-    border-bottom: 2px solid #1f6feb; padding: 28px 24px 24px; }
+  .hero { background: #080c12; border-bottom: 1px solid var(--border);
+    padding: 28px 24px 28px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, #1f6feb, #58a6ff 70%, transparent 95%); }
   .hero-inner { max-width: 1400px; margin: 0 auto; }
-  .hero-badge { display:inline-block; background:#1f6feb22; border:1px solid #1f6feb;
-    color:var(--accent); padding:4px 12px; border-radius:20px; font-size:12px;
-    font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; }
-  .hero h1 { font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 800;
-    background: linear-gradient(90deg, #58a6ff, #79c0ff); -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent; line-height:1.2; }
-  .hero-meta { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 12px; }
-  .hero-meta span { font-size: 13px; color: var(--muted); display:flex; align-items:center; gap:5px; }
-  .hero-meta span b { color: var(--text); }
+  .hero-badge { display:inline-flex; align-items:center; gap:7px;
+    background:#1f6feb14; border:1px solid #1f6feb55; color:var(--accent);
+    padding:5px 12px 5px 10px; border-radius:4px; font-size:12px;
+    font-weight:600; letter-spacing:0.2px; margin-bottom:14px; }
+  .hero-badge .badge-dot { width:7px; height:7px; border-radius:50%;
+    background:var(--accent); flex-shrink:0;
+    animation: badge-pulse 2.4s ease-in-out infinite; }
+  .hero-badge .badge-ver { color:var(--muted); font-size:11px; font-weight:500; padding-left:2px; }
+  @keyframes badge-pulse {
+    0%, 100% { opacity:1; box-shadow:0 0 0 0 rgba(88,166,255,.45); }
+    50% { opacity:.5; box-shadow:0 0 0 5px rgba(88,166,255,0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-badge .badge-dot { animation: none; opacity: 1; }
+  }
+  .hero h1 { font-size: clamp(1.5rem, 3vw, 2.4rem); font-weight: 800;
+    color: #f0f6fc; line-height: 1.15; letter-spacing: -0.025em; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 0; margin-top: 14px; align-items: center; }
+  .hero-meta span { font-size: 13px; color: var(--muted); }
+  .hero-meta span + span::before { content: "\00B7"; padding: 0 12px; color: var(--border); }
+  .hero-meta span b { color: var(--text); font-weight: 600; }
 
   /* STATS CARDS */
   .stats-bar { max-width: 1400px; margin: 20px auto; padding: 0 24px;
     display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
   .stat-card { background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; padding: 14px 16px; }
-  .stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase;
-    letter-spacing: 0.6px; margin-bottom: 4px; }
-  .stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+    border-radius: 8px; padding: 16px 18px; transition: border-color .15s; }
+  .stat-card:hover { border-color: #484f58; }
+  .stat-card.stat-leader { border-left: 3px solid var(--green); padding-left: 15px; }
+  .stat-card.stat-def    { border-left-color: var(--accent); }
+  .stat-card.stat-champ  { border-left: 3px solid var(--gold); padding-left: 15px; }
+  .stat-card.stat-seed   { border-left-color: var(--accent); }
+  .stat-card.stat-name .stat-value { font-size: 1.1rem; }
+  .stat-label { font-size: 11px; color: var(--muted); font-weight: 500;
+    margin-bottom: 4px; }
+  .stat-value { font-size: 1.6rem; font-weight: 800; color: var(--text); letter-spacing: -0.03em; }
   .stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
   /* CONTROLS */
@@ -45,29 +68,51 @@
     display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
   .controls input, .controls select {
     background: var(--surface); border: 1px solid var(--border); color: var(--text);
-    padding: 8px 12px; border-radius: 6px; font-size: 13px; outline: none; }
-  .controls input:focus, .controls select:focus { border-color: var(--accent); }
+    padding: 8px 12px; border-radius: 8px; font-size: 13px; outline: none; }
+  .controls input:focus, .controls select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,.25); outline: none; }
   .controls input { flex: 1; min-width: 180px; }
   .score-toggle { background: var(--surface2); border: 1px solid var(--border);
-    color: var(--muted); padding: 8px 14px; border-radius: 6px; font-size: 12px;
-    cursor: pointer; font-weight: 600; letter-spacing: 0.5px; transition: all .2s; }
+    color: var(--muted); padding: 8px 14px; border-radius: 8px; font-size: 12px;
+    cursor: pointer; font-weight: 600; transition: color .15s, border-color .15s, background .15s; }
   .score-toggle:hover { border-color: var(--accent); color: var(--accent); }
-  .legend-pill { display:inline-flex; align-items:center; gap:5px; background:var(--surface);
+  .reset-btn { display:none; background:none; border:1px solid var(--border);
+    color:var(--muted); padding:8px 14px; border-radius:8px; font-size:12px;
+    cursor:pointer; font-weight:600; white-space:nowrap;
+    transition:color .15s, border-color .15s; }
+  .reset-btn:hover { border-color:var(--red); color:var(--red); }
+  .reset-btn.visible { display:block; }
+  .legend-pill { display:inline-flex; align-items:center; gap:6px; background:var(--surface);
     border:1px solid var(--border); padding:5px 10px; border-radius:20px; font-size:11px; }
+  .lp-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .lp-blue   { background:var(--accent); }
+  .lp-green  { background:var(--green); }
+  .lp-gold   { background:var(--gold); }
+  .lp-purple { background:var(--purple); }
+  .lp-orange { background:var(--orange); }
 
   /* TABLE WRAPPER */
   .table-wrap { max-width: 1400px; margin: 0 auto; padding: 0 24px 24px; overflow-x: auto; }
+  .table-empty { display:none; max-width:1400px; margin:0 auto;
+    padding:40px 24px; text-align:center; }
+  .table-empty-icon { font-size:2rem; margin-bottom:12px; color:var(--border); }
+  .table-empty-msg { font-size:15px; font-weight:600; color:var(--text); margin-bottom:6px; }
+  .table-empty-hint { font-size:12px; color:var(--muted); }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   thead th { background: var(--surface); position: sticky; top: 0; z-index: 10;
     padding: 10px 8px; text-align: left; color: var(--muted); font-weight: 600;
     border-bottom: 2px solid var(--border); cursor: pointer; white-space: nowrap;
     user-select: none; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
   thead th:hover { color: var(--accent); }
+  thead th:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 2px; }
+  .gl-tab:focus-visible, .score-toggle:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px; }
+  .h2h-picker select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   thead th.sorted { color: var(--accent); }
-  thead th .sort-arrow { opacity: 0.4; }
-  thead th.sorted .sort-arrow { opacity: 1; }
+  thead th .sort-arrow { opacity: 0.55; transition: opacity .12s; }
+  thead th:hover .sort-arrow { opacity: 0.9; }
+  thead th.sorted .sort-arrow { opacity: 1; font-weight: 700; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
-  tbody tr:hover { background: var(--surface2); }
+  tbody tr:hover { background: var(--surface2); box-shadow: inset 2px 0 0 var(--accent); }
   tbody td { padding: 9px 8px; vertical-align: middle; }
   td.rank { color: var(--muted); font-size: 12px; width: 28px; }
   td.team-name { font-weight: 600; color: var(--text); min-width: 200px; white-space: nowrap; }
@@ -99,7 +144,7 @@
   .flag-qf { background:#8b949e22; color:#8b949e; border:1px solid #8b949e44; }
 
   /* PLAYOFF HISTORY */
-  .hist-pill { display:inline-block; font-size:10px; padding:2px 7px; border-radius:12px; font-weight:600; }
+  .hist-pill { display:inline-block; font-size:10px; padding:2px 7px; border-radius:20px; font-weight:600; }
   .hist-champ { background:#ffd70033; color:#ffd700; }
   .hist-final { background:#bc8cff33; color:#bc8cff; }
   .hist-semi { background:#e3a83533; color:#e3a835; }
@@ -116,25 +161,24 @@
   .methodology { background: var(--surface); border: 1px solid var(--border);
     border-radius: 8px; padding: 20px; margin-bottom: 24px; }
   .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 12px; }
-  .method-item { background: var(--surface2); border-radius: 6px; padding: 12px 14px; }
+  .method-item { background: var(--surface2); border-radius: 8px; padding: 12px 14px; }
   .method-item .pct { font-size: 1.2rem; font-weight: 800; color: var(--accent); }
   .method-item .label { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
   /* TOP 10 CARDS */
   .top10-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; margin-bottom: 32px; }
   .team-card { background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 18px 20px; transition: border-color .2s; }
-  .team-card:hover { border-color: var(--accent); }
-  .card-rank { font-size: 11px; color: var(--muted); text-transform: uppercase;
-    letter-spacing: 1px; margin-bottom: 6px; }
+    border-radius: 8px; padding: 18px 20px;
+    transition: border-color .15s, transform .15s cubic-bezier(.16,1,.3,1); }
+  .team-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card-rank { font-size: 11px; color: var(--muted); font-weight: 500;
+    margin-bottom: 6px; }
   .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
   .card-name { font-size: 1rem; font-weight: 700; color: var(--text); }
   .card-conf { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .card-score { font-size: 1.8rem; font-weight: 800;
-    background: linear-gradient(90deg, #58a6ff, #79c0ff); -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent; }
+  .card-score { font-size: 1.9rem; font-weight: 800; color: var(--accent); letter-spacing: -0.035em; }
   .card-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
-  .card-stat { text-align: center; background: var(--surface2); border-radius: 6px; padding: 6px; }
+  .card-stat { text-align: center; background: var(--surface2); border-radius: 8px; padding: 6px; }
   .card-stat .v { font-size: 1rem; font-weight: 700; color: var(--text); }
   .card-stat .l { font-size: 10px; color: var(--muted); }
   .card-record { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
@@ -161,17 +205,29 @@
   /* H2H COMPARISON */
   .h2h-pickers { display: flex; align-items: center; gap: 20px; margin-bottom: 24px; flex-wrap: wrap; }
   .h2h-picker { flex: 1; min-width: 220px; }
-  .h2h-picker label { display: block; font-size: 11px; text-transform: uppercase;
-    letter-spacing: 0.8px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+  .h2h-picker label { display: block; font-size: 11px;
+    color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+  .h2h-share { display:none; align-items:center; gap:6px; margin-left:auto;
+    background:none; border:1px solid var(--border); color:var(--muted);
+    border-radius:8px; padding:8px 14px; font-size:12px; cursor:pointer;
+    font-weight:600; transition:color .15s, border-color .15s;
+    align-self:flex-end; white-space:nowrap; }
+  .h2h-share:hover { color:var(--accent); border-color:var(--accent); }
+  .h2h-share.visible { display:flex; }
+  .h2h-share.copied { color:var(--green); border-color:var(--green); }
   .h2h-picker select { width: 100%; background: var(--surface); border: 2px solid var(--border);
     color: var(--text); padding: 10px 14px; border-radius: 8px; font-size: 14px;
     outline: none; cursor: pointer; transition: border-color .2s; }
-  .h2h-picker select:focus { border-color: var(--accent); }
+  .h2h-picker select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,166,255,.25); outline: none; }
   .h2h-vs { font-size: 1.4rem; font-weight: 900; color: var(--muted); text-align: center;
     min-width: 48px; margin-top: 22px; }
   .h2h-content { display: none; }
+  .h2h-same-err { display:none; align-items:center; gap:10px;
+    background:#f8514914; border:1px solid #f8514944; color:var(--red);
+    border-radius:8px; padding:12px 16px; font-size:13px; margin-bottom:16px; }
+  .h2h-same-err svg { flex-shrink:0; }
   .h2h-compare-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0;
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
     overflow: hidden; margin-bottom: 20px; }
   .h2h-team-header { padding: 16px 20px; font-weight: 700; font-size: 1rem; }
   .h2h-team-header.a { background: #1f6feb22; color: var(--accent); border-right: 1px solid var(--border); }
@@ -186,9 +242,9 @@
   .h2h-val.winner-a { background: #1f6feb11; }
   .h2h-val.winner-b { background: #3fb95011; }
   .h2h-games-panel { background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; }
-  .h2h-games-title { font-size: 12px; font-weight: 700; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 12px; }
+    border-radius: 8px; padding: 16px 20px; margin-bottom: 20px; }
+  .h2h-games-title { font-size: 12px; font-weight: 600; color: var(--muted);
+    margin-bottom: 12px; }
   .h2h-game-item { display: flex; align-items: center; gap: 10px; padding: 8px 0;
     border-bottom: 1px solid var(--border); font-size: 12px; }
   .h2h-game-item:last-child { border-bottom: none; }
@@ -197,7 +253,7 @@
     padding: 2px 6px; border-radius: 4px; }
   .h2h-game-home { flex: 1; text-align: right; font-weight: 600; }
   .h2h-game-score { font-weight: 800; font-size: 14px; color: var(--text);
-    background: var(--surface2); padding: 4px 10px; border-radius: 6px; min-width: 60px; text-align: center; }
+    background: var(--surface2); padding: 4px 10px; border-radius: 8px; min-width: 60px; text-align: center; }
   .h2h-game-away { flex: 1; font-weight: 600; }
   .h2h-game-home.won, .h2h-game-away.won { color: var(--green); }
   .h2h-game-home.lost, .h2h-game-away.lost { color: var(--red); }
@@ -205,7 +261,7 @@
 
   /* H2H SUMMARY BLOCK */
   .h2h-summary { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0;
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
     overflow: hidden; margin-bottom: 20px; }
   .h2h-sum-team { padding: 20px 24px; }
   .h2h-sum-team.a { background: #1f6feb18; border-right: 1px solid var(--border); }
@@ -217,8 +273,8 @@
   .h2h-record-big { font-size: 2rem; font-weight: 900; line-height: 1; margin-bottom: 4px; }
   .h2h-sum-team.a .h2h-record-big { color: var(--accent); }
   .h2h-sum-team.b .h2h-record-big { color: var(--green); }
-  .h2h-record-label { font-size: 11px; color: var(--muted); text-transform: uppercase;
-    letter-spacing: 0.6px; margin-bottom: 14px; }
+  .h2h-record-label { font-size: 11px; color: var(--muted);
+    margin-bottom: 14px; }
   .h2h-mini-stats { display: flex; flex-direction: column; gap: 6px; }
   .h2h-sum-team.b .h2h-mini-stats { align-items: flex-end; }
   .h2h-mini-stat { display: flex; gap: 8px; align-items: center; font-size: 12px; }
@@ -230,8 +286,7 @@
   .h2h-goals-display { font-size: 1.6rem; font-weight: 900; color: var(--text);
     background: var(--surface2); border-radius: 8px; padding: 8px 16px;
     border: 1px solid var(--border); white-space: nowrap; letter-spacing: 2px; }
-  .h2h-goals-label { font-size: 10px; color: var(--muted); text-align: center;
-    text-transform: uppercase; letter-spacing: 0.5px; }
+  .h2h-goals-label { font-size: 10px; color: var(--muted); text-align: center; }
   .h2h-form-row { display: flex; gap: 4px; margin-top: 2px; }
   .h2h-form-pill { width: 22px; height: 22px; border-radius: 50%; font-size: 10px;
     font-weight: 800; display: flex; align-items: center; justify-content: center; }
@@ -240,7 +295,7 @@
   .h2h-form-pill.L { background: #f8514922; color: var(--red); border: 1px solid #f8514944; }
   .h2h-sum-team.b .h2h-form-row { flex-direction: row-reverse; }
   .h2h-no-meetings { background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 20px 24px; margin-bottom: 20px;
+    border-radius: 8px; padding: 20px 24px; margin-bottom: 20px;
     display: flex; align-items: center; gap: 14px; }
   .h2h-no-meetings-icon { font-size: 2rem; }
   .h2h-no-meetings-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
@@ -248,9 +303,9 @@
 
   /* PREDICTION */
   .pred-panel { background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 20px; }
+    border-radius: 8px; padding: 20px; }
   .pred-title { font-size: 13px; font-weight: 700; color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 16px; }
+    margin-bottom: 16px; }
   .pred-bars { display: flex; gap: 0; border-radius: 8px; overflow: hidden;
     height: 44px; margin-bottom: 12px; font-weight: 800; }
   .pred-bar-a { background: linear-gradient(90deg, #1f6feb, #58a6ff);
@@ -272,8 +327,7 @@
   .pred-factors { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 10px; margin-top: 12px; }
   .pred-factor { background: var(--surface2); border-radius: 8px; padding: 10px 12px; }
-  .pred-factor .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase;
-    letter-spacing: 0.5px; margin-bottom: 4px; }
+  .pred-factor .lbl { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
   .pred-factor .bar-wrap { height: 6px; background: var(--border); border-radius: 3px;
     overflow: hidden; margin: 4px 0; }
   .pred-factor .bar-fill { height: 100%; border-radius: 3px; }
@@ -294,7 +348,7 @@
   /* TEAM GAME LOG */
   .gl-tabs { display:flex; gap:8px; margin-top:12px; }
   .gl-tab { background:var(--surface2); border:1px solid var(--border); color:var(--muted);
-    padding:6px 16px; border-radius:6px; font-size:12px; cursor:pointer; font-weight:600;
+    padding:6px 16px; border-radius:8px; font-size:12px; cursor:pointer; font-weight:600;
     letter-spacing:.5px; transition:all .15s; }
   .gl-tab:hover { border-color:var(--accent); color:var(--accent); }
   .gl-tab.active { background:#58a6ff22; border-color:var(--accent); color:var(--accent); }
@@ -302,17 +356,15 @@
   .gl-stat { background:var(--surface); border:1px solid var(--border); border-radius:8px;
     padding:10px 16px; text-align:center; min-width:68px; }
   .gl-stat-val { font-size:1.25rem; font-weight:700; }
-  .gl-stat-lbl { font-size:10px; color:var(--muted); text-transform:uppercase;
-    letter-spacing:.5px; margin-top:2px; }
+  .gl-stat-lbl { font-size:10px; color:var(--muted); margin-top:2px; }
   .gl-games-wrap { border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-top:12px; }
   .gl-game { display:grid; grid-template-columns:110px 34px 1fr 46px 80px 130px;
     gap:8px; align-items:center; padding:9px 14px; border-bottom:1px solid var(--border);
     font-size:13px; transition:background .1s; }
   .gl-game:last-child { border-bottom:none; }
   .gl-game:hover { background:var(--surface2); }
-  .gl-game-hdr { background:var(--surface); font-size:10px; color:var(--muted);
-    font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
-  .gl-ha { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px;
+  .gl-game-hdr { background:var(--surface); font-size:10px; color:var(--muted); font-weight:600; }
+  .gl-ha { font-size:10px; font-weight:700; text-transform:uppercase;
     background:var(--surface2); border-radius:4px; padding:2px 5px; text-align:center; }
   .gl-ha.home { color:var(--accent); }
   .gl-ha.away { color:var(--muted); }
@@ -324,7 +376,7 @@
   .gl-source.showcase { color:var(--green); }
   .gl-source.tournament { color:#f5a623; }
   .gl-note { font-size:11px; color:var(--muted); margin-top:10px; padding:8px 12px;
-    background:var(--surface); border:1px solid var(--border); border-radius:6px; }
+    background:var(--surface); border:1px solid var(--border); border-radius:8px; }
 </style>
 </head>
 <body>
@@ -332,14 +384,13 @@
 <!-- HEADER -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-badge">2026 ECNL Playoff Preview</div>
+    <div class="hero-badge"><span class="badge-dot"></span>2026 ECNL Playoff Preview<span class="badge-ver">v1.5</span></div>
     <h1>2010 Boys (B10) National Playoff Analysis</h1>
     <div class="hero-meta">
-      <span>📍 <b>San Diego, CA</b></span>
-      <span>📅 <b>June 25, 2026</b></span>
-      <span>🏆 <b>54 Qualified Teams</b></span>
-      <span>⚽ <b>15 Conferences</b></span>
-      <span>📊 <b>Updated May 25, 2026 — Virginia &amp; Club America Cup added</b></span>
+      <span><b>San Diego, CA</b></span>
+      <span><b>June 25, 2026</b></span>
+      <span><b>54 Qualified Teams</b></span>
+      <span><b>15 Conferences</b></span>
     </div>
   </div>
 </div>
@@ -349,7 +400,7 @@
 
 <!-- CONTROLS -->
 <div class="controls">
-  <input type="text" id="searchInput" placeholder="🔍  Search team name...">
+  <input type="text" id="searchInput" placeholder="Search team name..." title="Press / to focus">
   <select id="confFilter">
     <option value="">All Conferences</option>
     <option>Far West</option><option>Florida</option><option>Heartland</option>
@@ -365,11 +416,12 @@
     <option value="champ">2025 Champion</option>
     <option value="playoff">Any Playoff Pedigree</option>
   </select>
-  <div class="legend-pill">🔵 Elite Defense</div>
-  <div class="legend-pill">🟢 Elite Offense</div>
-  <div class="legend-pill">🥇 2025 Champ</div>
-  <div class="legend-pill">🥈 2025 Final</div>
-  <div class="legend-pill">🏅 Semifinal</div>
+  <div class="legend-pill"><span class="lp-dot lp-blue"></span>Elite Defense</div>
+  <div class="legend-pill"><span class="lp-dot lp-green"></span>Elite Offense</div>
+  <div class="legend-pill"><span class="lp-dot lp-gold"></span>2025 Champ</div>
+  <div class="legend-pill"><span class="lp-dot lp-purple"></span>2025 Final</div>
+  <div class="legend-pill"><span class="lp-dot lp-orange"></span>Semifinal</div>
+  <button class="reset-btn" id="resetBtn" onclick="resetFilters()">Clear filters</button>
 </div>
 
 <!-- TABLE -->
@@ -399,6 +451,11 @@
     </thead>
     <tbody id="tableBody"></tbody>
   </table>
+</div>
+<div class="table-empty" id="tableEmpty" role="status" aria-live="polite">
+  <div class="table-empty-icon">&#9651;</div>
+  <div class="table-empty-msg">No teams match <span id="tableEmptyTerm"></span></div>
+  <div class="table-empty-hint">Check spelling, or search by partial name &mdash; e.g. &ldquo;wichita&rdquo; finds &ldquo;FC Wichita&rdquo;</div>
 </div>
 
 <!-- METHODOLOGY -->
@@ -431,11 +488,11 @@
   <div class="section-title">Tactical Flags</div>
   <div class="flags-grid">
     <div class="flag-panel">
-      <h3 style="color:#58a6ff">🔵 Elite Defense — Clean Sheet Leaders (GA/G &lt; 0.65)</h3>
+      <h3 style="color:#58a6ff">Elite Defense — Clean Sheet Leaders (GA/G &lt; 0.65)</h3>
       <div id="defLeaders"></div>
     </div>
     <div class="flag-panel">
-      <h3 style="color:#3fb950">🟢 Consistent Offense — Offensive Leaders (GF/G &gt; 2.50)</h3>
+      <h3 style="color:#3fb950">Consistent Offense — Offensive Leaders (GF/G &gt; 2.50)</h3>
       <div id="offLeaders"></div>
     </div>
   </div>
@@ -460,8 +517,17 @@
         <option value="">— Select Team —</option>
       </select>
     </div>
+  <button class="h2h-share" id="h2hShareBtn" onclick="copyH2HLink()"
+    title="Copy a shareable link to this matchup">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M6 4H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2M10 2h4m0 0v4m0-4-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span id="h2hShareLabel">Copy link</span>
+  </button>
   </div>
 
+  <div class="h2h-same-err" id="h2hSameTeamErr" role="alert">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.5v4M8 10.5v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Select two <em>different</em> teams to compare.
+  </div>
   <div class="h2h-content" id="h2hContent">
     <!-- H2H Summary (derived from actual matchups) -->
     <div id="h2hSummary"></div>
@@ -648,16 +714,16 @@ function buildStats() {
   const topDef = teams.slice().sort((a,b)=>a.gapg-b.gapg)[0];
   const confs = [...new Set(teams.map(t=>t.conf))].length;
   document.getElementById('statsBar').innerHTML = [
-    ['54', 'Qualified Teams', `${confs} conferences`],
-    [totalGF.toLocaleString(), 'Total Goals Scored', `${(totalGF/totalGP).toFixed(2)} per game`],
-    [avgPPG, 'Avg PPG (Field)', 'All 54 teams'],
-    [topOff.gfpg.toFixed(2), 'Top GF/G', topOff.name],
-    [topDef.gapg.toFixed(2), 'Lowest GA/G', topDef.name],
-    ['Legends FC', '2025 Champion', 'Defending title'],
-    ['LAFC So Cal', '2024 Champion', '2023-24 U14'],
-    ['XF Academy', '#1 Seed', `${teams.find(t=>t.name==='XF Academy').score} pts score`],
-  ].map(([v,l,s]) => `<div class="stat-card"><div class="stat-label">${l}</div>
-    <div class="stat-value" style="font-size:${v.length>8?'1rem':'1.4rem'}">${v}</div>
+    ['54',                      'Qualified Teams',   `${confs} conferences`,                          ''],
+    [totalGF.toLocaleString(),  'Total Goals Scored',`${(totalGF/totalGP).toFixed(2)} per game`,     ''],
+    [avgPPG,                    'Avg PPG (Field)',    'All 54 teams',                                  ''],
+    [topOff.gfpg.toFixed(2),   'Top GF/G',           topOff.name,                                   'stat-leader'],
+    [topDef.gapg.toFixed(2),   'Lowest GA/G',         topDef.name,                                  'stat-leader stat-def'],
+    ['Legends FC',              '2025 Champion',      'Defending title',                              'stat-champ stat-name'],
+    ['LAFC So Cal',             '2024 Champion',      '2023-24 U14',                                  'stat-champ stat-name'],
+    ['XF Academy',              '#1 Seed',            `${teams.find(t=>t.name==='XF Academy').score} pts score`, 'stat-champ stat-name stat-seed'],
+  ].map(([v,l,s,cls]) => `<div class="stat-card ${cls}"><div class="stat-label">${l}</div>
+    <div class="stat-value">${v}</div>
     <div class="stat-sub">${s}</div></div>`).join('');
 }
 
@@ -686,14 +752,14 @@ function gdCell(gd) {
 
 function flagsHtml(t) {
   let f = '';
-  if (t.isEliteDef) f += '<span class="flag flag-def">🔵 DEF</span>';
-  if (t.isEliteOff) f += '<span class="flag flag-off">🟢 OFF</span>';
-  if (t.h2025 === 'Champion') f += '<span class="flag flag-champ">🥇 2025</span>';
-  else if (t.h2025 === 'Finalist') f += '<span class="flag flag-final">🥈 2025F</span>';
-  else if (t.h2025 === 'Semi') f += '<span class="flag flag-semi">🏅 2025SF</span>';
-  else if (t.h2025 === 'QF') f += '<span class="flag flag-qf">⬛ 2025QF</span>';
-  if (t.h2024 === 'Champion') f += '<span class="flag flag-champ">🥇 2024</span>';
-  else if (t.h2024 === 'Finalist') f += '<span class="flag flag-final">🥈 2024F</span>';
+  if (t.isEliteDef) f += '<span class="flag flag-def" title="Elite Defense: GA/G < 0.65">DEF</span>';
+  if (t.isEliteOff) f += '<span class="flag flag-off" title="Elite Offense: GF/G > 2.50">OFF</span>';
+  if (t.h2025 === 'Champion') f += '<span class="flag flag-champ" title="2025 ECNL National Champion">&#x2605; 2025</span>';
+  else if (t.h2025 === 'Finalist') f += '<span class="flag flag-final" title="2025 ECNL National Finalist">2025 Final</span>';
+  else if (t.h2025 === 'Semi') f += '<span class="flag flag-semi" title="2025 ECNL National Semifinalist">2025 SF</span>';
+  else if (t.h2025 === 'QF') f += '<span class="flag flag-qf" title="2025 ECNL National Quarterfinalist">2025 QF</span>';
+  if (t.h2024 === 'Champion') f += '<span class="flag flag-champ" title="2024 ECNL National Champion">&#x2605; 2024</span>';
+  else if (t.h2024 === 'Finalist') f += '<span class="flag flag-final" title="2024 ECNL National Finalist">2024 Final</span>';
   return f;
 }
 
@@ -701,6 +767,8 @@ function renderTable() {
   const search = document.getElementById('searchInput').value.toLowerCase();
   const conf = document.getElementById('confFilter').value;
   const flag = document.getElementById('flagFilter').value;
+  const resetBtn = document.getElementById('resetBtn');
+  if (resetBtn) resetBtn.classList.toggle('visible', !!(search || conf || flag));
 
   filtered = teams.filter(t => {
     if (search && !t.name.toLowerCase().includes(search)) return false;
@@ -719,6 +787,16 @@ function renderTable() {
   });
 
   const tbody = document.getElementById('tableBody');
+  const emptyEl = document.getElementById('tableEmpty');
+  const emptyTerm = document.getElementById('tableEmptyTerm');
+  if (filtered.length === 0) {
+    document.getElementById('mainTable').style.display = 'none';
+    if (emptyTerm) emptyTerm.textContent = search ? `"${search}"` : 'current filters';
+    if (emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+  document.getElementById('mainTable').style.display = '';
+  if (emptyEl) emptyEl.style.display = 'none';
   tbody.innerHTML = filtered.map((t, i) => {
     const winPctStr = (t.winPct*100).toFixed(1)+'%';
     const fillPct = t.score;
@@ -726,7 +804,7 @@ function renderTable() {
     return `<tr>
       <td class="rank">${t.rank}</td>
       <td class="seed">${seedBadge(t.seed)}</td>
-      <td class="team-name">${t.name}${flagsHtml(t)}<span class="conf-badge">${t.conf}</span></td>
+      <td class="team-name" title="${t.name} &mdash; ${t.conf} Conference (Seed #${t.seed})">${t.name}${flagsHtml(t)}<span class="conf-badge">${t.conf}</span></td>
       <td style="color:var(--muted);font-size:12px">#${t.confRank} in conf</td>
       <td class="num">${t.gp}</td>
       <td class="num record-w">${t.w}</td>
@@ -769,6 +847,21 @@ document.querySelectorAll('thead th[data-col]').forEach(th => {
 document.getElementById('searchInput').addEventListener('input', renderTable);
 document.getElementById('confFilter').addEventListener('change', renderTable);
 document.getElementById('flagFilter').addEventListener('change', renderTable);
+
+// Keyboard shortcut: / to focus search (when not in a text field)
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && !' INPUT SELECT TEXTAREA '.includes(' ' + document.activeElement.tagName + ' ')) {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+});
+
+function resetFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('confFilter').value = '';
+  document.getElementById('flagFilter').value = '';
+  renderTable();
+}
 
 // ============================================================
 // TOP 10 PROFILES
@@ -866,9 +959,9 @@ function buildTop10() {
         <span style="color:var(--muted);font-size:11px">· ${t.gp} GP · ${t.ppg} PPG</span>
       </div>
       ${hist2024 || hist2025 ? `<div class="card-history">${hist2024}${hist2025}</div>` : ''}
-      ${prof.style ? `<div style="font-size:11px;color:var(--accent);margin-bottom:6px">⚡ ${prof.style}</div>` : ''}
+      ${prof.style ? `<div style="font-size:11px;color:var(--accent);margin-bottom:6px">${prof.style}</div>` : ''}
       <div class="card-profile">${prof.bg || ''}</div>
-      ${prof.strengths ? `<div style="font-size:11px;color:var(--green);margin-top:8px">✅ ${prof.strengths}</div>` : ''}
+      ${prof.strengths ? `<div style="font-size:11px;color:var(--green);margin-top:8px">${prof.strengths}</div>` : ''}
       <div class="card-flags">${flagsHtml(t)}</div>
     </div>`;
   }).join('');
@@ -1022,7 +1115,6 @@ const H2H_MAP = {
   "Dallas Texans Academy|||Santa Clara Sporting": [{"date":"2025-11-21","home":"Dallas Texans Academy","away":"Santa Clara Sporting","hScore":2,"aScore":0,"evt":"Phoenix Showcase"}],
   "CCV Stars|||Dallas Texans": [{"date":"2025-11-21","home":"CCV Stars","away":"Dallas Texans","hScore":3,"aScore":3,"evt":"Phoenix Showcase"}],
   "Oregon Premier|||SAFC": [{"date":"2025-11-21","home":"SAFC","away":"Oregon Premier","hScore":6,"aScore":2,"evt":"Phoenix Showcase"}],
-  "Beach FC (CA)|||Boise Timbers FC": [{"date":"2025-11-21","home":"Beach FC (CA)","away":"Boise Timbers FC","hScore":1,"aScore":2,"evt":"Phoenix Showcase"}],
   "LAFC So Cal|||RISE SC": [{"date":"2025-11-21","home":"LAFC So Cal","away":"RISE SC","hScore":0,"aScore":0,"evt":"Phoenix Showcase"}],
   "Davis Legacy|||San Diego Surf": [{"date":"2025-11-22","home":"San Diego Surf","away":"Davis Legacy","hScore":0,"aScore":1,"evt":"Phoenix Showcase"}],
   "LAFC So Cal|||Marin FC": [{"date":"2025-11-22","home":"Marin FC","away":"LAFC So Cal","hScore":0,"aScore":0,"evt":"Phoenix Showcase"}],
@@ -1067,7 +1159,7 @@ const H2H_MAP = {
   "FL Kraze Krush|||Nationals Soccer Club - Nationals": [{"date":"2025-12-06","home":"FL Kraze Krush","away":"Nationals Soccer Club - Nationals","hScore":2,"aScore":2,"evt":"SC Showcase"}],
   "Highland FC|||Louisiana Fire SC": [{"date":"2025-12-06","home":"Highland FC","away":"Louisiana Fire SC","hScore":1,"aScore":3,"evt":"SC Showcase"}],
   "NCFC Youth Academy|||World Class FC": [{"date":"2025-12-06","home":"NCFC Youth Academy","away":"World Class FC","hScore":1,"aScore":0,"evt":"SC Showcase"}],
-  "Beach FC (VA)|||Tennessee SC - ECNL B 2010": [{"date":"2025-12-06","home":"Tennessee SC - ECNL B 2010","away":"Beach FC (VA)","hScore":0,"aScore":1,"evt":"SC Showcase"}],
+  "Beach FC (VA)|||Tennessee SC": [{"date":"2025-12-06","home":"Tennessee SC","away":"Beach FC (VA)","hScore":0,"aScore":1,"evt":"SC Showcase"}],
   "NTH-NASA|||Ohio Elite SA": [{"date":"2025-12-06","home":"Ohio Elite SA","away":"NTH-NASA","hScore":1,"aScore":0,"evt":"SC Showcase"}],
   "Parkland SC|||Slammers FC": [{"date":"2025-12-06","home":"Parkland SC","away":"Slammers FC","hScore":2,"aScore":4,"evt":"SC Showcase"}],
   "Arlington Soccer|||HTX": [{"date":"2025-12-06","home":"HTX","away":"Arlington Soccer","hScore":1,"aScore":0,"evt":"SC Showcase"}],
@@ -1084,7 +1176,7 @@ const H2H_MAP = {
   "GSA|||Ohio Premier": [{"date":"2025-12-07","home":"GSA","away":"Ohio Premier","hScore":4,"aScore":1,"evt":"SC Showcase"}],
   "Ohio Elite SA|||SUSA FC": [{"date":"2025-12-07","home":"Ohio Elite SA","away":"SUSA FC","hScore":3,"aScore":2,"evt":"SC Showcase"}],
   "Charlotte SA Academy|||Slammers FC": [{"date":"2025-12-07","home":"Slammers FC","away":"Charlotte SA Academy","hScore":1,"aScore":1,"evt":"SC Showcase"}],
-  "Concorde Fire Platinum|||Tennessee SC - ECNL B 2010": [{"date":"2025-12-07","home":"Concorde Fire Platinum","away":"Tennessee SC - ECNL B 2010","hScore":0,"aScore":1,"evt":"SC Showcase"}],
+  "Concorde Fire Platinum|||Tennessee SC": [{"date":"2025-12-07","home":"Concorde Fire Platinum","away":"Tennessee SC","hScore":0,"aScore":1,"evt":"SC Showcase"}],
   "Baltimore Celtic|||NTH-NASA": [{"date":"2025-12-07","home":"NTH-NASA","away":"Baltimore Celtic","hScore":2,"aScore":0,"evt":"SC Showcase"}],
   "Arlington Soccer|||Penn Fusion SA": [{"date":"2025-12-07","home":"Arlington Soccer","away":"Penn Fusion SA","hScore":2,"aScore":2,"evt":"SC Showcase"}],
   "Delaware FC|||Louisiana Fire SC": [{"date":"2025-12-07","home":"Louisiana Fire SC","away":"Delaware FC","hScore":1,"aScore":2,"evt":"SC Showcase"}],
@@ -1145,7 +1237,6 @@ const H2H_MAP = {
   "RISE SC|||Washington Premier": [{"date":"2026-01-23","home":"Washington Premier","away":"RISE SC","hScore":4,"aScore":1,"evt":"Las Vegas Showcase"}],
   "Real Colorado Academy|||Utah Avalanche": [{"date":"2026-01-23","home":"Utah Avalanche","away":"Real Colorado Academy","hScore":2,"aScore":1,"evt":"Las Vegas Showcase"}],
   "NM Rapids|||Seattle United": [{"date":"2026-01-23","home":"NM Rapids","away":"Seattle United","hScore":1,"aScore":5,"evt":"Las Vegas Showcase"}],
-  "Chattanooga Red Wolves SC|||Oregon Premier": [{"date":"2026-01-23","home":"Oregon Premier","away":"Chattanooga Red Wolves SC","hScore":2,"aScore":0,"evt":"Las Vegas Showcase"}],
   "Boise Timbers FC|||Northern Indiana Express": [{"date":"2026-01-23","home":"Boise Timbers FC","away":"Northern Indiana Express","hScore":1,"aScore":3,"evt":"Las Vegas Showcase"}],
   "Ohio Elite SA|||Rockford Raptors": [{"date":"2026-01-23","home":"Rockford Raptors","away":"Ohio Elite SA","hScore":1,"aScore":3,"evt":"Las Vegas Showcase"}],
   "OK Energy FC|||XF Academy": [{"date":"2026-01-23","home":"XF Academy","away":"OK Energy FC","hScore":1,"aScore":0,"evt":"Las Vegas Showcase"}],
@@ -1165,7 +1256,6 @@ const H2H_MAP = {
   "Baltimore Celtic|||RISE SC": [{"date":"2026-01-25","home":"RISE SC","away":"Baltimore Celtic","hScore":2,"aScore":0,"evt":"Las Vegas Showcase"}],
   "Charlotte SA Academy|||NM Rapids": [{"date":"2026-01-25","home":"NM Rapids","away":"Charlotte SA Academy","hScore":2,"aScore":3,"evt":"Las Vegas Showcase"}],
   "Gretna Elite Academy|||XF Academy": [{"date":"2026-01-25","home":"XF Academy","away":"Gretna Elite Academy","hScore":3,"aScore":4,"evt":"Las Vegas Showcase"}],
-  "Boise Timbers FC|||Chattanooga Red Wolves SC": [{"date":"2026-01-25","home":"Boise Timbers FC","away":"Chattanooga Red Wolves SC","hScore":1,"aScore":1,"evt":"Las Vegas Showcase"}],
   "Seattle United|||Utah Avalanche": [{"date":"2026-01-25","home":"Utah Avalanche","away":"Seattle United","hScore":2,"aScore":0,"evt":"Las Vegas Showcase"}],
   "Eastside FC|||Ohio Elite SA": [{"date":"2026-01-25","home":"Eastside FC","away":"Ohio Elite SA","hScore":0,"aScore":1,"evt":"Las Vegas Showcase"}],
   "El Paso Locomotive|||Real Colorado Academy": [{"date":"2026-01-25","home":"Real Colorado Academy","away":"El Paso Locomotive","hScore":3,"aScore":1,"evt":"Las Vegas Showcase"}],
@@ -1177,17 +1267,14 @@ const H2H_MAP = {
   "Penn Fusion SA|||Rebels SC": [{"date":"2026-05-23","home":"Rebels SC","away":"Penn Fusion SA","hScore":5,"aScore":1,"evt":"Virginia Showcase"}],
   "Charlotte SA Academy|||WNY Flash": [{"date":"2026-05-23","home":"WNY Flash","away":"Charlotte SA Academy","hScore":1,"aScore":3,"evt":"Virginia Showcase"}],
   "Concorde Fire Platinum|||Dallas Texans Academy": [{"date":"2026-05-23","home":"Concorde Fire Platinum","away":"Dallas Texans Academy","hScore":1,"aScore":1,"evt":"Virginia Showcase"}],
-  "STA|||Select South": [{"date":"2026-05-23","home":"STA","away":"Select South","hScore":1,"aScore":0,"evt":"Virginia Showcase"}],
   "FSA FC|||Marin FC": [{"date":"2026-05-23","home":"FSA FC","away":"Marin FC","hScore":1,"aScore":0,"evt":"Virginia Showcase"}],
   "NCFC Youth Academy|||STA": [{"date":"2026-05-23","home":"NCFC Youth Academy","away":"STA","hScore":2,"aScore":2,"evt":"Virginia Showcase"}],
   "Charlotte SA Academy|||FSA FC": [{"date":"2026-05-24","home":"Charlotte SA Academy","away":"FSA FC","hScore":0,"aScore":3,"evt":"Virginia Showcase"}],
   "Concorde Fire Platinum|||NCFC Youth Academy": [{"date":"2026-05-24","home":"Concorde Fire Platinum","away":"NCFC Youth Academy","hScore":3,"aScore":1,"evt":"Virginia Showcase"}],
-  "STA|||Villarreal VA": [{"date":"2026-05-24","home":"STA","away":"Villarreal VA","hScore":1,"aScore":0,"evt":"Virginia Showcase"}],
   "Arlington Soccer|||Rebels SC": [{"date":"2026-05-24","home":"Arlington Soccer","away":"Rebels SC","hScore":2,"aScore":2,"evt":"Virginia Showcase"}],
   "Dallas Texans Academy|||FL Premier FC": [{"date":"2026-05-24","home":"Dallas Texans Academy","away":"FL Premier FC","hScore":0,"aScore":1,"evt":"Virginia Showcase"}],
   "Beach FC (VA)|||STA": [{"date":"2026-05-24","home":"STA","away":"Beach FC (VA)","hScore":1,"aScore":0,"evt":"Virginia Showcase"}],
   "East Coast Surf SC|||Marin FC": [{"date":"2026-05-24","home":"Marin FC","away":"East Coast Surf SC","hScore":0,"aScore":1,"evt":"Virginia Showcase"}],
-  "Concorde Fire Platinum|||Manhattan SC": [{"date":"2026-05-24","home":"Manhattan SC","away":"Concorde Fire Platinum","hScore":2,"aScore":1,"evt":"Virginia Showcase"}],
   "NTH-NASA|||Richmond United": [{"date":"2026-05-24","home":"NTH-NASA","away":"Richmond United","hScore":1,"aScore":1,"evt":"Virginia Showcase"}],
   "Concorde Fire Platinum|||Real Colorado Academy": [{"date":"2026-04-10","home":"Real Colorado Academy","away":"Concorde Fire Platinum","hScore":2,"aScore":0,"evt":"Indy Showcase"}],
   "Colorado Rapids|||Ohio Premier": [{"date":"2026-04-10","home":"Colorado Rapids","away":"Ohio Premier","hScore":1,"aScore":0,"evt":"Indy Showcase"}],
@@ -1502,6 +1589,13 @@ function predictMatch(tA, tB) {
       bVal: tB.h2024 !== '—' ? tB.h2024+' \'24' : tB.h2025 !== '—' ? tB.h2025+' \'25' : 'None',
       aBar: Math.round(tA.playoffExp * 100),
       bBar: Math.round(tB.playoffExp * 100),
+    },
+    {
+      label: 'Conference Strength',
+      aVal: (CONF_STR[tA.conf] || 0).toFixed(2) + ' PPG',
+      bVal: (CONF_STR[tB.conf] || 0).toFixed(2) + ' PPG',
+      aBar: Math.round(tA._n_confStr * 100),
+      bBar: Math.round(tB._n_confStr * 100),
     }
   ];
 
@@ -1528,10 +1622,30 @@ function runH2H() {
   const nameB = document.getElementById('h2hTeamB').value;
   const content = document.getElementById('h2hContent');
 
-  if (!nameA || !nameB || nameA === nameB) {
+  const sameErr = document.getElementById('h2hSameTeamErr');
+  const shareBtn = document.getElementById('h2hShareBtn');
+  if (!nameA || !nameB) {
     content.style.display = 'none';
+    sameErr.style.display = 'none';
+    if (shareBtn) shareBtn.classList.remove('visible');
+    history.replaceState(null, '', window.location.pathname);
     return;
   }
+  if (nameA === nameB) {
+    content.style.display = 'none';
+    sameErr.style.display = 'flex';
+    if (shareBtn) shareBtn.classList.remove('visible');
+    history.replaceState(null, '', window.location.pathname);
+    return;
+  }
+  sameErr.style.display = 'none';
+
+  // Sync URL for permalink
+  const params = new URLSearchParams();
+  params.set('teamA', nameA);
+  params.set('teamB', nameB);
+  history.replaceState(null, '', '?' + params.toString());
+  if (shareBtn) shareBtn.classList.add('visible');
 
   const tA = teams.find(t => t.name === nameA);
   const tB = teams.find(t => t.name === nameB);
@@ -1546,7 +1660,7 @@ function runH2H() {
   if (games.length === 0) {
     summaryEl.innerHTML = `
       <div class="h2h-no-meetings">
-        <div class="h2h-no-meetings-icon">📋</div>
+        <div class="h2h-no-meetings-icon" aria-hidden="true">∅</div>
         <div class="h2h-no-meetings-text">
           <b>No previous meetings this season.</b><br>
           ${tA.name} (${tA.conf}) and ${tB.name} (${tB.conf}) play in different conferences
@@ -1894,6 +2008,28 @@ function runGameLog() {
 }
 
 // ============================================================
+// H2H PERMALINK — copy button
+// ============================================================
+function copyH2HLink() {
+  const btn = document.getElementById('h2hShareBtn');
+  const label = document.getElementById('h2hShareLabel');
+  const url = window.location.href;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => {
+      label.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { label.textContent = 'Copy link'; btn.classList.remove('copied'); }, 2000);
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    label.textContent = 'Copied!'; btn.classList.add('copied');
+    setTimeout(() => { label.textContent = 'Copy link'; btn.classList.remove('copied'); }, 2000);
+  }
+}
+
+// ============================================================
 // INIT
 // ============================================================
 buildStats();
@@ -1902,6 +2038,19 @@ buildTop10();
 buildFlags();
 initH2HSelectors();
 initGameLogSelector();
+
+// Restore H2H from URL params (permalink support)
+(function() {
+  const p = new URLSearchParams(window.location.search);
+  const a = p.get('teamA'), b = p.get('teamB');
+  if (a && b) {
+    document.getElementById('h2hTeamA').value = a;
+    document.getElementById('h2hTeamB').value = b;
+    runH2H();
+    document.getElementById('h2hSection') &&
+      document.getElementById('h2hSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+})();
 </script>
 </body>
 </html>
