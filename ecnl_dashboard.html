@@ -1251,17 +1251,19 @@ const TOURNAMENT_MAP = {
   "Phoenix Rising U16 MLS NEXT|||San Diego Surf": [{"date":"2026-05-24","home":"San Diego Surf","away":"Phoenix Rising U16 MLS NEXT","hScore":8,"aScore":0,"tourn":"Club America Cup"}],
   "Beach FC (CA)|||Sporting CA Montoya 2010": [{"date":"2026-05-23","home":"Beach FC (CA)","away":"Sporting CA Montoya 2010","hScore":5,"aScore":1,"tourn":"Club America Cup"}],
   "Beach FC (CA)|||SBSC B2010 MLS Next": [{"date":"2026-05-23","home":"SBSC B2010 MLS Next","away":"Beach FC (CA)","hScore":1,"aScore":4,"tourn":"Club America Cup"}],
+  // Club America Cup — XF Academy (Crossfire B10 ECNL 1) — May 23-25, 2026 — Champions (5-0)
+  "SBSC B2010 MLS Next - Mahon|||XF Academy": [{"date":"2026-05-23","home":"SBSC B2010 MLS Next - Mahon","away":"XF Academy","hScore":1,"aScore":6,"tourn":"Club America Cup"}],
+  "Sporting CA Montoya 2010 NPL|||XF Academy": [{"date":"2026-05-23","home":"XF Academy","away":"Sporting CA Montoya 2010 NPL","hScore":5,"aScore":1,"tourn":"Club America Cup"}],
   "Beach FC (CA)|||XF Academy": [{"date":"2026-05-24","home":"Beach FC (CA)","away":"XF Academy","hScore":1,"aScore":2,"tourn":"Club America Cup"}],
+  "Chula Vista FC MLS Next 2010|||XF Academy": [{"date":"2026-05-25","home":"XF Academy","away":"Chula Vista FC MLS Next 2010","hScore":3,"aScore":1,"tourn":"Club America Cup"}],
+  "LA BULLS 2010 MLS NEXT|||XF Academy": [{"date":"2026-05-25","home":"LA BULLS 2010 MLS NEXT","away":"XF Academy","hScore":1,"aScore":2,"tourn":"Club America Cup"}],
   "Beach FC B2010 ECRL|||LAFC So Cal": [{"date":"2026-05-23","home":"Beach FC B2010 ECRL","away":"LAFC So Cal","hScore":0,"aScore":2,"tourn":"Club America Cup"}],
   "LAFC So Cal|||MVLA 10B": [{"date":"2026-05-23","home":"MVLA 10B","away":"LAFC So Cal","hScore":0,"aScore":4,"tourn":"Club America Cup"}],
   "Chula Vista FC MLS Next|||LAFC So Cal": [{"date":"2026-05-24","home":"LAFC So Cal","away":"Chula Vista FC MLS Next","hScore":0,"aScore":1,"tourn":"Club America Cup"}],
   // ECNL Boys Super Cup — West Coast — Nov 28-30, 2025 — Surf Cup Sports Park, San Diego
   // Elite 8 knockout; top qualifying clubs from Northwest/Southwest/Mountain/NorCal regions
-  "Utah Avalanche|||XF Academy": [{"date":"2025-11-28","home":"Utah Avalanche","away":"XF Academy","hScore":0,"aScore":4,"tourn":"ECNL Super Cup (West)"}],
   "Legends FC|||Seattle United": [{"date":"2025-11-28","home":"Legends FC","away":"Seattle United","hScore":1,"aScore":0,"tourn":"ECNL Super Cup (West)"}],
-  "Pateadores|||XF Academy": [{"date":"2025-11-29","home":"Pateadores","away":"XF Academy","hScore":0,"aScore":3,"tourn":"ECNL Super Cup (West)"}],
   "Las Vegas Heat Surf|||Legends FC": [{"date":"2025-11-29","home":"Las Vegas Heat Surf","away":"Legends FC","hScore":0,"aScore":0,"tourn":"ECNL Super Cup (West)"}],
-  "Legends FC|||XF Academy": [{"date":"2025-11-30","home":"Legends FC","away":"XF Academy","hScore":0,"aScore":3,"tourn":"ECNL Super Cup (West)"},{"date":"2026-04-12","home":"Legends FC","away":"XF Academy","hScore":1,"aScore":5,"tourn":"ECNL Super Cup"}],
   // ECNL Boys Super Cup — East Coast — Dec 12-14, 2025 — Raleigh, NC
   // Winner: Concorde Fire Platinum; qualifies for Super Cup Championship
   "Concorde Fire Platinum|||FL Kraze Krush": [{"date":"2025-12-12","home":"Concorde Fire Platinum","away":"FL Kraze Krush","hScore":1,"aScore":0,"tourn":"ECNL Super Cup (East)"}],
@@ -1276,7 +1278,6 @@ const TOURNAMENT_MAP = {
   // ECNL Boys Super Cup Championship — Apr 10-12, 2026 — Grand Park, Indianapolis, IN
   // Inaugural championship: East/Central/West winners + 1 wild card
   "Concorde Fire Platinum|||Legends FC": [{"date":"2026-04-11","home":"Concorde Fire Platinum","away":"Legends FC","hScore":1,"aScore":2,"tourn":"ECNL Super Cup"}],
-  "Dallas Texans Academy|||XF Academy": [{"date":"2026-04-11","home":"Dallas Texans Academy","away":"XF Academy","hScore":1,"aScore":2,"tourn":"ECNL Super Cup"}],
   "Concorde Fire Platinum|||Dallas Texans Academy": [{"date":"2026-04-12","home":"Concorde Fire Platinum","away":"Dallas Texans Academy","hScore":3,"aScore":1,"tourn":"ECNL Super Cup"}],
 };
 
@@ -1874,7 +1875,7 @@ function switchGLTab(tab) {
       note.style.display = 'block';
     }
   } else if (tab === 'tourn') {
-    note.textContent = '⚠ Tournament coverage is partial. Includes: ECNL Super Cup West/East/Central (Nov-Dec 2025) + Championship (Apr 2026, Indianapolis); Jefferson Cup 2026; Club America Cup 2026. Super Cup rosters include U16-U18/19 players across the club. Club America Cup XF Academy game data from tournament registration records.';
+    note.textContent = '⚠ Tournament coverage is partial. Includes: ECNL Super Cup West/East/Central (Nov-Dec 2025); Jefferson Cup 2026; Club America Cup 2026 (XF Academy champions, 5-0).';
     note.style.display = 'block';
   } else {
     note.style.display = 'none';
