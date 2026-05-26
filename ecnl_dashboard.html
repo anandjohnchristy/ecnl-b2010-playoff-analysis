@@ -409,12 +409,12 @@
       Each team is scored on a <b style="color:var(--text)">0–100 scale</b> combining six normalized components. All metrics are ranked relative to the full 54-team field. Updated May 25, 2026 to incorporate showcase cross-conference form vs qualified opponents.
     </p>
     <div class="method-grid">
-      <div class="method-item"><div class="pct">25%</div><div class="label">Win Rate (W/GP) — current season form</div></div>
+      <div class="method-item"><div class="pct">30%</div><div class="label">Win Rate (W/GP) — current season form</div></div>
       <div class="method-item"><div class="pct">15%</div><div class="label">Goals For per Game — offensive output</div></div>
       <div class="method-item"><div class="pct">15%</div><div class="label">Defensive Efficiency — inverse of GA/G</div></div>
       <div class="method-item"><div class="pct">15%</div><div class="label">Conference Strength — avg PPG of conf qualifiers</div></div>
-      <div class="method-item"><div class="pct">20%</div><div class="label">Playoff Pedigree — 2024 + 2025 tournament runs</div></div>
-      <div class="method-item"><div class="pct">10%</div><div class="label">Showcase Form — cross-conf win% vs qualified opponents</div></div>
+      <div class="method-item"><div class="pct">10%</div><div class="label">Playoff Pedigree — 2025 (70%) + 2024 (30%) tournament runs</div></div>
+      <div class="method-item"><div class="pct">20%</div><div class="label">Showcase Form — cross-conf win% vs qualified opponents</div></div>
     </div>
   </div>
 </div>
@@ -599,7 +599,7 @@ const teams = RAW.map(r => {
   const gd = gf - ga;
   const ppg = parseFloat(((w*3 + d) / gp).toFixed(2));
   const confStr = (CONF_STR[conf] - CONF_MIN) / (CONF_MAX - CONF_MIN);
-  const playoffExp = Math.max(HIST_SCORE[h2024], HIST_SCORE[h2025]) / 100;
+  const playoffExp = (HIST_SCORE[h2025] * 0.7 + HIST_SCORE[h2024] * 0.3) / 100;
   return { name, seed, conf, confRank, gp, w, l, d, gf, ga, gd, ppg,
            winPct, gfpg, gapg, confStr, h2024, h2025, playoffExp,
            isEliteDef: gapg < 0.65, isEliteOff: gfpg > 2.50 };
@@ -625,11 +625,11 @@ teams.forEach(t => {
   t.showcaseWinPct = 0.5;
   t._n_showcaseWinPct = 0.5;
   t.score = Math.round(
-    t._n_winPct   * 30 +
-    t._n_gfpg     * 15 +
-    t._n_gapg     * 15 +
-    t._n_confStr  * 15 +
-    t._n_playoffExp * 25
+    t._n_winPct      * 34 +
+    t._n_gfpg        * 17 +
+    t._n_gapg        * 17 +
+    t._n_confStr     * 17 +
+    t._n_playoffExp  * 11
   );
 });
 
@@ -1286,12 +1286,12 @@ const TOURNAMENT_MAP = {
   norm(teams, 'showcaseWinPct');
   teams.forEach(t => {
     t.score = Math.round(
-      t._n_winPct          * 25 +
+      t._n_winPct          * 30 +
       t._n_gfpg            * 15 +
       t._n_gapg            * 15 +
       t._n_confStr         * 15 +
-      t._n_playoffExp      * 20 +
-      t._n_showcaseWinPct  * 10
+      t._n_playoffExp      * 10 +
+      t._n_showcaseWinPct  * 20
     );
   });
   teams.sort((a,b) => b.score - a.score);
