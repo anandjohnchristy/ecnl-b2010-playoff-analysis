@@ -384,6 +384,41 @@
   .gl-source.tournament { color:#f5a623; }
   .gl-note { font-size:11px; color:var(--muted); margin-top:10px; padding:8px 12px;
     background:var(--surface); border:1px solid var(--border); border-radius:8px; }
+
+  /* GROUPS */
+  .groups-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
+    gap:16px; margin-bottom:32px; }
+  .group-card { background:var(--surface); border:1px solid var(--border); border-radius:8px;
+    overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.06); transition:border-color .15s,box-shadow .15s; }
+  .group-card:hover { border-color:var(--accent); box-shadow:0 6px 18px rgba(0,0,0,.09); }
+  .group-header { background:linear-gradient(160deg,#0f172a 0%,#1e293b 100%);
+    color:#f0f6fc; padding:12px 16px; display:flex; align-items:center; gap:10px; }
+  .group-letter { font-size:1.5rem; font-weight:900; color:#60a5fa; letter-spacing:-0.02em; }
+  .group-fav-badge { font-size:10px; font-weight:700; background:#f59e0b22;
+    color:#f59e0b; border:1px solid #f59e0b44; padding:2px 6px; border-radius:4px;
+    margin-left:auto; }
+  .group-seeds-row { display:flex; flex-wrap:wrap; gap:4px; padding:8px 12px;
+    background:var(--surface2); border-bottom:1px solid var(--border); }
+  .seed-tag { font-size:10px; color:var(--muted); background:var(--surface);
+    border:1px solid var(--border); border-radius:4px; padding:2px 6px; font-weight:500; }
+  .group-rows { display:flex; flex-direction:column; }
+  .group-row { display:grid; grid-template-columns:28px 1fr auto;
+    gap:6px; align-items:center; padding:8px 12px;
+    border-bottom:1px solid var(--border); transition:background .1s; }
+  .group-row:last-child { border-bottom:none; }
+  .group-row:hover { background:var(--surface2); }
+  .group-row.gr-top { background:#eff6ff; }
+  .gr-pos { font-size:12px; font-weight:700; color:var(--muted); text-align:center; }
+  .gr-pos.p1 { color:#f59e0b; font-size:14px; }
+  .gr-info { min-width:0; }
+  .gr-name { font-size:13px; font-weight:700; color:var(--text);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .gr-sub { font-size:10px; color:var(--muted); margin-top:1px; }
+  .gr-meta { text-align:right; }
+  .gr-score { font-size:14px; font-weight:800; color:var(--accent); }
+  .gr-ppg { font-size:10px; color:var(--muted); }
+  .gr-favorite-label { font-size:9px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.5px; color:#f59e0b; }
 </style>
 </head>
 <body>
@@ -396,7 +431,7 @@
     <div class="hero-meta">
       <span><b>San Diego, CA</b></span>
       <span><b>June 25, 2026</b></span>
-      <span><b>54 Qualified Teams</b></span>
+      <span><b>66 Teams · Groups A–Q</b></span>
       <span><b>15 Conferences</b></span>
     </div>
   </div>
@@ -411,10 +446,10 @@
   <select id="confFilter">
     <option value="">All Conferences</option>
     <option>Far West</option><option>Florida</option><option>Heartland</option>
-    <option>Mid-America</option><option>Mid-Atlantic</option><option>Mountain</option>
-    <option>New England</option><option>North Atlantic</option><option>Northern Cal</option>
-    <option>Northwest</option><option>Ohio Valley</option><option>Southeast</option>
-    <option>Southwest</option><option>Texas</option>
+    <option>Mid-America</option><option>Mid-Atlantic</option><option>Midwest</option>
+    <option>Mountain</option><option>New England</option><option>North Atlantic</option>
+    <option>Northern Cal</option><option>Northwest</option><option>Ohio Valley</option>
+    <option>Southeast</option><option>Southwest</option><option>Texas</option>
   </select>
   <select id="flagFilter">
     <option value="">All Teams</option>
@@ -470,7 +505,7 @@
   <div class="section-title">Performance Score Methodology</div>
   <div class="methodology">
     <p style="font-size:12px;color:var(--muted);margin-bottom:4px;">
-      Each team is scored on a <b style="color:var(--text)">0–100 scale</b> combining six normalized components. All metrics are ranked relative to the full 54-team field. Updated May 25, 2026 to incorporate showcase cross-conference form vs qualified opponents.
+      Each team is scored on a <b style="color:var(--text)">0–100 scale</b> combining six normalized components. All metrics are ranked relative to the full 66-team field. Updated June 2026 with expanded team list (Groups A–Q) and new conference entrants.
     </p>
     <div class="method-grid">
       <div class="method-item"><div class="pct">30%</div><div class="label">Win Rate (W/GP) — current season form</div></div>
@@ -587,6 +622,13 @@
   </div>
 </div>
 
+<!-- GROUPS ANALYSIS -->
+<div class="section" style="margin-top:32px">
+  <div class="section-title">Group Stage Analysis — Groups A–Q</div>
+  <div class="section-sub">Performance rankings within each group based on season record, goals, conference strength, and playoff history. Teams are ranked by composite performance score. ★ = group favorite.</div>
+  <div id="groupsGrid" class="groups-grid"></div>
+</div>
+
 <div style="height:48px"></div>
 
 <script>
@@ -611,7 +653,7 @@ const RAW = [
   ["CCV Stars",              15,  "Mountain",     2, 15, 12, 3, 0, 32,  9,  "—",        "—"],
   ["Slammers FC",            16,  "Southwest",    1, 22, 16, 2, 4, 51, 22,  "—",        "—"],
   ["Oregon Premier",         17,  "Far West",     1, 12,  9, 2, 1, 35,  6,  "—",        "—"],
-  ["El Camino Futbol Club Salinas",18,"Northern Cal",2,20,15,4,1,44,22, "—",        "—"],
+  ["El Camino Futbol Club Salinas", 18, "Northern Cal", 2, 20, 15, 4, 1, 44, 22, "—", "—"],
   ["FL Kraze Krush",         21,  "Florida",      2, 18, 13, 3, 2, 47, 16,  "—",        "—"],
   ["NCFC Youth Academy",     23,  "Mid-Atlantic", 1, 18, 12, 2, 4, 47, 13,  "—",        "—"],
   ["Alabama FC",             24,  "Mid-America",  1, 14,  9, 1, 4, 27,  9,  "—",        "—"],
@@ -649,6 +691,19 @@ const RAW = [
   ["RISE SC",                62,  "Texas",        9, 19,  9, 8, 2, 31, 34,  "—",        "—"],
   ["CESA Triumph",           63,  "Southeast",    4, 16,  6, 4, 6, 31, 19,  "—",        "—"],
   ["NTH-NASA",               65,  "Southeast",    5, 16,  5, 4, 7, 23, 22,  "—",        "QF"],
+  // Additional teams for 66-team group stage (Groups A–Q)
+  ["East Coast Surf SC",     67,  "New England",  2, 14, 10, 2, 2, 45, 17,  "—",        "—"],
+  ["FSA FC",                 66,  "New England",  1, 14, 12, 2, 0, 42,  3,  "—",        "—"],
+  ["Cleveland Force SC",     70,  "Ohio Valley",  2, 14,  8, 3, 3, 21, 11,  "—",        "—"],
+  ["Indiana Elite FC",       73,  "Midwest",      2, 12,  6, 4, 2, 24, 29,  "—",        "—"],
+  ["VDA",                    72,  "Mid-Atlantic", 5, 17,  9, 4, 4, 30, 16,  "—",        "—"],
+  ["St. Croix",              69,  "Midwest",      1, 13,  9, 1, 3, 36, 10,  "—",        "—"],
+  ["FC Wisconsin",           74,  "Midwest",      3, 13,  5, 2, 6, 21, 13,  "—",        "—"],
+  ["Kansas City Athletics",  68,  "Heartland",    6, 12,  9, 3, 0, 38, 12,  "—",        "—"],
+  ["West Coast FC",          77,  "Southwest",    8, 22,  7,10, 5, 37, 43,  "—",        "—"],
+  ["Manhattan SC",           75,  "New England",  8, 14,  8, 6, 0, 32, 32,  "—",        "—"],
+  ["Fairfax VA Union",       76,  "Mid-Atlantic", 7, 17,  8, 8, 1, 31, 21,  "—",        "—"],
+  ["HEX FC Dominion",        71,  "North Atlantic",3,11,  7, 2, 2, 19, 12,  "—",        "—"],
 ];
 
 // Conference strength (avg PPG of qualified teams per conf)
@@ -656,7 +711,7 @@ const CONF_STR = {
   "New England": 2.84, "Heartland": 2.79, "North Atlantic": 2.495, "Mountain": 2.467,
   "Northern Cal": 2.306, "Florida": 2.217, "Far West": 2.205, "Ohio Valley": 2.210,
   "Texas": 2.117, "Northwest": 2.06, "Mid-America": 1.978, "Southwest": 1.979,
-  "Mid-Atlantic": 1.958, "Southeast": 1.734
+  "Mid-Atlantic": 1.958, "Southeast": 1.734, "Midwest": 1.857
 };
 const CONF_MIN = 1.734, CONF_MAX = 2.84;
 
@@ -721,7 +776,7 @@ function buildStats() {
   const topDef = teams.slice().sort((a,b)=>a.gapg-b.gapg)[0];
   const confs = [...new Set(teams.map(t=>t.conf))].length;
   document.getElementById('statsBar').innerHTML = [
-    ['54',                      'Qualified Teams',   `${confs} conferences`,                          ''],
+    [teams.length.toString(),   'Teams',             `${confs} conferences · Groups A–Q`,            ''],
     [totalGF.toLocaleString(),  'Total Goals Scored',`${(totalGF/totalGP).toFixed(2)} per game`,     ''],
     [avgPPG,                    'Avg PPG (Field)',    'All 54 teams',                                  ''],
     [topOff.gfpg.toFixed(2),   'Top GF/G',           topOff.name,                                   'stat-leader'],
@@ -1433,7 +1488,7 @@ const CONF_GAMES_MAP = {
   const _qNames = new Set(RAW.map(r => r[0]));
   const _seedMap = {};
   RAW.forEach(r => { _seedMap[r[0]] = r[1]; }); // name → official ECNL seed
-  const SEED_MAX = 66; // 1 above max seed (65) so minimum quality > 0
+  const SEED_MAX = 78; // 1 above max seed (77) so minimum quality > 0
 
   const _sfW = {}, _sfGP = {};
   RAW.forEach(r => { _sfW[r[0]] = 0; _sfGP[r[0]] = 0; });
@@ -2037,12 +2092,93 @@ function copyH2HLink() {
 }
 
 // ============================================================
+// GROUP STAGE DATA & RENDERER
+// ============================================================
+const GROUPS = [
+  { id:'A', seeds:['XF Academy','Marin FC','Richmond United','RISE SC'] },
+  { id:'B', seeds:['Gretna Elite Academy','Pipeline SC','Seattle United','Concorde Fire Premier'] },
+  { id:'C', seeds:['Davis Legacy','CCV Stars','VDA','NTH-NASA'] },
+  { id:'D', seeds:['OK Energy FC','East Coast Surf SC','Charlotte SA Academy','Indiana Elite FC'] },
+  { id:'E', seeds:['STA','Real Colorado Academy','Cleveland Force SC','3RSC'] },
+  { id:'F', seeds:['FL Premier FC','River Islands Surf','SAFC','Manhattan SC'] },
+  { id:'G', seeds:['Delaware FC','El Camino Futbol Club Salinas','Parkland SC','Rebels SC'] },
+  { id:'H', seeds:['Utah Avalanche','Albion Hurricanes FC','Ohio Premier','FC Wisconsin'] },
+  { id:'I', seeds:['Ohio Elite SA','Santa Clara Sporting','Boise Timbers FC','DKSC'] },
+  { id:'J', seeds:['Slammers FC','Kansas City Athletics','Beach FC (VA)','CESA Triumph'] },
+  { id:'K', seeds:['NM Rapids','San Diego Surf','St. Croix','Arlington Soccer'] },
+  { id:'L', seeds:['Oregon Premier','FL Kraze Krush','South Carolina Surf','Legends FC'] },
+  { id:'M', seeds:['NCFC Youth Academy','Louisiana Fire SC','Pateadores','PacNW SC'] },
+  { id:'N', seeds:['Alabama FC','FSA FC','Dallas Texans Academy','West Coast FC'] },
+  { id:'O', seeds:['Concorde Fire Platinum','HTX','LAFC So Cal','Fairfax VA Union'] },
+  { id:'P', seeds:['FC Wichita','HEX FC Dominion','Tennessee SC'] },
+  { id:'Q', seeds:['BVBIA','Beach FC (CA)','Lobos Rush'] },
+];
+
+// Display-name overrides for group seed labels
+const GROUP_DISPLAY = {
+  'SAFC': 'San Antonio FC', 'BVBIA': 'BVB Intl Academy',
+  'Beach FC (CA)': 'Beach FC [CA]', 'Beach FC (VA)': 'Beach FC [VA]',
+  'El Camino Futbol Club Salinas': 'El Camino FC Salinas',
+  '3RSC': 'Three Rivers SC', 'FL Premier FC': 'Florida Premier FC',
+  'FL Kraze Krush': 'FL Kraze Krush', 'St. Croix': 'St. Croix SC',
+};
+
+function buildGroups() {
+  const byName = {};
+  teams.forEach(t => { byName[t.name] = t; });
+  const posIcons = ['★', '2', '3', '4'];
+  const posColors = ['#f59e0b','var(--muted)','var(--muted)','var(--muted)'];
+
+  document.getElementById('groupsGrid').innerHTML = GROUPS.map(g => {
+    const grpTeams = g.seeds.map(n => byName[n]).filter(Boolean);
+    const ranked = grpTeams.slice().sort((a,b) => b.score - a.score);
+    const fav = ranked[0];
+
+    const seedLabels = g.seeds.map((n,i) => {
+      const dn = GROUP_DISPLAY[n] || n;
+      return `<span class="seed-tag">${g.id}${i+1}: ${dn}</span>`;
+    }).join('');
+
+    const rows = ranked.map((t, i) => {
+      const icon = i === 0 ? '★' : `${i+1}`;
+      const favClass = i === 0 ? ' gr-top' : '';
+      const gdStr = t.gd > 0 ? `+${t.gd}` : `${t.gd}`;
+      const dn = GROUP_DISPLAY[t.name] || t.name;
+      return `<div class="group-row${favClass}">
+        <div class="gr-pos${i===0?' p1':''}">${icon}</div>
+        <div class="gr-info">
+          <div class="gr-name" title="${t.name}">${dn}</div>
+          <div class="gr-sub">${t.conf} · ${t.w}W-${t.l}L-${t.d}D · GD ${gdStr}</div>
+        </div>
+        <div class="gr-meta">
+          <div class="gr-score">${t.score}</div>
+          <div class="gr-ppg">${t.ppg} PPG</div>
+          ${i===0?'<div class="gr-favorite-label">Favorite</div>':''}
+        </div>
+      </div>`;
+    }).join('');
+
+    const favDn = GROUP_DISPLAY[fav.name] || fav.name;
+    return `<div class="group-card">
+      <div class="group-header">
+        <div class="group-letter">GROUP ${g.id}</div>
+        <div style="font-size:11px;color:#94a3b8;margin-left:4px">${g.seeds.length} teams</div>
+        <div class="group-fav-badge">★ ${favDn}</div>
+      </div>
+      <div class="group-seeds-row">${seedLabels}</div>
+      <div class="group-rows">${rows}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
 // INIT
 // ============================================================
 buildStats();
 renderTable();
 buildTop10();
 buildFlags();
+buildGroups();
 initH2HSelectors();
 initGameLogSelector();
 
