@@ -385,6 +385,25 @@
   .gl-note { font-size:11px; color:var(--muted); margin-top:10px; padding:8px 12px;
     background:var(--surface); border:1px solid var(--border); border-radius:8px; }
 
+  /* MOBILE RESPONSIVE */
+  @media (max-width: 600px) {
+    /* H2H Summary: stack vertically so right team isn't clipped */
+    .h2h-summary { grid-template-columns: 1fr; }
+    .h2h-sum-team.a { border-right: none; border-bottom: 1px solid var(--border); }
+    .h2h-sum-team.b { text-align: left; }
+    .h2h-sum-team.b .h2h-mini-stats { align-items: flex-start; }
+    .h2h-sum-team.b .h2h-mini-stat { flex-direction: row; }
+    .h2h-sum-team.b .h2h-form-row { flex-direction: row; }
+    .h2h-sum-mid { border-bottom: 1px solid var(--border); flex-direction: row;
+      flex-wrap: wrap; justify-content: space-around; padding: 14px 16px; gap: 12px; }
+    .h2h-sum-team { padding: 14px 16px; }
+    .h2h-record-big { font-size: 1.5rem; }
+    /* H2H compare grid: allow scrolling rather than clipping */
+    .h2h-compare-grid { overflow-x: auto; }
+    /* Prediction bar stays readable */
+    .pred-bar-wrap { min-width: 0; }
+  }
+
   /* GROUPS */
   .groups-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
     gap:16px; margin-bottom:32px; }
@@ -543,7 +562,7 @@
 <!-- H2H COMPARISON & PREDICTOR -->
 <div class="section" style="margin-top:32px">
   <div class="section-title">Head-to-Head Comparison &amp; Match Predictor</div>
-  <div class="section-sub">Select any two teams from the 54 qualified teams to view their head-to-head regular season record and get a matchup prediction for San Diego.</div>
+  <div class="section-sub">Select any two teams from the 66-team field to view their head-to-head regular season record and get a matchup prediction for San Diego.</div>
 
   <div class="h2h-pickers">
     <div class="h2h-picker">
