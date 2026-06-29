@@ -507,6 +507,12 @@
     border:1px solid var(--border); border-radius:4px; padding:3px 10px; flex-shrink:0; }
   .playin-adv-note { font-size:10px; color:var(--green); font-weight:700; margin-top:6px; }
   .playin-neutral-note { font-size:10px; color:var(--muted); margin-top:6px; }
+
+  /* R16 QUALIFIER BADGE (in table + flags) */
+  .flag-r16 { background:#10b98122; color:#10b981; border:1px solid #10b98144; font-weight:800; }
+  /* Eliminated team styling in table */
+  tr.elim td { opacity:.5; }
+  tr.elim td.team-name { opacity:.7; }
 </style>
 </head>
 <body>
@@ -541,6 +547,8 @@
   </select>
   <select id="flagFilter">
     <option value="">All Teams</option>
+    <option value="r16">R16 Qualifiers — 16 teams</option>
+    <option value="elim">Eliminated after Group Stage</option>
     <option value="def">Elite Defense (GA/G &lt; 0.65)</option>
     <option value="off">Elite Offense (GF/G &gt; 2.50)</option>
     <option value="champ">2025 Champion</option>
@@ -593,23 +601,23 @@
   <div class="section-title">Performance Score Methodology</div>
   <div class="methodology">
     <p style="font-size:12px;color:var(--muted);margin-bottom:4px;">
-      Each team is scored on a <b style="color:var(--text)">0–100 scale</b> combining six normalized components. All metrics are ranked relative to the full 66-team field. Updated June 2026 with expanded team list (Groups A–Q) and new conference entrants.
+      Each team is scored on a <b style="color:var(--text)">0–100 scale</b> combining six normalized components. Scores now incorporate <b style="color:var(--text)">group stage results (June 25–28)</b> — all 66 teams' W/D/L, GF, and GA from group play are added to their season records before renormalization. Metrics ranked relative to the full 66-team field. <b style="color:var(--green)">16 teams advance to Round of 16 on June 30.</b>
     </p>
     <div class="method-grid">
-      <div class="method-item"><div class="pct">30%</div><div class="label">Win Rate (W/GP) — current season form</div></div>
-      <div class="method-item"><div class="pct">15%</div><div class="label">Goals For per Game — offensive output</div></div>
-      <div class="method-item"><div class="pct">15%</div><div class="label">Defensive Efficiency — inverse of GA/G</div></div>
+      <div class="method-item"><div class="pct">30%</div><div class="label">Win Rate (W/GP) — full season + group stage</div></div>
+      <div class="method-item"><div class="pct">15%</div><div class="label">Goals For per Game — offensive output incl. group stage</div></div>
+      <div class="method-item"><div class="pct">15%</div><div class="label">Defensive Efficiency — inverse of GA/G incl. group stage</div></div>
       <div class="method-item"><div class="pct">15%</div><div class="label">Conference Strength — avg PPG of conf qualifiers</div></div>
       <div class="method-item"><div class="pct">10%</div><div class="label">Playoff Pedigree — 2025 (70%) + 2024 (30%) tournament runs</div></div>
-      <div class="method-item"><div class="pct">20%</div><div class="label">Showcase Form — quality-weighted cross-conf results (all showcase GP counted)</div></div>
+      <div class="method-item"><div class="pct">20%</div><div class="label">Showcase Form — quality-weighted cross-conf results</div></div>
     </div>
   </div>
 </div>
 
-<!-- TOP 10 -->
+<!-- R16 TEAM PROFILES -->
 <div class="section">
-  <div class="section-title">Top 10 Team Profiles</div>
-  <div class="section-sub">Full profile for each top-ranked team — strengths, playing style, and postseason background.</div>
+  <div class="section-title">Round of 16 Team Profiles</div>
+  <div class="section-sub">Full profile for each of the 16 R16 qualifiers — group stage performance, season strengths, and June 30 matchup. Ranked by post-group-stage composite score.</div>
   <div class="top10-grid" id="top10Grid"></div>
 </div>
 
@@ -977,7 +985,7 @@ function buildStats() {
   const topDef = teams.slice().sort((a,b)=>a.gapg-b.gapg)[0];
   const confs = [...new Set(teams.map(t=>t.conf))].length;
   document.getElementById('statsBar').innerHTML = [
-    [teams.length.toString(),   'Teams',             `${confs} conferences · Groups A–Q`,            ''],
+    [teams.length.toString(),   'Teams',             `16 in R16 · ${confs} conferences`,              ''],
     [totalGF.toLocaleString(),  'Total Goals Scored',`${(totalGF/totalGP).toFixed(2)} per game`,     ''],
     [avgPPG,                    'Avg PPG (Field)',    'All 66 teams · incl. group stage',              ''],
     [topOff.gfpg.toFixed(2),   'Top GF/G',           topOff.name,                                   'stat-leader'],
@@ -1015,6 +1023,8 @@ function gdCell(gd) {
 
 function flagsHtml(t) {
   let f = '';
+  if (typeof R16_TEAMS !== 'undefined' && R16_TEAMS.has(t.name))
+    f += '<span class="flag flag-r16" title="Round of 16 Qualifier">R16</span>';
   if (t.isEliteDef) f += '<span class="flag flag-def" title="Elite Defense: GA/G < 0.65">DEF</span>';
   if (t.isEliteOff) f += '<span class="flag flag-off" title="Elite Offense: GF/G > 2.50">OFF</span>';
   if (t.h2025 === 'Champion') f += '<span class="flag flag-champ" title="2025 ECNL National Champion">&#x2605; 2025</span>';
@@ -1036,9 +1046,11 @@ function renderTable() {
   filtered = teams.filter(t => {
     if (search && !t.name.toLowerCase().includes(search)) return false;
     if (conf && t.conf !== conf) return false;
-    if (flag === 'def' && !t.isEliteDef) return false;
-    if (flag === 'off' && !t.isEliteOff) return false;
-    if (flag === 'champ' && t.h2025 !== 'Champion') return false;
+    if (flag === 'r16'     && !R16_TEAMS.has(t.name)) return false;
+    if (flag === 'elim'    && R16_TEAMS.has(t.name))  return false;
+    if (flag === 'def'     && !t.isEliteDef) return false;
+    if (flag === 'off'     && !t.isEliteOff) return false;
+    if (flag === 'champ'   && t.h2025 !== 'Champion') return false;
     if (flag === 'playoff' && t.h2024 === '—' && t.h2025 === '—') return false;
     return true;
   });
@@ -1064,7 +1076,9 @@ function renderTable() {
     const winPctStr = (t.winPct*100).toFixed(1)+'%';
     const fillPct = t.score;
     const scCls = t.score >= 70 ? 'score-top' : '';
-    return `<tr>
+    const isR16 = R16_TEAMS.has(t.name);
+    const elimCls = isR16 ? '' : ' elim';
+    return `<tr class="${elimCls}">
       <td class="rank">${t.rank}</td>
       <td class="seed">${seedBadge(t.seed)}</td>
       <td class="team-name" title="${t.name} &mdash; ${t.conf} Conference (Seed #${t.seed})">${t.name}${flagsHtml(t)}<span class="conf-badge">${t.conf}</span></td>
@@ -1190,18 +1204,97 @@ const PROFILES = {
     bg: "North Atlantic conference champions with a 9-1-1 record and only 7 goals allowed (0.64 GA/G). Delaware FC finished ahead of Pipeline SC in a stacked North Atlantic conference. Their seed #9 reflects a well-rounded team that doesn't concede much and converts efficiently.",
     strengths: "Conf champion, 9-1-1 record, 7 GA in 11 games, top North Atlantic seed"
   },
+  "Cleveland Force SC": {
+    style: "High-intensity attacking, clinical finishing, strong transition game",
+    bg: "Ohio Valley conference Div 2 qualifier from Cleveland, OH. Cleveland Force SC was the story of Group E — entering as the 3rd-ranked team by pre-playoff score, they swept to the group title by beating Real Colorado Academy 3-0, STA 4-0, and holding on despite a 3-0 loss to 3RSC on the final day. Their 4-0 demolition of #2 seed STA in the group stage was the biggest upset of the tournament so far. Now they face Oregon Premier (Group L winners) in the R16.",
+    strengths: "Group E winners, 4-0 vs STA, 2W-0D-1L in group, dangerous upset specialists"
+  },
+  "Rebels SC": {
+    style: "Direct, high-tempo attack, physical play, clinical in front of goal",
+    bg: "Southwest conference club from the Albuquerque, NM area. 2025 U15 QF pedigree. Rebels SC navigated a brutal 3-way tie in Group G — all three teams (Rebels, Delaware FC, El Camino FC) finished at 6 points — and emerged via H2H goal difference (+2). They opened with a dominant 4-1 win over Delaware FC, lost narrowly 2-3 to El Camino, then bounced back 3-0 vs Parkland to clinch first. Their 9 GF in 3 games shows a clinical attack. R16 opponent: Kansas City Athletics (Group J winners, 3W-0D-0L).",
+    strengths: "2025 QF pedigree, 9 GF in group stage, clinched tiebreaker via superior H2H GD"
+  },
+  "Albion Hurricanes FC": {
+    style: "Physical pressing, strong defensive shape, tactical flexibility",
+    bg: "Texas conference club (San Antonio area) with 2025 QF experience. Albion Hurricanes won Group H with the best record — 2W-1D-0L (7 pts) — keeping Utah Avalanche (the pre-tournament favorite in the group) below them. They held Ohio Premier 0-0 in a disciplined draw, then crushed FC Wisconsin 4-1 and edged Utah Avalanche 2-1 on the final day to claim the top spot. Their disciplined defensive work (6 GF, 2 GA in group) earned them the group without conceding much. R16 opponent: DKSC (Group I winners).",
+    strengths: "2025 QF pedigree, Group H winners (7 pts), edged Utah Avalanche on final day, only 2 GA"
+  },
+  "DKSC": {
+    style: "Organized defensive block, high-efficiency attack, collective work rate",
+    bg: "Dallas-area Texas conference club (seed #54) that was one of the biggest surprises of the group stage. DKSC entered as a lower-seeded team but produced a perfect Group I: 3W-0D-0L, 8 GF, 0 GA — the only team at the entire tournament to keep three clean sheets. They beat Ohio Elite SA 3-0, Santa Clara Sporting 4-0, and Boise Timbers 1-0. Their 8-0 GF/GA differential in the group was the best of any group. R16 opponent: Albion Hurricanes FC (Group H winners).",
+    strengths: "Perfect group stage (3W, 8 GF, 0 GA), only team with 3 clean sheets, biggest group stage riser"
+  },
+  "Kansas City Athletics": {
+    style: "High-energy pressing, disciplined structure, efficient use of possession",
+    bg: "Heartland conference club (seed #68) that delivered a perfect Group J: 3W-0D-0L, 6 GF, 2 GA. Kansas City Athletics beat CESA Triumph 2-1, Beach FC (VA) 2-0, and Slammers FC 2-1 — consistently winning tight games, showing mental resilience and tactical discipline in close scorelines. As a lower seed that earned every point, they enter the R16 as dangerous opponents. R16 opponent: Rebels SC (Group G winners, tiebreaker qualifier).",
+    strengths: "Perfect group stage, 3 wins all by 1 goal — elite composure in tight games, underdog to watch"
+  },
+  "San Diego Surf": {
+    style: "Technical possession, patient build-up, experienced playoff mentality",
+    bg: "Southwest conference club (seed #40) and 2025 U15 Semifinalist — the home city favorites playing in front of local supporters in San Diego. They won Group K on tiebreakers over St. Croix (both at 6 pts) — their 2-0 H2H win over St. Croix was the decisive result. Their season-long record (13-5-3) and playoff experience make them a credible R16 threat. R16 opponent: FL Premier FC (Group F winners), a marquee home-state matchup.",
+    strengths: "2025 Semi pedigree, Group K winners via H2H tiebreaker, home crowd advantage in San Diego"
+  },
+  "Oregon Premier": {
+    style: "Disciplined defensive shape, direct counter-attack, excellent organization",
+    bg: "Far West conference champions (seed #17) from Portland, OR. Oregon Premier won Group L convincingly — 2W-1D-0L, 7 GF, 2 GA — and edged defending 2025 champion Legends FC on goal difference (+5 vs +2) to claim first place, with both teams finishing on 7 points. Their 3-0 and 3-1 wins vs South Carolina Surf and FL Kraze Krush were dominant, and the 1-1 draw with Legends showed resilience. R16 opponent: Cleveland Force SC (Group E winners, the group stage's biggest upset team).",
+    strengths: "Far West conf champion, edged defending 2025 champ Legends FC on GD in Group L, 7 GF–2 GA"
+  },
+  "Pateadores": {
+    style: "Creative attacking, technical play, strong combination football",
+    bg: "Established Southern California club in the Southwest conference (seed #39). Pateadores looked inconsistent early — losing 0-1 to Louisiana Fire and 1-2 to NCFC Youth Academy — but finished Group M with an emphatic 5-1 over PacNW SC to take first. Their 7 GF in 3 games shows offensive quality, and they know how to peak at the right time in national events. Their parent club won the 2025 U16 Boys National Championship. R16 opponent: OK Energy FC (Group D winners, 3W-0D-0L).",
+    strengths: "Clutch 5-1 final group game to clinch, club won 2025 U16 national title, strong finishing"
+  },
+  "Concorde Fire Platinum": {
+    style: "Compact pressing, rapid transitions, physically dominant",
+    bg: "Southeast conference champions (seed #25) from the Atlanta area. 2025 QF experience. Concorde Fire Platinum were the dominant team in Group O — 3W-0D-0L, 7 GF, 1 GA — including a 3-0 opening win over Fairfax VA Union, 2-1 over LAFC So Cal, and a 2-0 result over HTX (the pre-tournament favorite in the group) on the final day. Their perfect group with only 1 GA conceded shows both offensive and defensive quality. R16 opponent: Pipeline SC (Group B winners).",
+    strengths: "2025 QF pedigree, dominant Group O (3W, 7-1 GF/GA), beat HTX 2-0 on final day"
+  },
+  "Beach FC (CA)": {
+    style: "Compact block, effective counter-attack, proven big-game mentality",
+    bg: "Southwest conference club (seed #52) from Southern California, 2025 U15 Semifinalist. Beach FC (CA) had to earn their R16 spot the hard way — winning Group Q (1W-1D-0L), then beating Group P winner FC Wichita 2-1 in the June 28 play-in to advance as the 16th and final R16 qualifier. Their 3-0 opening win over BVBIA, 1-1 draw with Lobos Rush, and the clutch 2-1 play-in victory show big-game composure. They're the only team to qualify through both a group AND a play-in. R16 opponent: XF Academy (#1 seed, perfect record).",
+    strengths: "2025 Semi pedigree, only team to win both group + play-in, upset potential vs #1 XF Academy"
+  },
 };
 
 function buildTop10() {
-  const top10 = teams.slice(0, 10);
+  const r16 = teams.filter(t => R16_TEAMS.has(t.name));
+  // teams is already sorted by score desc
   const grid = document.getElementById('top10Grid');
-  grid.innerHTML = top10.map((t, i) => {
+  grid.innerHTML = r16.map((t, i) => {
     const prof = PROFILES[t.name] || {};
-    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i+1}`;
+    const rankLabel = i === 0 ? '#1 — Top Ranked' : i === 1 ? '#2' : i === 2 ? '#3' : `#${i+1}`;
     const hist2024 = t.h2024 !== '—' ? `<span class="hist-pill hist-${t.h2024.toLowerCase()}">${t.h2024} 2024</span>` : '';
     const hist2025 = t.h2025 !== '—' ? `<span class="hist-pill hist-${t.h2025.toLowerCase()}">${t.h2025} 2025</span>` : '';
+
+    // Group stage result
+    const gsGroup = Object.keys(GROUP_STAGE_RESULTS).find(g =>
+      GROUP_STAGE_RESULTS[g].some(r => r.name === t.name));
+    const gsResult = gsGroup ? GROUP_STAGE_RESULTS[gsGroup].find(r => r.name === t.name) : null;
+    const gsHtml = gsResult
+      ? `<div style="font-size:11px;margin:6px 0;padding:6px 10px;background:var(--surface2);border-radius:6px;border-left:3px solid ${gsResult.adv?'var(--accent)':'var(--green)'}">
+           <span style="font-weight:700;color:var(--muted)">Group ${gsGroup}</span>
+           <span style="margin:0 6px;color:var(--muted)">·</span>
+           <span style="color:var(--green);font-weight:700">${gsResult.w}W-${gsResult.d}D-${gsResult.l}L</span>
+           <span style="margin:0 4px;color:var(--muted)">·</span>
+           <span style="color:var(--text)">${gsResult.gf} GF · ${gsResult.ga} GA · ${gsResult.gd >= 0 ? '+' : ''}${gsResult.gd} GD · ${gsResult.pts} pts</span>
+         </div>`
+      : '';
+
+    // R16 matchup
+    const r16Match = R16_MATCHUPS.find(m => m.teamA === t.name || m.teamB === t.name);
+    const r16Opp = r16Match ? (r16Match.teamA === t.name ? r16Match.teamB : r16Match.teamA) : null;
+    const r16OppDn = r16Opp ? (GROUP_DISPLAY[r16Opp] || r16Opp) : null;
+    const r16Html = r16Match
+      ? `<div style="font-size:11px;margin-top:8px;padding:7px 10px;background:#10b98111;border:1px solid #10b98144;border-radius:6px;display:flex;align-items:center;gap:6px">
+           <span style="font-weight:800;color:#10b981">R16 — June 30</span>
+           <span style="color:var(--muted)">vs</span>
+           <span style="font-weight:700;color:var(--text)">${r16OppDn}</span>
+           <span style="color:var(--muted);font-size:10px">(Grp ${r16Match.teamA === t.name ? r16Match.grpB : r16Match.grpA})</span>
+         </div>`
+      : '';
+
     return `<div class="team-card">
-      <div class="card-rank">${medal} Performance Rank</div>
+      <div class="card-rank">${rankLabel} R16 Qualifier</div>
       <div class="card-header">
         <div>
           <div class="card-name">${t.name}</div>
@@ -1222,7 +1315,9 @@ function buildTop10() {
         <span style="color:var(--muted);font-size:11px">· ${t.gp} GP · ${t.ppg} PPG</span>
       </div>
       ${hist2024 || hist2025 ? `<div class="card-history">${hist2024}${hist2025}</div>` : ''}
-      ${prof.style ? `<div style="font-size:11px;color:var(--accent);margin-bottom:6px">${prof.style}</div>` : ''}
+      ${gsHtml}
+      ${r16Html}
+      ${prof.style ? `<div style="font-size:11px;color:var(--accent);margin-top:8px;margin-bottom:4px">${prof.style}</div>` : ''}
       <div class="card-profile">${prof.bg || ''}</div>
       ${prof.strengths ? `<div style="font-size:11px;color:var(--green);margin-top:8px">${prof.strengths}</div>` : ''}
       <div class="card-flags">${flagsHtml(t)}</div>
@@ -2417,6 +2512,9 @@ const R16_MATCHUPS = [
   {teamA:'Davis Legacy',         grpA:'C', teamB:'Dallas Texans Academy', grpB:'N'},
   {teamA:'FL Premier FC',        grpA:'F', teamB:'San Diego Surf',        grpB:'K'},
 ];
+
+// Set of 16 teams advancing to Round of 16 (derived from R16_MATCHUPS)
+const R16_TEAMS = new Set(R16_MATCHUPS.flatMap(m => [m.teamA, m.teamB]));
 
 // ============================================================
 // GROUP STAGE DATA & RENDERER
