@@ -438,6 +438,75 @@
   .gr-ppg { font-size:10px; color:var(--muted); }
   .gr-favorite-label { font-size:9px; font-weight:700; text-transform:uppercase;
     letter-spacing:.5px; color:#f59e0b; }
+
+  /* GROUP STAGE STANDINGS TABLE */
+  .gs-standings { width:100%; border-collapse:collapse; font-size:11px; }
+  .gs-standings th { padding:4px 6px; text-align:center; font-weight:700; color:var(--muted);
+    border-bottom:2px solid var(--border); text-transform:uppercase; font-size:9px; letter-spacing:.4px; }
+  .gs-standings th.gs-th-team { text-align:left; padding-left:10px; }
+  .gs-standings td { padding:6px 6px; text-align:center; border-bottom:1px solid var(--border); }
+  .gs-standings td.gs-td-team { text-align:left; font-weight:600; color:var(--text); padding-left:10px; }
+  .gs-standings tr:last-child td { border-bottom:none; }
+  .gs-standings tr.gs-adv td { background:#eff6ff; }
+  .gs-standings tr.gs-adv td.gs-td-team { color:var(--accent); font-weight:700; }
+  .gs-adv-badge { display:inline-block; font-size:8px; font-weight:800; background:var(--accent);
+    color:#fff; border-radius:3px; padding:1px 4px; margin-left:5px; vertical-align:middle;
+    letter-spacing:.3px; }
+  .gs-gd-pos { color:var(--green); font-weight:700; }
+  .gs-gd-neg { color:var(--red); }
+  .gs-pts { font-weight:800; }
+  .gs-adv .gs-pts { color:var(--accent); }
+  .gs-pos { font-weight:700; color:var(--muted); font-size:11px; }
+  .gs-pos.p1 { color:var(--accent); }
+
+  /* ROUND OF 16 */
+  .r16-section-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
+    gap:14px; }
+  .r16-card { background:var(--surface); border:1px solid var(--border); border-radius:8px;
+    overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+  .r16-card:hover { border-color:var(--accent); box-shadow:0 6px 18px rgba(0,0,0,.09); }
+  .r16-header { background:linear-gradient(160deg,#0f172a 0%,#1e293b 100%); color:#94a3b8;
+    padding:8px 14px; font-size:11px; font-weight:600; display:flex;
+    align-items:center; justify-content:space-between; }
+  .r16-matchup { display:flex; align-items:center; gap:8px; padding:14px 16px 10px; }
+  .r16-team { flex:1; min-width:0; }
+  .r16-team-name { font-size:13px; font-weight:700; color:var(--text);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .r16-team-grp { font-size:10px; color:var(--muted); margin-top:2px; }
+  .r16-vs { font-weight:900; font-size:1rem; color:var(--muted); flex-shrink:0; padding:0 4px; }
+  .r16-team.r16-away { text-align:right; }
+  .r16-pred-wrap { padding:0 16px 14px; }
+  .r16-pred-bar { display:flex; height:26px; border-radius:6px; overflow:hidden;
+    font-size:11px; font-weight:700; }
+  .r16-bar-a { background:linear-gradient(90deg,#1d4ed8,#2563eb); display:flex;
+    align-items:center; justify-content:center; color:#fff; min-width:28px; }
+  .r16-bar-d { background:var(--border); display:flex; align-items:center;
+    justify-content:center; color:var(--muted); min-width:28px; font-size:10px; }
+  .r16-bar-b { background:linear-gradient(90deg,#3fb950,#2ea043); display:flex;
+    align-items:center; justify-content:center; color:#fff; min-width:28px; }
+  .r16-pred-labels { display:flex; justify-content:space-between; font-size:10px;
+    margin-top:4px; color:var(--muted); }
+  .r16-pred-labels .la { color:var(--accent); font-weight:700; }
+  .r16-pred-labels .lb { color:var(--green); font-weight:700; }
+
+  /* PLAY-IN PANEL */
+  .playin-panel { background:var(--surface); border:1px solid var(--border);
+    border-radius:8px; padding:16px 20px; margin-bottom:24px; }
+  .playin-title { font-size:12px; font-weight:700; color:var(--text); margin-bottom:12px;
+    display:flex; align-items:center; gap:8px; }
+  .playin-badge { font-size:9px; font-weight:700; background:#f59e0b22; color:#f59e0b;
+    border:1px solid #f59e0b44; padding:2px 7px; border-radius:4px; }
+  .playin-games { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:10px; }
+  .playin-game { background:var(--surface2); border-radius:6px; padding:10px 14px; }
+  .playin-row { display:flex; align-items:center; gap:8px; }
+  .playin-team-name { flex:1; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .playin-team-name.w { font-weight:700; color:var(--accent); }
+  .playin-team-name.l { color:var(--muted); }
+  .playin-team-name.r { text-align:right; }
+  .playin-score-box { font-size:1rem; font-weight:900; background:var(--surface);
+    border:1px solid var(--border); border-radius:4px; padding:3px 10px; flex-shrink:0; }
+  .playin-adv-note { font-size:10px; color:var(--green); font-weight:700; margin-top:6px; }
+  .playin-neutral-note { font-size:10px; color:var(--muted); margin-top:6px; }
 </style>
 </head>
 <body>
@@ -445,11 +514,11 @@
 <!-- HEADER -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-badge"><span class="badge-dot"></span>2026 ECNL Playoff Preview<span class="badge-ver">v1.5</span></div>
+    <div class="hero-badge"><span class="badge-dot"></span>2026 ECNL Playoffs · Group Stage Complete<span class="badge-ver">v1.6</span></div>
     <h1>2010 Boys (B10) National Playoff Analysis</h1>
     <div class="hero-meta">
       <span><b>San Diego, CA</b></span>
-      <span><b>June 25, 2026</b></span>
+      <span><b>June 25–28, 2026</b></span>
       <span><b>66 Teams · Groups A–Q</b></span>
       <span><b>15 Conferences</b></span>
     </div>
@@ -643,9 +712,16 @@
 
 <!-- GROUPS ANALYSIS -->
 <div class="section" style="margin-top:32px">
-  <div class="section-title">Group Stage Analysis — Groups A–Q</div>
-  <div class="section-sub">Performance rankings within each group based on season record, goals, conference strength, and playoff history. Teams are ranked by composite performance score. ★ = group favorite.</div>
+  <div class="section-title">Group Stage Final Standings — Groups A–Q</div>
+  <div class="section-sub">Final group stage results (June 25–28, 2026). → ADV = group winner advancing to Round of 16 on June 30. Tiebreakers applied: head-to-head result → H2H goal difference → overall GD.</div>
   <div id="groupsGrid" class="groups-grid"></div>
+</div>
+
+<!-- ROUND OF 16 -->
+<div class="section" style="margin-top:32px" id="r16Section">
+  <div class="section-title">Round of 16 — June 30, 2026</div>
+  <div class="section-sub">The 16 group winners compete in single-elimination knockout. Groups P &amp; Q held a play-in round (June 28) to determine their combined R16 representative. All R16 matches kick off at 10:00 AM PT. Predictions based on pre-playoff season analysis.</div>
+  <div id="r16Grid"></div>
 </div>
 
 <div style="height:48px"></div>
@@ -2111,6 +2187,132 @@ function copyH2HLink() {
 }
 
 // ============================================================
+// GROUP STAGE RESULTS — Final standings (June 25–28, 2026)
+// adv:true = advanced to Round of 16
+// ============================================================
+const GROUP_STAGE_RESULTS = {
+  A: [
+    {name:'XF Academy',       w:3,d:0,l:0,gf:10,ga:3, gd:7,  pts:9, adv:true},
+    {name:'RISE SC',           w:2,d:0,l:1,gf:5, ga:7, gd:-2, pts:6},
+    {name:'Richmond United',   w:1,d:0,l:2,gf:8, ga:4, gd:4,  pts:3},
+    {name:'Marin FC',          w:0,d:0,l:3,gf:6, ga:15,gd:-9, pts:0},
+  ],
+  B: [
+    {name:'Pipeline SC',           w:2,d:1,l:0,gf:6,ga:3,gd:3,  pts:7, adv:true},
+    {name:'Gretna Elite Academy',  w:2,d:0,l:1,gf:6,ga:3,gd:3,  pts:6},
+    {name:'Seattle United',        w:0,d:2,l:1,gf:2,ga:4,gd:-2, pts:2},
+    {name:'Concorde Fire Premier', w:0,d:1,l:2,gf:1,ga:5,gd:-4, pts:1},
+  ],
+  C: [
+    {name:'Davis Legacy', w:2,d:1,l:0,gf:5,ga:1,gd:4,  pts:7, adv:true},
+    {name:'CCV Stars',    w:1,d:2,l:0,gf:3,ga:2,gd:1,  pts:5},
+    {name:'NTH-NASA',     w:1,d:1,l:1,gf:4,ga:4,gd:0,  pts:4},
+    {name:'VDA',          w:0,d:0,l:3,gf:2,ga:7,gd:-5, pts:0},
+  ],
+  D: [
+    {name:'OK Energy FC',         w:3,d:0,l:0,gf:11,ga:0, gd:11, pts:9, adv:true},
+    {name:'East Coast Surf SC',   w:2,d:0,l:1,gf:7, ga:8, gd:-1, pts:6},
+    {name:'Charlotte SA Academy', w:1,d:0,l:2,gf:10,ga:12,gd:-2, pts:3},
+    {name:'Indiana Elite FC',     w:0,d:0,l:3,gf:7, ga:15,gd:-8, pts:0},
+  ],
+  E: [
+    {name:'Cleveland Force SC',    w:2,d:0,l:1,gf:6,ga:4,gd:2,  pts:6, adv:true},
+    {name:'Real Colorado Academy', w:2,d:0,l:1,gf:5,ga:5,gd:0,  pts:6},
+    {name:'STA',                   w:1,d:1,l:1,gf:6,ga:3,gd:3,  pts:4},
+    {name:'3RSC',                  w:0,d:1,l:2,gf:2,ga:7,gd:-5, pts:1},
+  ],
+  F: [
+    {name:'FL Premier FC',      w:2,d:0,l:1,gf:7,ga:3, gd:4,  pts:6, adv:true},
+    {name:'SAFC',               w:2,d:0,l:1,gf:8,ga:3, gd:5,  pts:6},
+    {name:'Manhattan SC',       w:1,d:1,l:1,gf:7,ga:7, gd:0,  pts:4},
+    {name:'River Islands Surf', w:0,d:1,l:2,gf:4,ga:13,gd:-9, pts:1},
+  ],
+  G: [
+    {name:'Rebels SC',                     w:2,d:0,l:1,gf:9,ga:4,gd:5,  pts:6, adv:true},
+    {name:'Delaware FC',                   w:2,d:0,l:1,gf:6,ga:6,gd:0,  pts:6},
+    {name:'El Camino Futbol Club Salinas', w:2,d:0,l:1,gf:5,ga:4,gd:1,  pts:6},
+    {name:'Parkland SC',                   w:0,d:0,l:3,gf:2,ga:8,gd:-6, pts:0},
+  ],
+  H: [
+    {name:'Albion Hurricanes FC', w:2,d:1,l:0,gf:6,ga:2,gd:4,  pts:7, adv:true},
+    {name:'Utah Avalanche',       w:2,d:0,l:1,gf:9,ga:5,gd:4,  pts:6},
+    {name:'FC Wisconsin',         w:1,d:0,l:2,gf:6,ga:8,gd:-2, pts:3},
+    {name:'Ohio Premier',         w:0,d:1,l:2,gf:2,ga:8,gd:-6, pts:1},
+  ],
+  I: [
+    {name:'DKSC',                w:3,d:0,l:0,gf:8,ga:0,gd:8,  pts:9, adv:true},
+    {name:'Santa Clara Sporting', w:2,d:0,l:1,gf:5,ga:5,gd:0,  pts:6},
+    {name:'Ohio Elite SA',        w:1,d:0,l:2,gf:4,ga:5,gd:-1, pts:3},
+    {name:'Boise Timbers FC',     w:0,d:0,l:3,gf:2,ga:9,gd:-7, pts:0},
+  ],
+  J: [
+    {name:'Kansas City Athletics', w:3,d:0,l:0,gf:6,ga:2,gd:4,  pts:9, adv:true},
+    {name:'CESA Triumph',          w:2,d:0,l:1,gf:6,ga:5,gd:1,  pts:6},
+    {name:'Slammers FC',           w:1,d:0,l:2,gf:3,ga:4,gd:-1, pts:3},
+    {name:'Beach FC (VA)',         w:0,d:0,l:3,gf:4,ga:8,gd:-4, pts:0},
+  ],
+  K: [
+    {name:'San Diego Surf',  w:2,d:0,l:1,gf:7,ga:3,gd:4,  pts:6, adv:true},
+    {name:'St. Croix',       w:2,d:0,l:1,gf:6,ga:3,gd:3,  pts:6},
+    {name:'NM Rapids',       w:1,d:0,l:2,gf:3,ga:8,gd:-5, pts:3},
+    {name:'Arlington Soccer',w:1,d:0,l:2,gf:6,ga:8,gd:-2, pts:3},
+  ],
+  L: [
+    {name:'Oregon Premier',      w:2,d:1,l:0,gf:7,ga:2,gd:5,  pts:7, adv:true},
+    {name:'Legends FC',          w:2,d:1,l:0,gf:5,ga:3,gd:2,  pts:7},
+    {name:'FL Kraze Krush',      w:0,d:1,l:2,gf:2,ga:5,gd:-3, pts:1},
+    {name:'South Carolina Surf', w:0,d:1,l:2,gf:1,ga:5,gd:-4, pts:1},
+  ],
+  M: [
+    {name:'Pateadores',         w:2,d:0,l:1,gf:7,ga:3,gd:4,  pts:6, adv:true},
+    {name:'PacNW SC',           w:1,d:1,l:1,gf:3,ga:6,gd:-3, pts:4},
+    {name:'NCFC Youth Academy', w:1,d:1,l:1,gf:3,ga:3,gd:0,  pts:4},
+    {name:'Louisiana Fire SC',  w:0,d:2,l:1,gf:2,ga:3,gd:-1, pts:2},
+  ],
+  N: [
+    {name:'Dallas Texans Academy', w:3,d:0,l:0,gf:10,ga:0,gd:10, pts:9, adv:true},
+    {name:'FSA FC',                w:2,d:0,l:1,gf:7, ga:1,gd:6,  pts:6},
+    {name:'Alabama FC',            w:0,d:1,l:2,gf:1, ga:9,gd:-8, pts:1},
+    {name:'West Coast FC',         w:0,d:1,l:2,gf:1, ga:9,gd:-8, pts:1},
+  ],
+  O: [
+    {name:'Concorde Fire Platinum', w:3,d:0,l:0,gf:7,ga:1,gd:6,  pts:9, adv:true},
+    {name:'HTX',                    w:2,d:0,l:1,gf:6,ga:2,gd:4,  pts:6},
+    {name:'LAFC So Cal',            w:0,d:1,l:2,gf:4,ga:8,gd:-4, pts:1},
+    {name:'Fairfax VA Union',       w:0,d:1,l:2,gf:3,ga:9,gd:-6, pts:1},
+  ],
+  P: [
+    {name:'FC Wichita',      w:1,d:1,l:0,gf:5,ga:4,gd:1,  pts:4},
+    {name:'Tennessee SC',    w:1,d:0,l:1,gf:5,ga:5,gd:0,  pts:3},
+    {name:'HEX FC Dominion', w:0,d:1,l:1,gf:4,ga:5,gd:-1, pts:1},
+  ],
+  Q: [
+    {name:'Beach FC (CA)', w:1,d:1,l:0,gf:4,ga:1,gd:3,  pts:4, adv:true},
+    {name:'BVBIA',         w:1,d:0,l:1,gf:2,ga:3,gd:-1, pts:3},
+    {name:'Lobos Rush',    w:0,d:1,l:1,gf:1,ga:3,gd:-2, pts:1},
+  ],
+};
+
+// Groups P & Q play-in results (June 28) — determines R16 representative
+const PLAYIN_RESULTS = [
+  {home:'FC Wichita',      hScore:1, away:'Beach FC (CA)',  aScore:2, winner:'Beach FC (CA)'},
+  {home:'Tennessee SC',    hScore:0, away:'BVBIA',          aScore:0, note:'0–0 after 90 min (group ranking game)'},
+  {home:'HEX FC Dominion', hScore:3, away:'Lobos Rush',     aScore:2},
+];
+
+// Round of 16 matchups — June 30, 10:00 AM
+const R16_MATCHUPS = [
+  {teamA:'XF Academy',          grpA:'A', teamB:'Beach FC (CA)',        grpB:'Q'},
+  {teamA:'Albion Hurricanes FC', grpA:'H', teamB:'DKSC',                grpB:'I'},
+  {teamA:'OK Energy FC',         grpA:'D', teamB:'Pateadores',           grpB:'M'},
+  {teamA:'Cleveland Force SC',   grpA:'E', teamB:'Oregon Premier',       grpB:'L'},
+  {teamA:'Pipeline SC',          grpA:'B', teamB:'Concorde Fire Platinum',grpB:'O'},
+  {teamA:'Rebels SC',            grpA:'G', teamB:'Kansas City Athletics', grpB:'J'},
+  {teamA:'Davis Legacy',         grpA:'C', teamB:'Dallas Texans Academy', grpB:'N'},
+  {teamA:'FL Premier FC',        grpA:'F', teamB:'San Diego Surf',        grpB:'K'},
+];
+
+// ============================================================
 // GROUP STAGE DATA & RENDERER
 // ============================================================
 const GROUPS = [
@@ -2143,51 +2345,142 @@ const GROUP_DISPLAY = {
 };
 
 function buildGroups() {
-  const byName = {};
-  teams.forEach(t => { byName[t.name] = t; });
-  const posIcons = ['★', '2', '3', '4'];
-  const posColors = ['#f59e0b','var(--muted)','var(--muted)','var(--muted)'];
-
   document.getElementById('groupsGrid').innerHTML = GROUPS.map(g => {
-    const grpTeams = g.seeds.map(n => byName[n]).filter(Boolean);
-    const ranked = grpTeams.slice().sort((a,b) => b.score - a.score);
-    const fav = ranked[0];
+    const gsData = GROUP_STAGE_RESULTS[g.id] || [];
+    const winner = gsData.find(r => r.adv);
+    const winnerDn = winner ? (GROUP_DISPLAY[winner.name] || winner.name) : '—';
 
-    const seedLabels = g.seeds.map((n,i) => {
+    const seedLabels = g.seeds.map((n, i) => {
       const dn = GROUP_DISPLAY[n] || n;
       return `<span class="seed-tag">${g.id}${i+1}: ${dn}</span>`;
     }).join('');
 
-    const rows = ranked.map((t, i) => {
-      const icon = i === 0 ? '★' : `${i+1}`;
-      const favClass = i === 0 ? ' gr-top' : '';
-      const gdStr = t.gd > 0 ? `+${t.gd}` : `${t.gd}`;
-      const dn = GROUP_DISPLAY[t.name] || t.name;
-      return `<div class="group-row${favClass}">
-        <div class="gr-pos${i===0?' p1':''}">${icon}</div>
-        <div class="gr-info">
-          <div class="gr-name" title="${t.name}">${dn}</div>
-          <div class="gr-sub">${t.conf} · ${t.w}W-${t.l}L-${t.d}D · GD ${gdStr}</div>
-        </div>
-        <div class="gr-meta">
-          <div class="gr-score">${t.score}</div>
-          <div class="gr-ppg">${t.ppg} PPG</div>
-          ${i===0?'<div class="gr-favorite-label">Favorite</div>':''}
-        </div>
-      </div>`;
+    const standingsRows = gsData.map((r, i) => {
+      const dn = GROUP_DISPLAY[r.name] || r.name;
+      const gdStr = r.gd > 0 ? `+${r.gd}` : `${r.gd}`;
+      const gdCls = r.gd > 0 ? 'gs-gd-pos' : r.gd < 0 ? 'gs-gd-neg' : '';
+      const advBadge = r.adv ? '<span class="gs-adv-badge">ADV</span>' : '';
+      const pos = r.adv ? '→' : (i + 1);
+      const rowCls = r.adv ? ' gs-adv' : '';
+      return `<tr class="${rowCls}">
+        <td class="gs-pos${r.adv ? ' p1' : ''}">${pos}</td>
+        <td class="gs-td-team">${dn}${advBadge}</td>
+        <td>${r.w}</td><td>${r.d}</td><td>${r.l}</td>
+        <td>${r.gf}</td><td>${r.ga}</td>
+        <td class="${gdCls}">${gdStr}</td>
+        <td class="gs-pts">${r.pts}</td>
+      </tr>`;
     }).join('');
 
-    const favDn = GROUP_DISPLAY[fav.name] || fav.name;
+    const isPQ = (g.id === 'P' || g.id === 'Q');
+    const headerNote = isPQ
+      ? '<div style="font-size:9px;color:#f59e0b;margin-left:auto;font-weight:700;background:#f59e0b22;border:1px solid #f59e0b44;padding:2px 6px;border-radius:4px">PLAY-IN</div>'
+      : `<div class="group-fav-badge">→ ${winnerDn}</div>`;
+
     return `<div class="group-card">
       <div class="group-header">
         <div class="group-letter">GROUP ${g.id}</div>
         <div style="font-size:11px;color:#94a3b8;margin-left:4px">${g.seeds.length} teams</div>
-        <div class="group-fav-badge">★ ${favDn}</div>
+        ${headerNote}
       </div>
       <div class="group-seeds-row">${seedLabels}</div>
-      <div class="group-rows">${rows}</div>
+      <table class="gs-standings">
+        <thead><tr>
+          <th style="width:20px">#</th>
+          <th class="gs-th-team">Team</th>
+          <th>W</th><th>D</th><th>L</th>
+          <th>GF</th><th>GA</th><th>GD</th><th>Pts</th>
+        </tr></thead>
+        <tbody>${standingsRows}</tbody>
+      </table>
     </div>`;
   }).join('');
+}
+
+// ============================================================
+// ROUND OF 16 RENDERER
+// ============================================================
+function buildR16() {
+  // Play-in panel
+  const playinGames = PLAYIN_RESULTS.map(r => {
+    const aDn = GROUP_DISPLAY[r.home] || r.home;
+    const bDn = GROUP_DISPLAY[r.away] || r.away;
+    const aWin = r.hScore > r.aScore;
+    const bWin = r.aScore > r.hScore;
+    const advNote = r.winner
+      ? `<div class="playin-adv-note">→ ${GROUP_DISPLAY[r.winner] || r.winner} advances to R16</div>`
+      : r.note ? `<div class="playin-neutral-note">${r.note}</div>` : '';
+    return `<div class="playin-game">
+      <div class="playin-row">
+        <span class="playin-team-name ${aWin?'w':bWin?'l':''}">${aDn}</span>
+        <span class="playin-score-box">${r.hScore}–${r.aScore}</span>
+        <span class="playin-team-name r ${bWin?'w':aWin?'l':''}">${bDn}</span>
+      </div>
+      ${advNote}
+    </div>`;
+  }).join('');
+
+  const playinHtml = `<div class="playin-panel">
+    <div class="playin-title">
+      Groups P &amp; Q Play-In Results
+      <span class="playin-badge">June 28</span>
+    </div>
+    <div class="playin-games">${playinGames}</div>
+  </div>`;
+
+  // R16 matchup cards
+  const r16Cards = R16_MATCHUPS.map((m, i) => {
+    const tA = teams.find(t => t.name === m.teamA);
+    const tB = teams.find(t => t.name === m.teamB);
+    const aDn = GROUP_DISPLAY[m.teamA] || m.teamA;
+    const bDn = GROUP_DISPLAY[m.teamB] || m.teamB;
+
+    let pA = 50, pD = 20, pB = 30;
+    if (tA && tB) {
+      const p = predictMatch(tA, tB);
+      pA = p.pA; pD = p.pD; pB = p.pB;
+    }
+
+    const gsA = (GROUP_STAGE_RESULTS[m.grpA] || []).find(r => r.name === m.teamA);
+    const gsB = (GROUP_STAGE_RESULTS[m.grpB] || []).find(r => r.name === m.teamB);
+    const aGS = gsA ? `${gsA.w}W-${gsA.d}D-${gsA.l}L · ${gsA.gf} GF` : 'Group winner';
+    const bGS = gsB ? `${gsB.w}W-${gsB.d}D-${gsB.l}L · ${gsB.gf} GF` : 'Group winner';
+    const aLabel = tA ? tA.name.split(' ')[0] : aDn.split(' ')[0];
+    const bLabel = tB ? tB.name.split(' ')[0] : bDn.split(' ')[0];
+
+    return `<div class="r16-card">
+      <div class="r16-header">
+        <span>R16 · Match ${i + 1} · June 30 · 10:00 AM</span>
+        <span>Grp ${m.grpA} vs Grp ${m.grpB}</span>
+      </div>
+      <div class="r16-matchup">
+        <div class="r16-team">
+          <div class="r16-team-name">${aDn}</div>
+          <div class="r16-team-grp">Grp ${m.grpA} winner · ${aGS}</div>
+        </div>
+        <div class="r16-vs">VS</div>
+        <div class="r16-team r16-away">
+          <div class="r16-team-name">${bDn}</div>
+          <div class="r16-team-grp">Grp ${m.grpB} winner · ${bGS}</div>
+        </div>
+      </div>
+      <div class="r16-pred-wrap">
+        <div class="r16-pred-bar">
+          <div class="r16-bar-a" style="width:${pA}%">${pA}%</div>
+          <div class="r16-bar-d" style="width:${pD}%">${pD}%</div>
+          <div class="r16-bar-b" style="width:${pB}%">${pB}%</div>
+        </div>
+        <div class="r16-pred-labels">
+          <span class="la">${aLabel} ${pA}%</span>
+          <span>Draw ${pD}%</span>
+          <span class="lb">${pB}% ${bLabel}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('r16Grid').innerHTML =
+    playinHtml + `<div class="r16-section-grid">${r16Cards}</div>`;
 }
 
 // ============================================================
@@ -2198,6 +2491,7 @@ renderTable();
 buildTop10();
 buildFlags();
 buildGroups();
+buildR16();
 initH2HSelectors();
 initGameLogSelector();
 
