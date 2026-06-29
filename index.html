@@ -828,6 +828,112 @@ const teams = RAW.map(r => {
            isEliteDef: gapg < 0.65, isEliteOff: gfpg > 2.50 };
 });
 
+// ============================================================
+// GROUP STAGE DELTA — add group play results to season records
+// so all derived metrics (winPct, gfpg, gapg, GD) reflect full
+// season + playoff group performance before renormalization.
+// Groups P & Q had 3 teams → 2 games each; all others 3 games.
+// ============================================================
+const GROUP_DELTA = {
+  // Group A
+  'XF Academy':              {gp:3, w:3, d:0, l:0, gf:10, ga:3},
+  'Marin FC':                {gp:3, w:0, d:0, l:3, gf:6,  ga:15},
+  'Richmond United':         {gp:3, w:1, d:0, l:2, gf:8,  ga:4},
+  'RISE SC':                 {gp:3, w:2, d:0, l:1, gf:5,  ga:7},
+  // Group B
+  'Gretna Elite Academy':    {gp:3, w:2, d:0, l:1, gf:6,  ga:3},
+  'Pipeline SC':             {gp:3, w:2, d:1, l:0, gf:6,  ga:3},
+  'Seattle United':          {gp:3, w:0, d:2, l:1, gf:2,  ga:4},
+  'Concorde Fire Premier':   {gp:3, w:0, d:1, l:2, gf:1,  ga:5},
+  // Group C
+  'Davis Legacy':            {gp:3, w:2, d:1, l:0, gf:5,  ga:1},
+  'CCV Stars':               {gp:3, w:1, d:2, l:0, gf:3,  ga:2},
+  'VDA':                     {gp:3, w:0, d:0, l:3, gf:2,  ga:7},
+  'NTH-NASA':                {gp:3, w:1, d:1, l:1, gf:4,  ga:4},
+  // Group D
+  'OK Energy FC':            {gp:3, w:3, d:0, l:0, gf:11, ga:0},
+  'East Coast Surf SC':      {gp:3, w:2, d:0, l:1, gf:7,  ga:8},
+  'Charlotte SA Academy':    {gp:3, w:1, d:0, l:2, gf:10, ga:12},
+  'Indiana Elite FC':        {gp:3, w:0, d:0, l:3, gf:7,  ga:15},
+  // Group E
+  'STA':                     {gp:3, w:1, d:1, l:1, gf:6,  ga:3},
+  'Real Colorado Academy':   {gp:3, w:2, d:0, l:1, gf:5,  ga:5},
+  'Cleveland Force SC':      {gp:3, w:2, d:0, l:1, gf:6,  ga:4},
+  '3RSC':                    {gp:3, w:0, d:1, l:2, gf:2,  ga:7},
+  // Group F
+  'FL Premier FC':           {gp:3, w:2, d:0, l:1, gf:7,  ga:3},
+  'River Islands Surf':      {gp:3, w:0, d:1, l:2, gf:4,  ga:13},
+  'SAFC':                    {gp:3, w:2, d:0, l:1, gf:8,  ga:3},
+  'Manhattan SC':            {gp:3, w:1, d:1, l:1, gf:7,  ga:7},
+  // Group G
+  'Delaware FC':             {gp:3, w:2, d:0, l:1, gf:6,  ga:6},
+  'El Camino Futbol Club Salinas': {gp:3, w:2, d:0, l:1, gf:5, ga:4},
+  'Parkland SC':             {gp:3, w:0, d:0, l:3, gf:2,  ga:8},
+  'Rebels SC':               {gp:3, w:2, d:0, l:1, gf:9,  ga:4},
+  // Group H
+  'Utah Avalanche':          {gp:3, w:2, d:0, l:1, gf:9,  ga:5},
+  'Albion Hurricanes FC':    {gp:3, w:2, d:1, l:0, gf:6,  ga:2},
+  'Ohio Premier':            {gp:3, w:0, d:1, l:2, gf:2,  ga:8},
+  'FC Wisconsin':            {gp:3, w:1, d:0, l:2, gf:6,  ga:8},
+  // Group I
+  'Ohio Elite SA':           {gp:3, w:1, d:0, l:2, gf:4,  ga:5},
+  'Santa Clara Sporting':    {gp:3, w:2, d:0, l:1, gf:5,  ga:5},
+  'Boise Timbers FC':        {gp:3, w:0, d:0, l:3, gf:2,  ga:9},
+  'DKSC':                    {gp:3, w:3, d:0, l:0, gf:8,  ga:0},
+  // Group J
+  'Slammers FC':             {gp:3, w:1, d:0, l:2, gf:3,  ga:4},
+  'Kansas City Athletics':   {gp:3, w:3, d:0, l:0, gf:6,  ga:2},
+  'Beach FC (VA)':           {gp:3, w:0, d:0, l:3, gf:4,  ga:8},
+  'CESA Triumph':            {gp:3, w:2, d:0, l:1, gf:6,  ga:5},
+  // Group K
+  'NM Rapids':               {gp:3, w:1, d:0, l:2, gf:3,  ga:8},
+  'San Diego Surf':          {gp:3, w:2, d:0, l:1, gf:7,  ga:3},
+  'St. Croix':               {gp:3, w:2, d:0, l:1, gf:6,  ga:3},
+  'Arlington Soccer':        {gp:3, w:1, d:0, l:2, gf:6,  ga:8},
+  // Group L
+  'Oregon Premier':          {gp:3, w:2, d:1, l:0, gf:7,  ga:2},
+  'FL Kraze Krush':          {gp:3, w:0, d:1, l:2, gf:2,  ga:5},
+  'South Carolina Surf':     {gp:3, w:0, d:1, l:2, gf:1,  ga:5},
+  'Legends FC':              {gp:3, w:2, d:1, l:0, gf:5,  ga:3},
+  // Group M
+  'NCFC Youth Academy':      {gp:3, w:1, d:1, l:1, gf:3,  ga:3},
+  'Louisiana Fire SC':       {gp:3, w:0, d:2, l:1, gf:2,  ga:3},
+  'Pateadores':              {gp:3, w:2, d:0, l:1, gf:7,  ga:3},
+  'PacNW SC':                {gp:3, w:1, d:1, l:1, gf:3,  ga:6},
+  // Group N
+  'Alabama FC':              {gp:3, w:0, d:1, l:2, gf:1,  ga:9},
+  'FSA FC':                  {gp:3, w:2, d:0, l:1, gf:7,  ga:1},
+  'Dallas Texans Academy':   {gp:3, w:3, d:0, l:0, gf:10, ga:0},
+  'West Coast FC':           {gp:3, w:0, d:1, l:2, gf:1,  ga:9},
+  // Group O
+  'Concorde Fire Platinum':  {gp:3, w:3, d:0, l:0, gf:7,  ga:1},
+  'HTX':                     {gp:3, w:2, d:0, l:1, gf:6,  ga:2},
+  'LAFC So Cal':             {gp:3, w:0, d:1, l:2, gf:4,  ga:8},
+  'Fairfax VA Union':        {gp:3, w:0, d:1, l:2, gf:3,  ga:9},
+  // Group P — 3-team group, 2 games each
+  'FC Wichita':              {gp:2, w:1, d:1, l:0, gf:5,  ga:4},
+  'HEX FC Dominion':         {gp:2, w:0, d:1, l:1, gf:4,  ga:5},
+  'Tennessee SC':            {gp:2, w:1, d:0, l:1, gf:5,  ga:5},
+  // Group Q — 3-team group, 2 games each
+  'BVBIA':                   {gp:2, w:1, d:0, l:1, gf:2,  ga:3},
+  'Beach FC (CA)':           {gp:2, w:1, d:1, l:0, gf:4,  ga:1},
+  'Lobos Rush':              {gp:2, w:0, d:1, l:1, gf:1,  ga:3},
+};
+
+teams.forEach(t => {
+  const d = GROUP_DELTA[t.name];
+  if (!d) return;
+  t.gp  += d.gp;  t.w  += d.w;  t.d  += d.d;  t.l  += d.l;
+  t.gf  += d.gf;  t.ga += d.ga;
+  t.gd   = t.gf - t.ga;
+  t.ppg  = parseFloat(((t.w * 3 + t.d) / t.gp).toFixed(2));
+  t.winPct = t.w / t.gp;
+  t.gfpg   = t.gf / t.gp;
+  t.gapg   = t.ga / t.gp;
+  t.isEliteDef = t.gapg < 0.65;
+  t.isEliteOff = t.gfpg > 2.50;
+});
+
 // Normalize 0-1 across field
 function norm(arr, key, invert=false) {
   const vals = arr.map(t => t[key]);
@@ -873,7 +979,7 @@ function buildStats() {
   document.getElementById('statsBar').innerHTML = [
     [teams.length.toString(),   'Teams',             `${confs} conferences · Groups A–Q`,            ''],
     [totalGF.toLocaleString(),  'Total Goals Scored',`${(totalGF/totalGP).toFixed(2)} per game`,     ''],
-    [avgPPG,                    'Avg PPG (Field)',    'All 54 teams',                                  ''],
+    [avgPPG,                    'Avg PPG (Field)',    'All 66 teams · incl. group stage',              ''],
     [topOff.gfpg.toFixed(2),   'Top GF/G',           topOff.name,                                   'stat-leader'],
     [topDef.gapg.toFixed(2),   'Lowest GA/G',         topDef.name,                                  'stat-leader stat-def'],
     ['Legends FC',              '2025 Champion',      'Defending title',                              'stat-champ stat-name'],
