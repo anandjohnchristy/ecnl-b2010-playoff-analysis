@@ -510,9 +510,45 @@
 
   /* R16 QUALIFIER BADGE (in table + flags) */
   .flag-r16 { background:#10b98122; color:#10b981; border:1px solid #10b98144; font-weight:800; }
+  /* QF QUALIFIER BADGE */
+  .flag-qf { background:#f59e0b22; color:#f59e0b; border:1px solid #f59e0b55; font-weight:800; letter-spacing:.3px; }
   /* Eliminated team styling in table */
-  tr.elim td { opacity:.5; }
-  tr.elim td.team-name { opacity:.7; }
+  tr.elim td { opacity:.45; }
+  tr.elim td.team-name { opacity:.6; }
+
+  /* R16 RESULT SCORE (replaces prediction bar after games played) */
+  .r16-result { display:flex; align-items:center; justify-content:center; gap:12px;
+    padding:10px 16px 14px; }
+  .r16-result-score { font-size:1.5rem; font-weight:900; letter-spacing:2px; color:var(--text); }
+  .r16-result-team { font-size:10px; font-weight:700; max-width:90px; text-align:center;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .r16-result-team.winner { color:var(--green); }
+  .r16-result-team.loser  { color:var(--muted); text-decoration:line-through; }
+  .r16-adv-badge { display:inline-block; font-size:9px; font-weight:800; background:#10b98122;
+    color:#10b981; border:1px solid #10b98144; border-radius:4px; padding:2px 7px;
+    margin-top:4px; letter-spacing:.3px; }
+
+  /* QF SECTION */
+  .qf-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:14px; }
+  .qf-card { background:var(--surface); border:1px solid #f59e0b55;
+    border-radius:8px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+  .qf-card:hover { border-color:#f59e0b; box-shadow:0 6px 18px rgba(0,0,0,.09); }
+  .qf-header { background:linear-gradient(160deg,#1c1107 0%,#2d1e08 100%); color:#f59e0b;
+    padding:8px 14px; font-size:11px; font-weight:700; display:flex;
+    align-items:center; justify-content:space-between; }
+  .qf-header .qf-label { color:#94a3b8; font-weight:600; }
+  .qf-matchup { display:flex; align-items:center; gap:8px; padding:14px 16px 10px; }
+  .qf-team { flex:1; min-width:0; }
+  .qf-team-name { font-size:13px; font-weight:700; color:var(--text);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .qf-team-sub { font-size:10px; color:var(--muted); margin-top:2px; }
+  .qf-vs { font-weight:900; font-size:1rem; color:#f59e0b; flex-shrink:0; padding:0 4px; }
+  .qf-team.qf-away { text-align:right; }
+  .qf-venue { padding:0 16px 14px; font-size:10px; color:var(--muted); }
+  .qf-venue strong { color:var(--text); }
+  .venue-panel { background:var(--surface); border:1px solid var(--border); border-radius:8px;
+    padding:14px 18px; margin-bottom:20px; display:flex; flex-wrap:wrap; gap:16px;
+    align-items:center; }
 </style>
 </head>
 <body>
@@ -520,12 +556,12 @@
 <!-- HEADER -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-badge"><span class="badge-dot"></span>2026 ECNL Playoffs · Group Stage Complete<span class="badge-ver">v1.6</span></div>
+    <div class="hero-badge"><span class="badge-dot"></span>2026 ECNL Playoffs · Round of 8<span class="badge-ver">v1.7</span></div>
     <h1>2010 Boys (B10) National Playoff Analysis</h1>
     <div class="hero-meta">
       <span><b>San Diego, CA</b></span>
-      <span><b>June 25–28, 2026</b></span>
-      <span><b>66 Teams · Groups A–Q</b></span>
+      <span><b>June 25 – July 1, 2026</b></span>
+      <span><b>66 Teams → 8 in Quarterfinals</b></span>
       <span><b>15 Conferences</b></span>
     </div>
   </div>
@@ -547,8 +583,10 @@
   </select>
   <select id="flagFilter">
     <option value="">All Teams</option>
+    <option value="qf">QF (Round of 8) — 8 teams</option>
     <option value="r16">R16 Qualifiers — 16 teams</option>
-    <option value="elim">Eliminated after Group Stage</option>
+    <option value="elim-group">Eliminated after Group Stage</option>
+    <option value="elim-r16">Eliminated after R16</option>
     <option value="def">Elite Defense (GA/G &lt; 0.65)</option>
     <option value="off">Elite Offense (GF/G &gt; 2.50)</option>
     <option value="champ">2025 Champion</option>
@@ -601,7 +639,7 @@
   <div class="section-title">Performance Score Methodology</div>
   <div class="methodology">
     <p style="font-size:12px;color:var(--muted);margin-bottom:4px;">
-      Each team is scored on a <b style="color:var(--text)">0–100 scale</b> combining six normalized components. Scores now incorporate <b style="color:var(--text)">group stage results (June 25–28)</b> — all 66 teams' W/D/L, GF, and GA from group play are added to their season records before renormalization. Metrics ranked relative to the full 66-team field. <b style="color:var(--green)">16 teams advance to Round of 16 on June 30.</b>
+      Each team is scored on a <b style="color:var(--text)">0–100 scale</b> combining six normalized components. Scores incorporate <b style="color:var(--text)">full season + group stage results (June 25–28)</b> — all W/D/L, GF, and GA including group play are folded in before renormalization. Metrics ranked relative to the full 66-team field. <b style="color:var(--green)">R16 complete (June 30) — 8 teams advance to QF on July 1.</b>
     </p>
     <div class="method-grid">
       <div class="method-item"><div class="pct">30%</div><div class="label">Win Rate (W/GP) — full season + group stage</div></div>
@@ -614,10 +652,10 @@
   </div>
 </div>
 
-<!-- R16 TEAM PROFILES -->
+<!-- QF TEAM PROFILES -->
 <div class="section">
-  <div class="section-title">Round of 16 Team Profiles</div>
-  <div class="section-sub">Full profile for each of the 16 R16 qualifiers — group stage performance, season strengths, and June 30 matchup. Ranked by post-group-stage composite score.</div>
+  <div class="section-title">Round of 8 Team Profiles</div>
+  <div class="section-sub">Full profile for each of the 8 QF qualifiers — R16 result, season strengths, and July 1 matchup. Ranked by post-group-stage composite score.</div>
   <div class="top10-grid" id="top10Grid"></div>
 </div>
 
@@ -721,15 +759,22 @@
 <!-- GROUPS ANALYSIS -->
 <div class="section" style="margin-top:32px">
   <div class="section-title">Group Stage Final Standings — Groups A–Q</div>
-  <div class="section-sub">Final group stage results (June 25–28, 2026). → ADV = group winner advancing to Round of 16 on June 30. Tiebreakers applied: head-to-head result → H2H goal difference → overall GD.</div>
+  <div class="section-sub">Final group stage results (June 25–28, 2026). ADV = group winner who competed in R16 on June 30. Tiebreakers: head-to-head result → H2H goal difference → overall GD.</div>
   <div id="groupsGrid" class="groups-grid"></div>
 </div>
 
 <!-- ROUND OF 16 -->
 <div class="section" style="margin-top:32px" id="r16Section">
-  <div class="section-title">Round of 16 — June 30, 2026</div>
-  <div class="section-sub">The 16 group winners compete in single-elimination knockout. Groups P &amp; Q held a play-in round (June 28) to determine their combined R16 representative. All R16 matches kick off at 10:00 AM PT. Predictions based on pre-playoff season analysis.</div>
+  <div class="section-title">Round of 16 — June 30, 2026 ✓ Complete</div>
+  <div class="section-sub">8 of 8 matches played at Surf Sports Park, Del Mar CA. Groups P &amp; Q play-in (June 28) determined the 16th qualifier. All matches kicked off at 10:00 AM PT.</div>
   <div id="r16Grid"></div>
+</div>
+
+<!-- ROUND OF 8 / QUARTERFINALS -->
+<div class="section" style="margin-top:32px" id="qfSection">
+  <div class="section-title">Quarterfinals (Round of 8) — July 1, 2026</div>
+  <div class="section-sub">Four QF matches, all at 10:00 AM PT, Surf Sports Park, Del Mar CA (14989 Via De La Valle, Del Mar CA 92014). Single elimination — winners advance to semi-finals July 17.</div>
+  <div id="qfGrid"></div>
 </div>
 
 <div style="height:48px"></div>
@@ -942,6 +987,21 @@ teams.forEach(t => {
   t.isEliteOff = t.gfpg > 2.50;
 });
 
+// Apply R16 result delta (all 16 R16 teams — 1 bracket game each)
+teams.forEach(t => {
+  const d = R16_DELTA[t.name];
+  if (!d) return;
+  t.gp  += d.gp;  t.w  += d.w;  t.d  += d.d;  t.l  += d.l;
+  t.gf  += d.gf;  t.ga += d.ga;
+  t.gd   = t.gf - t.ga;
+  t.ppg  = parseFloat(((t.w * 3 + t.d) / t.gp).toFixed(2));
+  t.winPct = t.w / t.gp;
+  t.gfpg   = t.gf / t.gp;
+  t.gapg   = t.ga / t.gp;
+  t.isEliteDef = t.gapg < 0.65;
+  t.isEliteOff = t.gfpg > 2.50;
+});
+
 // Normalize 0-1 across field
 function norm(arr, key, invert=false) {
   const vals = arr.map(t => t[key]);
@@ -985,9 +1045,9 @@ function buildStats() {
   const topDef = teams.slice().sort((a,b)=>a.gapg-b.gapg)[0];
   const confs = [...new Set(teams.map(t=>t.conf))].length;
   document.getElementById('statsBar').innerHTML = [
-    [teams.length.toString(),   'Teams',             `16 in R16 · ${confs} conferences`,              ''],
+    [teams.length.toString(),   'Teams',             `8 in QF · ${confs} conferences`,                ''],
     [totalGF.toLocaleString(),  'Total Goals Scored',`${(totalGF/totalGP).toFixed(2)} per game`,     ''],
-    [avgPPG,                    'Avg PPG (Field)',    'All 66 teams · incl. group stage',              ''],
+    [avgPPG,                    'Avg PPG (Field)',    'All 66 teams · incl. group + R16',              ''],
     [topOff.gfpg.toFixed(2),   'Top GF/G',           topOff.name,                                   'stat-leader'],
     [topDef.gapg.toFixed(2),   'Lowest GA/G',         topDef.name,                                  'stat-leader stat-def'],
     ['Legends FC',              '2025 Champion',      'Defending title',                              'stat-champ stat-name'],
@@ -1023,8 +1083,10 @@ function gdCell(gd) {
 
 function flagsHtml(t) {
   let f = '';
-  if (typeof R16_TEAMS !== 'undefined' && R16_TEAMS.has(t.name))
-    f += '<span class="flag flag-r16" title="Round of 16 Qualifier">R16</span>';
+  if (typeof QF_TEAMS !== 'undefined' && QF_TEAMS.has(t.name))
+    f += '<span class="flag flag-qf" title="QF Qualifier">QF</span>';
+  else if (typeof R16_TEAMS !== 'undefined' && R16_TEAMS.has(t.name))
+    f += '<span class="flag flag-r16" title="R16 — Eliminated">R16</span>';
   if (t.isEliteDef) f += '<span class="flag flag-def" title="Elite Defense: GA/G < 0.65">DEF</span>';
   if (t.isEliteOff) f += '<span class="flag flag-off" title="Elite Offense: GF/G > 2.50">OFF</span>';
   if (t.h2025 === 'Champion') f += '<span class="flag flag-champ" title="2025 ECNL National Champion">&#x2605; 2025</span>';
@@ -1046,8 +1108,10 @@ function renderTable() {
   filtered = teams.filter(t => {
     if (search && !t.name.toLowerCase().includes(search)) return false;
     if (conf && t.conf !== conf) return false;
-    if (flag === 'r16'     && !R16_TEAMS.has(t.name)) return false;
-    if (flag === 'elim'    && R16_TEAMS.has(t.name))  return false;
+    if (flag === 'qf'        && !QF_TEAMS.has(t.name))                            return false;
+    if (flag === 'r16'       && !R16_TEAMS.has(t.name))                           return false;
+    if (flag === 'elim-group'&& R16_TEAMS.has(t.name))                            return false;
+    if (flag === 'elim-r16'  && (QF_TEAMS.has(t.name) || !R16_TEAMS.has(t.name)))return false;
     if (flag === 'def'     && !t.isEliteDef) return false;
     if (flag === 'off'     && !t.isEliteOff) return false;
     if (flag === 'champ'   && t.h2025 !== 'Champion') return false;
@@ -1076,8 +1140,8 @@ function renderTable() {
     const winPctStr = (t.winPct*100).toFixed(1)+'%';
     const fillPct = t.score;
     const scCls = t.score >= 70 ? 'score-top' : '';
-    const isR16 = R16_TEAMS.has(t.name);
-    const elimCls = isR16 ? '' : ' elim';
+    const isQF = QF_TEAMS.has(t.name);
+    const elimCls = isQF ? '' : ' elim';
     return `<tr class="${elimCls}">
       <td class="rank">${t.rank}</td>
       <td class="seed">${seedBadge(t.seed)}</td>
@@ -1257,12 +1321,11 @@ const PROFILES = {
 };
 
 function buildTop10() {
-  const r16 = teams.filter(t => R16_TEAMS.has(t.name));
-  // teams is already sorted by score desc
+  const qf = teams.filter(t => QF_TEAMS.has(t.name));
   const grid = document.getElementById('top10Grid');
-  grid.innerHTML = r16.map((t, i) => {
+  grid.innerHTML = qf.map((t, i) => {
     const prof = PROFILES[t.name] || {};
-    const rankLabel = i === 0 ? '#1 — Top Ranked' : i === 1 ? '#2' : i === 2 ? '#3' : `#${i+1}`;
+    const rankLabel = i === 0 ? '#1 — Top Ranked' : `#${i+1}`;
     const hist2024 = t.h2024 !== '—' ? `<span class="hist-pill hist-${t.h2024.toLowerCase()}">${t.h2024} 2024</span>` : '';
     const hist2025 = t.h2025 !== '—' ? `<span class="hist-pill hist-${t.h2025.toLowerCase()}">${t.h2025} 2025</span>` : '';
 
@@ -1271,30 +1334,45 @@ function buildTop10() {
       GROUP_STAGE_RESULTS[g].some(r => r.name === t.name));
     const gsResult = gsGroup ? GROUP_STAGE_RESULTS[gsGroup].find(r => r.name === t.name) : null;
     const gsHtml = gsResult
-      ? `<div style="font-size:11px;margin:6px 0;padding:6px 10px;background:var(--surface2);border-radius:6px;border-left:3px solid ${gsResult.adv?'var(--accent)':'var(--green)'}">
+      ? `<div style="font-size:11px;margin:6px 0;padding:6px 10px;background:var(--surface2);border-radius:6px;border-left:3px solid var(--accent)">
            <span style="font-weight:700;color:var(--muted)">Group ${gsGroup}</span>
            <span style="margin:0 6px;color:var(--muted)">·</span>
            <span style="color:var(--green);font-weight:700">${gsResult.w}W-${gsResult.d}D-${gsResult.l}L</span>
            <span style="margin:0 4px;color:var(--muted)">·</span>
-           <span style="color:var(--text)">${gsResult.gf} GF · ${gsResult.ga} GA · ${gsResult.gd >= 0 ? '+' : ''}${gsResult.gd} GD · ${gsResult.pts} pts</span>
+           <span style="color:var(--text)">${gsResult.gf} GF · ${gsResult.ga} GA · ${gsResult.gd >= 0?'+':''}${gsResult.gd} GD · ${gsResult.pts} pts</span>
          </div>`
       : '';
 
-    // R16 matchup
-    const r16Match = R16_MATCHUPS.find(m => m.teamA === t.name || m.teamB === t.name);
-    const r16Opp = r16Match ? (r16Match.teamA === t.name ? r16Match.teamB : r16Match.teamA) : null;
+    // R16 result
+    const r16m = R16_MATCHUPS.find(m => m.teamA === t.name || m.teamB === t.name);
+    const r16Opp = r16m ? (r16m.teamA === t.name ? r16m.teamB : r16m.teamA) : null;
+    const r16ScoreMe = r16m ? (r16m.teamA === t.name ? r16m.scoreA : r16m.scoreB) : null;
+    const r16ScoreOpp = r16m ? (r16m.teamA === t.name ? r16m.scoreB : r16m.scoreA) : null;
     const r16OppDn = r16Opp ? (GROUP_DISPLAY[r16Opp] || r16Opp) : null;
-    const r16Html = r16Match
-      ? `<div style="font-size:11px;margin-top:8px;padding:7px 10px;background:#10b98111;border:1px solid #10b98144;border-radius:6px;display:flex;align-items:center;gap:6px">
-           <span style="font-weight:800;color:#10b981">R16 — June 30</span>
+    const r16Html = r16m
+      ? `<div style="font-size:11px;margin-top:6px;padding:7px 10px;background:#10b98111;border:1px solid #10b98144;border-radius:6px;display:flex;align-items:center;gap:6px">
+           <span style="font-weight:800;color:#10b981">R16 ✓</span>
+           <span style="font-weight:900;color:var(--text)">${r16ScoreMe}–${r16ScoreOpp}</span>
+           <span style="color:var(--muted)">vs ${r16OppDn}</span>
+           <span style="margin-left:auto;font-size:9px;font-weight:700;background:#10b98122;color:#10b981;padding:2px 5px;border-radius:3px">ADV</span>
+         </div>`
+      : '';
+
+    // QF matchup
+    const qfm = QF_MATCHUPS.find(m => m.teamA === t.name || m.teamB === t.name);
+    const qfOpp = qfm ? (qfm.teamA === t.name ? qfm.teamB : qfm.teamA) : null;
+    const qfOppDn = qfOpp ? (GROUP_DISPLAY[qfOpp] || qfOpp) : null;
+    const qfHtml = qfm
+      ? `<div style="font-size:11px;margin-top:6px;padding:7px 10px;background:#f59e0b11;border:1px solid #f59e0b44;border-radius:6px;display:flex;align-items:center;gap:6px">
+           <span style="font-weight:800;color:#f59e0b">QF · July 1 · ${qfm.time}</span>
            <span style="color:var(--muted)">vs</span>
-           <span style="font-weight:700;color:var(--text)">${r16OppDn}</span>
-           <span style="color:var(--muted);font-size:10px">(Grp ${r16Match.teamA === t.name ? r16Match.grpB : r16Match.grpA})</span>
+           <span style="font-weight:700;color:var(--text)">${qfOppDn}</span>
+           <span style="color:var(--muted);font-size:10px">· ${qfm.field}</span>
          </div>`
       : '';
 
     return `<div class="team-card">
-      <div class="card-rank">${rankLabel} R16 Qualifier</div>
+      <div class="card-rank">${rankLabel} QF Qualifier</div>
       <div class="card-header">
         <div>
           <div class="card-name">${t.name}</div>
@@ -1306,7 +1384,7 @@ function buildTop10() {
         <div class="card-stat"><div class="v">${(t.winPct*100).toFixed(0)}%</div><div class="l">Win Rate</div></div>
         <div class="card-stat"><div class="v">${t.gfpg.toFixed(2)}</div><div class="l">GF/Game</div></div>
         <div class="card-stat"><div class="v">${t.gapg.toFixed(2)}</div><div class="l">GA/Game</div></div>
-        <div class="card-stat"><div class="v">+${Math.max(0,t.gd)}</div><div class="l">Goal Diff</div></div>
+        <div class="card-stat"><div class="v">${t.gd >= 0 ? '+' : ''}${t.gd}</div><div class="l">Goal Diff</div></div>
       </div>
       <div class="card-record">
         <span class="record-w">${t.w}W</span> /
@@ -1317,6 +1395,7 @@ function buildTop10() {
       ${hist2024 || hist2025 ? `<div class="card-history">${hist2024}${hist2025}</div>` : ''}
       ${gsHtml}
       ${r16Html}
+      ${qfHtml}
       ${prof.style ? `<div style="font-size:11px;color:var(--accent);margin-top:8px;margin-bottom:4px">${prof.style}</div>` : ''}
       <div class="card-profile">${prof.bg || ''}</div>
       ${prof.strengths ? `<div style="font-size:11px;color:var(--green);margin-top:8px">${prof.strengths}</div>` : ''}
@@ -2501,20 +2580,54 @@ const PLAYIN_RESULTS = [
   {home:'HEX FC Dominion', hScore:3, away:'Lobos Rush',     aScore:2},
 ];
 
-// Round of 16 matchups — June 30, 10:00 AM
+// Round of 16 matchups — June 30, 10:00 AM — COMPLETE
 const R16_MATCHUPS = [
-  {teamA:'XF Academy',          grpA:'A', teamB:'Beach FC (CA)',        grpB:'Q'},
-  {teamA:'Albion Hurricanes FC', grpA:'H', teamB:'DKSC',                grpB:'I'},
-  {teamA:'OK Energy FC',         grpA:'D', teamB:'Pateadores',           grpB:'M'},
-  {teamA:'Cleveland Force SC',   grpA:'E', teamB:'Oregon Premier',       grpB:'L'},
-  {teamA:'Pipeline SC',          grpA:'B', teamB:'Concorde Fire Platinum',grpB:'O'},
-  {teamA:'Rebels SC',            grpA:'G', teamB:'Kansas City Athletics', grpB:'J'},
-  {teamA:'Davis Legacy',         grpA:'C', teamB:'Dallas Texans Academy', grpB:'N'},
-  {teamA:'FL Premier FC',        grpA:'F', teamB:'San Diego Surf',        grpB:'K'},
+  {teamA:'XF Academy',          grpA:'A', teamB:'Beach FC (CA)',         grpB:'Q', scoreA:4, scoreB:0, winner:'XF Academy',           field:'Field #10'},
+  {teamA:'Albion Hurricanes FC', grpA:'H', teamB:'DKSC',                 grpB:'I', scoreA:1, scoreB:5, winner:'DKSC',                  field:'Field #11'},
+  {teamA:'OK Energy FC',         grpA:'D', teamB:'Pateadores',            grpB:'M', scoreA:1, scoreB:2, winner:'Pateadores',            field:'Field #08'},
+  {teamA:'Cleveland Force SC',   grpA:'E', teamB:'Oregon Premier',        grpB:'L', scoreA:0, scoreB:1, winner:'Oregon Premier',        field:'Field #09'},
+  {teamA:'Pipeline SC',          grpA:'B', teamB:'Concorde Fire Platinum',grpB:'O', scoreA:1, scoreB:3, winner:'Concorde Fire Platinum', field:'Field #12'},
+  {teamA:'Rebels SC',            grpA:'G', teamB:'Kansas City Athletics', grpB:'J', scoreA:2, scoreB:1, winner:'Rebels SC',             field:'Field #15'},
+  {teamA:'Davis Legacy',         grpA:'C', teamB:'Dallas Texans Academy', grpB:'N', scoreA:0, scoreB:2, winner:'Dallas Texans Academy', field:'Field #14'},
+  {teamA:'FL Premier FC',        grpA:'F', teamB:'San Diego Surf',        grpB:'K', scoreA:0, scoreB:1, winner:'San Diego Surf',        field:'Field #17'},
 ];
 
-// Set of 16 teams advancing to Round of 16 (derived from R16_MATCHUPS)
+// Set of 16 teams who qualified for Round of 16
 const R16_TEAMS = new Set(R16_MATCHUPS.flatMap(m => [m.teamA, m.teamB]));
+
+// R16 result delta — applied after GROUP_DELTA so full-season records are accurate
+const R16_DELTA = {
+  // Winners
+  'XF Academy':            {gp:1, w:1, d:0, l:0, gf:4, ga:0},
+  'DKSC':                  {gp:1, w:1, d:0, l:0, gf:5, ga:1},
+  'Pateadores':            {gp:1, w:1, d:0, l:0, gf:2, ga:1},
+  'Oregon Premier':        {gp:1, w:1, d:0, l:0, gf:1, ga:0},
+  'Concorde Fire Platinum':{gp:1, w:1, d:0, l:0, gf:3, ga:1},
+  'Rebels SC':             {gp:1, w:1, d:0, l:0, gf:2, ga:1},
+  'Dallas Texans Academy': {gp:1, w:1, d:0, l:0, gf:2, ga:0},
+  'San Diego Surf':        {gp:1, w:1, d:0, l:0, gf:1, ga:0},
+  // Eliminated in R16
+  'Beach FC (CA)':         {gp:1, w:0, d:0, l:1, gf:0, ga:4},
+  'Albion Hurricanes FC':  {gp:1, w:0, d:0, l:1, gf:1, ga:5},
+  'OK Energy FC':          {gp:1, w:0, d:0, l:1, gf:1, ga:2},
+  'Cleveland Force SC':    {gp:1, w:0, d:0, l:1, gf:0, ga:1},
+  'Pipeline SC':           {gp:1, w:0, d:0, l:1, gf:1, ga:3},
+  'Kansas City Athletics': {gp:1, w:0, d:0, l:1, gf:1, ga:2},
+  'Davis Legacy':          {gp:1, w:0, d:0, l:1, gf:0, ga:2},
+  'FL Premier FC':         {gp:1, w:0, d:0, l:1, gf:0, ga:1},
+};
+
+// Quarterfinals (Round of 8) — July 1, 2026, 10:00 AM PT
+// Venue: Surf Sports Park, 14989 Via De La Valle, Del Mar CA 92014
+const QF_MATCHUPS = [
+  {game:9,  teamA:'XF Academy',           r16A:'4-0 Beach FC (CA)',        teamB:'DKSC',                  r16B:'5-1 Albion Hurricanes FC', field:'Field #09', time:'10:00 AM'},
+  {game:10, teamA:'Pateadores',           r16A:'2-1 OK Energy FC',         teamB:'Oregon Premier',        r16B:'1-0 Cleveland Force SC',   field:'Field #10', time:'10:00 AM'},
+  {game:11, teamA:'Concorde Fire Platinum',r16A:'3-1 Pipeline SC',         teamB:'Rebels SC',             r16B:'2-1 Kansas City Athletics',field:'Field #11', time:'10:00 AM'},
+  {game:12, teamA:'Dallas Texans Academy',r16A:'2-0 Davis Legacy',         teamB:'San Diego Surf',        r16B:'1-0 FL Premier FC',        field:'Field #08', time:'10:00 AM'},
+];
+
+// Set of 8 QF qualifiers
+const QF_TEAMS = new Set(QF_MATCHUPS.flatMap(m => [m.teamA, m.teamB]));
 
 // ============================================================
 // GROUP STAGE DATA & RENDERER
@@ -2602,7 +2715,7 @@ function buildGroups() {
 }
 
 // ============================================================
-// ROUND OF 16 RENDERER
+// ROUND OF 16 RENDERER (results complete)
 // ============================================================
 function buildR16() {
   // Play-in panel
@@ -2632,41 +2745,102 @@ function buildR16() {
     <div class="playin-games">${playinGames}</div>
   </div>`;
 
-  // R16 matchup cards
+  // R16 result cards (scores are final)
   const r16Cards = R16_MATCHUPS.map((m, i) => {
+    const aDn = GROUP_DISPLAY[m.teamA] || m.teamA;
+    const bDn = GROUP_DISPLAY[m.teamB] || m.teamB;
+    const aWon = m.winner === m.teamA;
+    const bWon = m.winner === m.teamB;
+    const winDn = GROUP_DISPLAY[m.winner] || m.winner;
+
+    const gsA = (GROUP_STAGE_RESULTS[m.grpA] || []).find(r => r.name === m.teamA);
+    const gsB = (GROUP_STAGE_RESULTS[m.grpB] || []).find(r => r.name === m.teamB);
+    const aGS = gsA ? `Grp ${m.grpA} · ${gsA.w}W-${gsA.d}D-${gsA.l}L` : `Grp ${m.grpA} winner`;
+    const bGS = gsB ? `Grp ${m.grpB} · ${gsB.w}W-${gsB.d}D-${gsB.l}L` : `Grp ${m.grpB} winner`;
+
+    return `<div class="r16-card">
+      <div class="r16-header">
+        <span>R16 · Match ${i + 1} · June 30 · ${m.field}</span>
+        <span style="color:#10b981;font-weight:700">FT</span>
+      </div>
+      <div class="r16-matchup">
+        <div class="r16-team">
+          <div class="r16-team-name" style="${aWon?'color:var(--green);':'color:var(--muted);text-decoration:line-through'}">${aDn}</div>
+          <div class="r16-team-grp">${aGS}</div>
+        </div>
+        <div class="r16-vs" style="font-size:1.25rem">${m.scoreA}–${m.scoreB}</div>
+        <div class="r16-team r16-away">
+          <div class="r16-team-name" style="${bWon?'color:var(--green);text-align:right':'color:var(--muted);text-align:right;text-decoration:line-through'}">${bDn}</div>
+          <div class="r16-team-grp">${bGS}</div>
+        </div>
+      </div>
+      <div style="padding:0 16px 12px;font-size:11px;color:var(--green);font-weight:700">
+        → ${winDn} advances to QF
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('r16Grid').innerHTML =
+    playinHtml + `<div class="r16-section-grid">${r16Cards}</div>`;
+}
+
+// ============================================================
+// QUARTERFINALS (ROUND OF 8) RENDERER
+// ============================================================
+function buildQF() {
+  const venueHtml = `<div class="venue-panel">
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--text)">Venue</div>
+      <div style="font-size:13px;font-weight:800;color:#f59e0b;margin-top:2px">Surf Sports Park</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:1px">14989 Via De La Valle, Del Mar CA 92014</div>
+    </div>
+    <div style="border-left:1px solid var(--border);padding-left:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--text)">Date</div>
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-top:2px">July 1, 2026</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:1px">All games: 10:00 AM PT</div>
+    </div>
+    <div style="border-left:1px solid var(--border);padding-left:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--text)">Format</div>
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-top:2px">Single Elimination</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:1px">Winners → Semi-finals July 17</div>
+    </div>
+  </div>`;
+
+  const qfCards = QF_MATCHUPS.map(m => {
     const tA = teams.find(t => t.name === m.teamA);
     const tB = teams.find(t => t.name === m.teamB);
     const aDn = GROUP_DISPLAY[m.teamA] || m.teamA;
     const bDn = GROUP_DISPLAY[m.teamB] || m.teamB;
 
-    let pA = 50, pD = 20, pB = 30;
+    let pA = 50, pD = 10, pB = 40;
     if (tA && tB) {
       const p = predictMatch(tA, tB);
       pA = p.pA; pD = p.pD; pB = p.pB;
     }
+    const aLabel = aDn.split(' ')[0];
+    const bLabel = bDn.split(' ')[0];
+    const aRank = tA ? teams.indexOf(tA) + 1 : '?';
+    const bRank = tB ? teams.indexOf(tB) + 1 : '?';
 
-    const gsA = (GROUP_STAGE_RESULTS[m.grpA] || []).find(r => r.name === m.teamA);
-    const gsB = (GROUP_STAGE_RESULTS[m.grpB] || []).find(r => r.name === m.teamB);
-    const aGS = gsA ? `${gsA.w}W-${gsA.d}D-${gsA.l}L · ${gsA.gf} GF` : 'Group winner';
-    const bGS = gsB ? `${gsB.w}W-${gsB.d}D-${gsB.l}L · ${gsB.gf} GF` : 'Group winner';
-    const aLabel = tA ? tA.name.split(' ')[0] : aDn.split(' ')[0];
-    const bLabel = tB ? tB.name.split(' ')[0] : bDn.split(' ')[0];
-
-    return `<div class="r16-card">
-      <div class="r16-header">
-        <span>R16 · Match ${i + 1} · June 30 · 10:00 AM</span>
-        <span>Grp ${m.grpA} vs Grp ${m.grpB}</span>
+    return `<div class="qf-card">
+      <div class="qf-header">
+        <span>QF · Game ${m.game} · ${m.field}</span>
+        <span class="qf-label">July 1 · ${m.time} PT</span>
       </div>
-      <div class="r16-matchup">
-        <div class="r16-team">
-          <div class="r16-team-name">${aDn}</div>
-          <div class="r16-team-grp">Grp ${m.grpA} winner · ${aGS}</div>
+      <div class="qf-matchup">
+        <div class="qf-team">
+          <div class="qf-team-name">${aDn}</div>
+          <div class="qf-team-sub">Rank #${aRank} · R16: ${m.r16A}</div>
         </div>
-        <div class="r16-vs">VS</div>
-        <div class="r16-team r16-away">
-          <div class="r16-team-name">${bDn}</div>
-          <div class="r16-team-grp">Grp ${m.grpB} winner · ${bGS}</div>
+        <div class="qf-vs">VS</div>
+        <div class="qf-team qf-away">
+          <div class="qf-team-name">${bDn}</div>
+          <div class="qf-team-sub">Rank #${bRank} · R16: ${m.r16B}</div>
         </div>
+      </div>
+      <div class="qf-venue">
+        <strong>Surf Sports Park · ${m.field}</strong>
+        &nbsp;·&nbsp; 14989 Via De La Valle, Del Mar CA 92014
       </div>
       <div class="r16-pred-wrap">
         <div class="r16-pred-bar">
@@ -2683,8 +2857,7 @@ function buildR16() {
     </div>`;
   }).join('');
 
-  document.getElementById('r16Grid').innerHTML =
-    playinHtml + `<div class="r16-section-grid">${r16Cards}</div>`;
+  document.getElementById('qfGrid').innerHTML = venueHtml + `<div class="qf-grid">${qfCards}</div>`;
 }
 
 // ============================================================
@@ -2696,6 +2869,7 @@ buildTop10();
 buildFlags();
 buildGroups();
 buildR16();
+buildQF();
 initH2HSelectors();
 initGameLogSelector();
 
