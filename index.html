@@ -987,6 +987,26 @@ teams.forEach(t => {
   t.isEliteOff = t.gfpg > 2.50;
 });
 
+// R16 result delta — must be defined here (before the forEach that uses it)
+const R16_DELTA = {
+  'XF Academy':            {gp:1, w:1, d:0, l:0, gf:4, ga:0},
+  'DKSC':                  {gp:1, w:1, d:0, l:0, gf:5, ga:1},
+  'Pateadores':            {gp:1, w:1, d:0, l:0, gf:2, ga:1},
+  'Oregon Premier':        {gp:1, w:1, d:0, l:0, gf:1, ga:0},
+  'Concorde Fire Platinum':{gp:1, w:1, d:0, l:0, gf:3, ga:1},
+  'Rebels SC':             {gp:1, w:1, d:0, l:0, gf:2, ga:1},
+  'Dallas Texans Academy': {gp:1, w:1, d:0, l:0, gf:2, ga:0},
+  'San Diego Surf':        {gp:1, w:1, d:0, l:0, gf:1, ga:0},
+  'Beach FC (CA)':         {gp:1, w:0, d:0, l:1, gf:0, ga:4},
+  'Albion Hurricanes FC':  {gp:1, w:0, d:0, l:1, gf:1, ga:5},
+  'OK Energy FC':          {gp:1, w:0, d:0, l:1, gf:1, ga:2},
+  'Cleveland Force SC':    {gp:1, w:0, d:0, l:1, gf:0, ga:1},
+  'Pipeline SC':           {gp:1, w:0, d:0, l:1, gf:1, ga:3},
+  'Kansas City Athletics': {gp:1, w:0, d:0, l:1, gf:1, ga:2},
+  'Davis Legacy':          {gp:1, w:0, d:0, l:1, gf:0, ga:2},
+  'FL Premier FC':         {gp:1, w:0, d:0, l:1, gf:0, ga:1},
+};
+
 // Apply R16 result delta (all 16 R16 teams — 1 bracket game each)
 teams.forEach(t => {
   const d = R16_DELTA[t.name];
@@ -2594,28 +2614,6 @@ const R16_MATCHUPS = [
 
 // Set of 16 teams who qualified for Round of 16
 const R16_TEAMS = new Set(R16_MATCHUPS.flatMap(m => [m.teamA, m.teamB]));
-
-// R16 result delta — applied after GROUP_DELTA so full-season records are accurate
-const R16_DELTA = {
-  // Winners
-  'XF Academy':            {gp:1, w:1, d:0, l:0, gf:4, ga:0},
-  'DKSC':                  {gp:1, w:1, d:0, l:0, gf:5, ga:1},
-  'Pateadores':            {gp:1, w:1, d:0, l:0, gf:2, ga:1},
-  'Oregon Premier':        {gp:1, w:1, d:0, l:0, gf:1, ga:0},
-  'Concorde Fire Platinum':{gp:1, w:1, d:0, l:0, gf:3, ga:1},
-  'Rebels SC':             {gp:1, w:1, d:0, l:0, gf:2, ga:1},
-  'Dallas Texans Academy': {gp:1, w:1, d:0, l:0, gf:2, ga:0},
-  'San Diego Surf':        {gp:1, w:1, d:0, l:0, gf:1, ga:0},
-  // Eliminated in R16
-  'Beach FC (CA)':         {gp:1, w:0, d:0, l:1, gf:0, ga:4},
-  'Albion Hurricanes FC':  {gp:1, w:0, d:0, l:1, gf:1, ga:5},
-  'OK Energy FC':          {gp:1, w:0, d:0, l:1, gf:1, ga:2},
-  'Cleveland Force SC':    {gp:1, w:0, d:0, l:1, gf:0, ga:1},
-  'Pipeline SC':           {gp:1, w:0, d:0, l:1, gf:1, ga:3},
-  'Kansas City Athletics': {gp:1, w:0, d:0, l:1, gf:1, ga:2},
-  'Davis Legacy':          {gp:1, w:0, d:0, l:1, gf:0, ga:2},
-  'FL Premier FC':         {gp:1, w:0, d:0, l:1, gf:0, ga:1},
-};
 
 // Quarterfinals (Round of 8) — July 1, 2026, 10:00 AM PT
 // Venue: Surf Sports Park, 14989 Via De La Valle, Del Mar CA 92014
