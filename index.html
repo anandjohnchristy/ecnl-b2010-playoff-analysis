@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<title>2026 ECNL Boys B2010 Playoff Analysis — San Diego · v1.7</title>
+<title>2026 ECNL Boys B2010 Playoff Analysis — San Diego · v1.8</title>
 <style>
   :root {
     --bg: #f1f5f9; --surface: #ffffff; --surface2: #f8fafc;
@@ -512,6 +512,8 @@
   .flag-r16 { background:#10b98122; color:#10b981; border:1px solid #10b98144; font-weight:800; }
   /* QF QUALIFIER BADGE */
   .flag-qf { background:#f59e0b22; color:#f59e0b; border:1px solid #f59e0b55; font-weight:800; letter-spacing:.3px; }
+  /* FINAL FOUR BADGE */
+  .flag-finals { background:#8b5cf622; color:#8b5cf6; border:1px solid #8b5cf655; font-weight:800; letter-spacing:.3px; }
   /* Eliminated team styling in table */
   tr.elim td { opacity:.45; }
   tr.elim td.team-name { opacity:.6; }
@@ -556,12 +558,13 @@
 <!-- HEADER -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-badge"><span class="badge-dot"></span>2026 ECNL Playoffs · Round of 8<span class="badge-ver">v1.7</span></div>
+    <div class="hero-badge"><span class="badge-dot"></span>2026 ECNL Playoffs · Final Four<span class="badge-ver">v1.8</span></div>
     <h1>2010 Boys (B10) National Playoff Analysis</h1>
     <div class="hero-meta">
       <span><b>San Diego, CA</b></span>
       <span><b>June 25 – July 1, 2026</b></span>
-      <span><b>66 Teams → 8 in Quarterfinals</b></span>
+      <span><b>66 Teams → 4 to ECNL Finals</b></span>
+      <span><b>Finals: July 17–19 · Richmond, VA</b></span>
       <span><b>15 Conferences</b></span>
     </div>
   </div>
@@ -583,10 +586,12 @@
   </select>
   <select id="flagFilter">
     <option value="">All Teams</option>
+    <option value="finals">Final Four — 4 teams</option>
     <option value="qf">QF (Round of 8) — 8 teams</option>
     <option value="r16">R16 Qualifiers — 16 teams</option>
     <option value="elim-group">Eliminated after Group Stage</option>
     <option value="elim-r16">Eliminated after R16</option>
+    <option value="elim-qf">Eliminated after QF</option>
     <option value="def">Elite Defense (GA/G &lt; 0.65)</option>
     <option value="off">Elite Offense (GF/G &gt; 2.50)</option>
     <option value="champ">2025 Champion</option>
@@ -639,7 +644,8 @@
   <div class="section-title">Performance Score Methodology</div>
   <div class="methodology">
     <p style="font-size:12px;color:var(--muted);margin-bottom:4px;">
-      Each team is scored on a <b style="color:var(--text)">0–100 scale</b> combining six normalized components. Scores incorporate <b style="color:var(--text)">full season + group stage results (June 25–28)</b> — all W/D/L, GF, and GA including group play are folded in before renormalization. Metrics ranked relative to the full 66-team field. <b style="color:var(--green)">R16 complete (June 30) — 8 teams advance to QF on July 1.</b>
+      Each team is scored on a <b style="color:var(--text)">0–100 scale</b> combining six normalized components. Scores incorporate <b style="color:var(--text)">full season + group stage + R16 + QF results</b> — all W/D/L, GF, and GA are folded in before renormalization. Metrics ranked relative to the full 66-team field. <b style="color:var(--green)">QF complete (July 1) — 4 teams advance to the ECNL Boys National Finals in Richmond, VA (July 17–19).</b>
+      <b style="color:#8b5cf6">Read season/score numbers cautiously for the Final Four:</b> ECNL rules let a qualifying club move up to 3 players from a younger age group onto its Finals roster, so the team that takes the field in Richmond may not be exactly the one that produced these regular-season stats. See the <a href="#finalFourSection" style="color:var(--accent)">Final Four Deep Dive</a> below for a playoff-weighted read.
     </p>
     <div class="method-grid">
       <div class="method-item"><div class="pct">30%</div><div class="label">Win Rate (W/GP) — full season + group stage</div></div>
@@ -654,8 +660,8 @@
 
 <!-- QF TEAM PROFILES -->
 <div class="section">
-  <div class="section-title">Round of 8 Team Profiles</div>
-  <div class="section-sub">Full profile for each of the 8 QF qualifiers — R16 result, season strengths, and July 1 matchup. Ranked by post-group-stage composite score.</div>
+  <div class="section-title">Final Four Team Profiles</div>
+  <div class="section-sub">Full profile for each of the 4 teams advancing to the ECNL Boys National Finals in Richmond, VA (July 17–19) — R16 result, QF result, and season strengths. Ranked by post-QF composite score.</div>
   <div class="top10-grid" id="top10Grid"></div>
 </div>
 
@@ -772,9 +778,18 @@
 
 <!-- ROUND OF 8 / QUARTERFINALS -->
 <div class="section" style="margin-top:32px" id="qfSection">
-  <div class="section-title">Quarterfinals (Round of 8) — July 1, 2026</div>
-  <div class="section-sub">Four QF matches, all at 10:00 AM PT, Surf Sports Park, Del Mar CA (14989 Via De La Valle, Del Mar CA 92014). Single elimination — winners advance to semi-finals July 17.</div>
+  <div class="section-title">Quarterfinals (Round of 8) — July 1, 2026 ✓ Complete</div>
+  <div class="section-sub">Four QF matches, all at 10:00 AM PT, Surf Sports Park, Del Mar CA (14989 Via De La Valle, Del Mar CA 92014). Single elimination — the 4 winners advance to the ECNL Boys National Finals in Richmond, VA (July 17–19, 2026).</div>
   <div id="qfGrid"></div>
+</div>
+
+<!-- FINAL FOUR DEEP DIVE -->
+<div class="section" style="margin-top:32px" id="finalFourSection">
+  <div class="section-title">Final Four Deep Dive — Road to Richmond</div>
+  <div class="section-sub">
+    Playoff-weighted read on the 4 teams heading to Richmond. Full-season stats above cover 15–23 games of regular-season/showcase play; the numbers below isolate just the <b style="color:var(--text)">5 games that mattered most</b> — Group Stage + R16 + QF — since that's the form (and, per ECNL's roster call-up rule allowing up to 3 players moved up from a younger age group for Finals-qualified teams, potentially the personnel) most likely to carry into Richmond. Grades are this dashboard's own qualitative read of playoff performance, not an official ECNL ranking.
+  </div>
+  <div class="top10-grid" id="finalFourGrid"></div>
 </div>
 
 <div style="height:48px"></div>
@@ -1022,6 +1037,34 @@ teams.forEach(t => {
   t.isEliteOff = t.gfpg > 2.50;
 });
 
+// QF result delta — folds July 1 Quarterfinal results into each team's record.
+// XF Academy vs DKSC finished 0-0 after regulation (XF won 5-4 on PKs) — W/L only, no GF/GA change.
+const QF_DELTA = {
+  'XF Academy':            {gp:1, w:1, d:0, l:0, gf:0, ga:0},
+  'DKSC':                  {gp:1, w:0, d:0, l:1, gf:0, ga:0},
+  'Pateadores':            {gp:1, w:1, d:0, l:0, gf:1, ga:0},
+  'Oregon Premier':        {gp:1, w:0, d:0, l:1, gf:0, ga:1},
+  'Concorde Fire Platinum':{gp:1, w:1, d:0, l:0, gf:5, ga:0},
+  'Rebels SC':             {gp:1, w:0, d:0, l:1, gf:0, ga:5},
+  'Dallas Texans Academy': {gp:1, w:1, d:0, l:0, gf:1, ga:0},
+  'San Diego Surf':        {gp:1, w:0, d:0, l:1, gf:0, ga:1},
+};
+
+// Apply QF result delta (all 8 QF teams — 1 bracket game each)
+teams.forEach(t => {
+  const d = QF_DELTA[t.name];
+  if (!d) return;
+  t.gp  += d.gp;  t.w  += d.w;  t.d  += d.d;  t.l  += d.l;
+  t.gf  += d.gf;  t.ga += d.ga;
+  t.gd   = t.gf - t.ga;
+  t.ppg  = parseFloat(((t.w * 3 + t.d) / t.gp).toFixed(2));
+  t.winPct = t.w / t.gp;
+  t.gfpg   = t.gf / t.gp;
+  t.gapg   = t.ga / t.gp;
+  t.isEliteDef = t.gapg < 0.65;
+  t.isEliteOff = t.gfpg > 2.50;
+});
+
 // Normalize 0-1 across field
 function norm(arr, key, invert=false) {
   const vals = arr.map(t => t[key]);
@@ -1065,7 +1108,7 @@ function buildStats() {
   const topDef = teams.slice().sort((a,b)=>a.gapg-b.gapg)[0];
   const confs = [...new Set(teams.map(t=>t.conf))].length;
   document.getElementById('statsBar').innerHTML = [
-    [teams.length.toString(),   'Teams',             `8 in QF · ${confs} conferences`,                ''],
+    [teams.length.toString(),   'Teams',             `4 in Finals · ${confs} conferences`,                ''],
     [totalGF.toLocaleString(),  'Total Goals Scored',`${(totalGF/totalGP).toFixed(2)} per game`,     ''],
     [avgPPG,                    'Avg PPG (Field)',    'All 66 teams · incl. group + R16',              ''],
     [topOff.gfpg.toFixed(2),   'Top GF/G',           topOff.name,                                   'stat-leader'],
@@ -1103,8 +1146,10 @@ function gdCell(gd) {
 
 function flagsHtml(t) {
   let f = '';
-  if (typeof QF_TEAMS !== 'undefined' && QF_TEAMS.has(t.name))
-    f += '<span class="flag flag-qf" title="QF Qualifier">QF</span>';
+  if (typeof FINALS_TEAMS !== 'undefined' && FINALS_TEAMS.has(t.name))
+    f += '<span class="flag flag-finals" title="Advances to the ECNL Boys National Finals — Richmond, VA">FINALS</span>';
+  else if (typeof QF_TEAMS !== 'undefined' && QF_TEAMS.has(t.name))
+    f += '<span class="flag flag-qf" title="QF Qualifier — Eliminated in Quarterfinals">QF</span>';
   else if (typeof R16_TEAMS !== 'undefined' && R16_TEAMS.has(t.name))
     f += '<span class="flag flag-r16" title="R16 — Eliminated">R16</span>';
   if (t.isEliteDef) f += '<span class="flag flag-def" title="Elite Defense: GA/G < 0.65">DEF</span>';
@@ -1128,10 +1173,12 @@ function renderTable() {
   filtered = teams.filter(t => {
     if (search && !t.name.toLowerCase().includes(search)) return false;
     if (conf && t.conf !== conf) return false;
+    if (flag === 'finals'     && !FINALS_TEAMS.has(t.name))                       return false;
     if (flag === 'qf'        && !QF_TEAMS.has(t.name))                            return false;
     if (flag === 'r16'       && !R16_TEAMS.has(t.name))                           return false;
     if (flag === 'elim-group'&& R16_TEAMS.has(t.name))                            return false;
     if (flag === 'elim-r16'  && (QF_TEAMS.has(t.name) || !R16_TEAMS.has(t.name)))return false;
+    if (flag === 'elim-qf'   && (FINALS_TEAMS.has(t.name) || !QF_TEAMS.has(t.name))) return false;
     if (flag === 'def'     && !t.isEliteDef) return false;
     if (flag === 'off'     && !t.isEliteOff) return false;
     if (flag === 'champ'   && t.h2025 !== 'Champion') return false;
@@ -1160,8 +1207,8 @@ function renderTable() {
     const winPctStr = (t.winPct*100).toFixed(1)+'%';
     const fillPct = t.score;
     const scCls = t.score >= 70 ? 'score-top' : '';
-    const isQF = QF_TEAMS.has(t.name);
-    const elimCls = isQF ? '' : ' elim';
+    const isFinals = FINALS_TEAMS.has(t.name);
+    const elimCls = isFinals ? '' : ' elim';
     return `<tr class="${elimCls}">
       <td class="rank">${t.rank}</td>
       <td class="seed">${seedBadge(t.seed)}</td>
@@ -1325,7 +1372,7 @@ const PROFILES = {
   },
   "Pateadores": {
     style: "Creative attacking, technical play, strong combination football",
-    bg: "Established Southern California club in the Southwest conference (seed #39). Pateadores looked inconsistent early — losing 0-1 to Louisiana Fire and 1-2 to NCFC Youth Academy — but finished Group M with an emphatic 5-1 over PacNW SC to take first. Their 7 GF in 3 games shows offensive quality, and they know how to peak at the right time in national events. Their parent club won the 2025 U16 Boys National Championship. R16 opponent: OK Energy FC (Group D winners, 3W-0D-0L).",
+    bg: "Established Southern California club in the Southwest conference (seed #39). Pateadores dropped their Group M opener before reeling off two straight wins — including an emphatic 5-1 over PacNW SC — to take first on 6 points (2W-0D-1L, +4 GD). Their 7 GF in 3 games shows offensive quality, and they know how to peak at the right time in national events. Their parent club won the 2025 U16 Boys National Championship. R16 opponent: OK Energy FC (Group D winners, 3W-0D-0L).",
     strengths: "Clutch 5-1 final group game to clinch, club won 2025 U16 national title, strong finishing"
   },
   "Concorde Fire Platinum": {
@@ -1341,7 +1388,7 @@ const PROFILES = {
 };
 
 function buildTop10() {
-  const qf = teams.filter(t => QF_TEAMS.has(t.name));
+  const qf = teams.filter(t => FINALS_TEAMS.has(t.name));
   const grid = document.getElementById('top10Grid');
   grid.innerHTML = qf.map((t, i) => {
     const prof = PROFILES[t.name] || {};
@@ -1378,21 +1425,30 @@ function buildTop10() {
          </div>`
       : '';
 
-    // QF matchup
+    // QF result
     const qfm = QF_MATCHUPS.find(m => m.teamA === t.name || m.teamB === t.name);
     const qfOpp = qfm ? (qfm.teamA === t.name ? qfm.teamB : qfm.teamA) : null;
+    const qfScoreMe = qfm ? (qfm.teamA === t.name ? qfm.scoreA : qfm.scoreB) : null;
+    const qfScoreOpp = qfm ? (qfm.teamA === t.name ? qfm.scoreB : qfm.scoreA) : null;
     const qfOppDn = qfOpp ? (GROUP_DISPLAY[qfOpp] || qfOpp) : null;
+    const qfPK = qfm && qfm.pkA != null
+      ? ` (${qfm.teamA === t.name ? qfm.pkA : qfm.pkB}–${qfm.teamA === t.name ? qfm.pkB : qfm.pkA} PK)`
+      : '';
     const qfHtml = qfm
       ? `<div style="font-size:11px;margin-top:6px;padding:7px 10px;background:#f59e0b11;border:1px solid #f59e0b44;border-radius:6px;display:flex;align-items:center;gap:6px">
-           <span style="font-weight:800;color:#f59e0b">QF · July 1 · ${qfm.time}</span>
-           <span style="color:var(--muted)">vs</span>
-           <span style="font-weight:700;color:var(--text)">${qfOppDn}</span>
-           <span style="color:var(--muted);font-size:10px">· ${qfm.field}</span>
+           <span style="font-weight:800;color:#f59e0b">QF ✓</span>
+           <span style="font-weight:900;color:var(--text)">${qfScoreMe}–${qfScoreOpp}${qfPK}</span>
+           <span style="color:var(--muted)">vs ${qfOppDn}</span>
+           <span style="margin-left:auto;font-size:9px;font-weight:700;background:#f59e0b22;color:#f59e0b;padding:2px 5px;border-radius:3px">ADV</span>
          </div>`
       : '';
+    const finalsHtml = `<div style="font-size:11px;margin-top:6px;padding:7px 10px;background:#8b5cf611;border:1px solid #8b5cf655;border-radius:6px;display:flex;align-items:center;gap:6px">
+         <span style="font-weight:800;color:#8b5cf6">➜ ECNL FINALS</span>
+         <span style="color:var(--text)">Richmond, VA · July 17–19</span>
+       </div>`;
 
     return `<div class="team-card">
-      <div class="card-rank">${rankLabel} QF Qualifier</div>
+      <div class="card-rank">${rankLabel} Final Four</div>
       <div class="card-header">
         <div>
           <div class="card-name">${t.name}</div>
@@ -1416,6 +1472,7 @@ function buildTop10() {
       ${gsHtml}
       ${r16Html}
       ${qfHtml}
+      ${finalsHtml}
       ${prof.style ? `<div style="font-size:11px;color:var(--accent);margin-top:8px;margin-bottom:4px">${prof.style}</div>` : ''}
       <div class="card-profile">${prof.bg || ''}</div>
       ${prof.strengths ? `<div style="font-size:11px;color:var(--green);margin-top:8px">${prof.strengths}</div>` : ''}
@@ -2618,14 +2675,17 @@ const R16_TEAMS = new Set(R16_MATCHUPS.flatMap(m => [m.teamA, m.teamB]));
 // Quarterfinals (Round of 8) — July 1, 2026, 10:00 AM PT
 // Venue: Surf Sports Park, 14989 Via De La Valle, Del Mar CA 92014
 const QF_MATCHUPS = [
-  {game:9,  teamA:'XF Academy',           r16A:'4-0 Beach FC (CA)',        teamB:'DKSC',                  r16B:'5-1 Albion Hurricanes FC', field:'Field #17', time:'10:00 AM'},
-  {game:10, teamA:'Pateadores',           r16A:'2-1 OK Energy FC',         teamB:'Oregon Premier',        r16B:'1-0 Cleveland Force SC',   field:'Field #07', time:'10:00 AM'},
-  {game:11, teamA:'Concorde Fire Platinum',r16A:'3-1 Pipeline SC',         teamB:'Rebels SC',             r16B:'2-1 Kansas City Athletics',field:'Field #11', time:'10:00 AM'},
-  {game:12, teamA:'Dallas Texans Academy',r16A:'2-0 Davis Legacy',         teamB:'San Diego Surf',        r16B:'1-0 FL Premier FC',        field:'Field #08', time:'10:00 AM'},
+  {game:9,  teamA:'XF Academy',           r16A:'4-0 Beach FC (CA)',        teamB:'DKSC',                  r16B:'5-1 Albion Hurricanes FC', field:'Field #17', time:'10:00 AM', scoreA:0, scoreB:0, pkA:5, pkB:4, winner:'XF Academy'},
+  {game:10, teamA:'Pateadores',           r16A:'2-1 OK Energy FC',         teamB:'Oregon Premier',        r16B:'1-0 Cleveland Force SC',   field:'Field #07', time:'10:00 AM', scoreA:1, scoreB:0, winner:'Pateadores'},
+  {game:11, teamA:'Concorde Fire Platinum',r16A:'3-1 Pipeline SC',         teamB:'Rebels SC',             r16B:'2-1 Kansas City Athletics',field:'Field #11', time:'10:00 AM', scoreA:5, scoreB:0, winner:'Concorde Fire Platinum'},
+  {game:12, teamA:'Dallas Texans Academy',r16A:'2-0 Davis Legacy',         teamB:'San Diego Surf',        r16B:'1-0 FL Premier FC',        field:'Field #08', time:'10:00 AM', scoreA:1, scoreB:0, winner:'Dallas Texans Academy'},
 ];
 
 // Set of 8 QF qualifiers
 const QF_TEAMS = new Set(QF_MATCHUPS.flatMap(m => [m.teamA, m.teamB]));
+
+// Set of 4 teams advancing to the ECNL Boys National Finals — Richmond, VA (July 17–19, 2026)
+const FINALS_TEAMS = new Set(QF_MATCHUPS.map(m => m.winner));
 
 // ============================================================
 // GROUP STAGE DATA & RENDERER
@@ -2794,68 +2854,136 @@ function buildQF() {
     </div>
     <div style="border-left:1px solid var(--border);padding-left:16px">
       <div style="font-size:12px;font-weight:700;color:var(--text)">Date</div>
-      <div style="font-size:13px;font-weight:800;color:var(--text);margin-top:2px">July 1, 2026</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:1px">All games: 10:00 AM PT</div>
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-top:2px">July 1, 2026 ✓ Complete</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:1px">All games kicked off 10:00 AM PT</div>
     </div>
     <div style="border-left:1px solid var(--border);padding-left:16px">
       <div style="font-size:12px;font-weight:700;color:var(--text)">Format</div>
       <div style="font-size:13px;font-weight:800;color:var(--text);margin-top:2px">Single Elimination</div>
-      <div style="font-size:11px;color:var(--muted);margin-top:1px">Winners → Semi-finals July 17</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:1px">Winners → ECNL Finals, Richmond VA, July 17–19</div>
     </div>
   </div>`;
 
   const qfCards = QF_MATCHUPS.map(m => {
-    const tA = teams.find(t => t.name === m.teamA);
-    const tB = teams.find(t => t.name === m.teamB);
     const aDn = GROUP_DISPLAY[m.teamA] || m.teamA;
     const bDn = GROUP_DISPLAY[m.teamB] || m.teamB;
-
-    let pA = 50, pD = 10, pB = 40;
-    if (tA && tB) {
-      const p = predictMatch(tA, tB);
-      pA = p.pA; pD = p.pD; pB = p.pB;
-    }
-    const aLabel = aDn.split(' ')[0];
-    const bLabel = bDn.split(' ')[0];
-    const aRank = tA ? teams.indexOf(tA) + 1 : '?';
-    const bRank = tB ? teams.indexOf(tB) + 1 : '?';
+    const aWon = m.winner === m.teamA;
+    const bWon = m.winner === m.teamB;
+    const winDn = GROUP_DISPLAY[m.winner] || m.winner;
+    const pk = m.pkA != null
+      ? ` <span style="font-size:.7rem;color:var(--muted);font-weight:700">(PK ${m.pkA}–${m.pkB})</span>`
+      : '';
 
     return `<div class="qf-card">
       <div class="qf-header">
         <span>QF · Game ${m.game} · ${m.field}</span>
-        <span class="qf-label">July 1 · ${m.time} PT</span>
+        <span style="color:#10b981;font-weight:700">FT</span>
       </div>
       <div class="qf-matchup">
         <div class="qf-team">
-          <div class="qf-team-name">${aDn}</div>
-          <div class="qf-team-sub">Rank #${aRank} · R16: ${m.r16A}</div>
+          <div class="qf-team-name" style="${aWon?'color:var(--green);':'color:var(--muted);text-decoration:line-through'}">${aDn}</div>
+          <div class="qf-team-sub">R16: ${m.r16A}</div>
         </div>
-        <div class="qf-vs">VS</div>
+        <div class="qf-vs" style="font-size:1.25rem">${m.scoreA}–${m.scoreB}</div>
         <div class="qf-team qf-away">
-          <div class="qf-team-name">${bDn}</div>
-          <div class="qf-team-sub">Rank #${bRank} · R16: ${m.r16B}</div>
+          <div class="qf-team-name" style="${bWon?'color:var(--green);text-align:right':'color:var(--muted);text-align:right;text-decoration:line-through'}">${bDn}</div>
+          <div class="qf-team-sub">R16: ${m.r16B}</div>
         </div>
       </div>
       <div class="qf-venue">
-        <strong>Surf Sports Park · ${m.field}</strong>
-        &nbsp;·&nbsp; 14989 Via De La Valle, Del Mar CA 92014
+        <strong>Surf Sports Park · ${m.field}</strong>${pk}
       </div>
-      <div class="r16-pred-wrap">
-        <div class="r16-pred-bar">
-          <div class="r16-bar-a" style="width:${pA}%">${pA}%</div>
-          <div class="r16-bar-d" style="width:${pD}%">${pD}%</div>
-          <div class="r16-bar-b" style="width:${pB}%">${pB}%</div>
-        </div>
-        <div class="r16-pred-labels">
-          <span class="la">${aLabel} ${pA}%</span>
-          <span>Draw ${pD}%</span>
-          <span class="lb">${pB}% ${bLabel}</span>
-        </div>
+      <div style="padding:0 16px 14px;font-size:11px;color:var(--green);font-weight:700">
+        → ${winDn} advances to the ECNL Boys National Finals (Richmond, VA)
       </div>
     </div>`;
   }).join('');
 
   document.getElementById('qfGrid').innerHTML = venueHtml + `<div class="qf-grid">${qfCards}</div>`;
+}
+
+// ============================================================
+// FINAL FOUR DEEP DIVE — playoff-weighted analysis (Group + R16 + QF)
+// ============================================================
+const FINAL_FOUR_NARRATIVE = {
+  'XF Academy': {
+    grade: 'A-',
+    take: "One of three Final Four teams with a perfect 5-0-0 record across Group + R16 + QF (14 GF, 3 GA) — but the only one of the three that needed penalties to get there. The nation's only 16-0-0 team in the regular season and a 4-0 R16 rout of Beach FC (CA), XF Academy then ran into a 0-0 stalemate with DKSC in the QF that took a shootout to settle. Still the stingiest defense left in the field; worth watching whether Richmond opponents have found a blueprint for slowing down the attack."
+  },
+  'Pateadores': {
+    grade: 'B',
+    take: "The only Final Four team with a blemish on the ledger — a single Group M loss puts them at 4-0-1 for the tournament, and both knockout wins have come by a single goal (2-1 over OK Energy FC in the R16, 1-0 over Oregon Premier FC in the QF). +6 GD across 5 playoff games is roughly half of what the other three teams are carrying into Richmond — proven in tight games, but the least margin for error of the four."
+  },
+  'Concorde Fire Platinum': {
+    grade: 'A',
+    take: "5-0-0 across Group + R16 + QF with 15 GF and only 2 GA — the most goals scored of any Final Four team and the tournament's most emphatic knockout result, a 5-0 demolition of Rebels SC in the QF after a 3-1 R16 win over Pipeline SC. Group O was also a perfect 3-0-0 (7-1). No team enters Richmond in sharper attacking form."
+  },
+  'Dallas Texans Academy': {
+    grade: 'A',
+    take: "5-0-0 across Group + R16 + QF and the only Final Four team yet to concede a goal in the playoffs — 0 GA in five straight matches (10-0 in Group N, 2-0 over Davis Legacy in the R16, 1-0 over San Diego Surf in the QF). +13 GD ties Concorde Fire Platinum for the best mark of the four, built on defense rather than one standout scoreline. The 2024 U14 National Finalist run (PK loss to LAFC So Cal) gives this group the most prior big-stage experience of the Final Four."
+  }
+};
+
+function buildFinalFour() {
+  const grid = document.getElementById('finalFourGrid');
+  if (!grid) return;
+  const order = QF_MATCHUPS.map(m => m.winner);
+
+  grid.innerHTML = order.map(name => {
+    const gsGroup = Object.keys(GROUP_STAGE_RESULTS).find(g =>
+      GROUP_STAGE_RESULTS[g].some(r => r.name === name));
+    const gs = GROUP_STAGE_RESULTS[gsGroup].find(r => r.name === name);
+
+    const r16 = R16_MATCHUPS.find(m => m.teamA === name || m.teamB === name);
+    const r16Me = r16.teamA === name ? r16.scoreA : r16.scoreB;
+    const r16Opp = r16.teamA === name ? r16.scoreB : r16.scoreA;
+    const r16OppName = r16.teamA === name ? r16.teamB : r16.teamA;
+
+    const qf = QF_MATCHUPS.find(m => m.teamA === name || m.teamB === name);
+    const qfMe = qf.teamA === name ? qf.scoreA : qf.scoreB;
+    const qfOpp = qf.teamA === name ? qf.scoreB : qf.scoreA;
+    const qfOppName = qf.teamA === name ? qf.teamB : qf.teamA;
+    const qfPK = qf.pkA != null
+      ? ` (PK ${qf.teamA === name ? qf.pkA : qf.pkB}–${qf.teamA === name ? qf.pkB : qf.pkA})`
+      : '';
+
+    const playoffW = gs.w + 1 + 1;
+    const playoffD = gs.d;
+    const playoffL = gs.l;
+    const playoffGF = gs.gf + r16Me + qfMe;
+    const playoffGA = gs.ga + r16Opp + qfOpp;
+    const playoffGD = playoffGF - playoffGA;
+
+    const narr = FINAL_FOUR_NARRATIVE[name] || {};
+    const dn = GROUP_DISPLAY[name] || name;
+    const t = teams.find(x => x.name === name);
+
+    return `<div class="team-card" style="border-color:#8b5cf655">
+      <div class="card-rank" style="color:#8b5cf6">ECNL FINALS QUALIFIER</div>
+      <div class="card-header">
+        <div>
+          <div class="card-name">${dn}</div>
+          <div class="card-conf">Group ${gsGroup} winner · Seed #${t ? t.seed : '—'}</div>
+        </div>
+        <div class="card-score" style="color:#8b5cf6">${narr.grade || ''}</div>
+      </div>
+      <div class="card-stats">
+        <div class="card-stat"><div class="v">${playoffW}-${playoffD}-${playoffL}</div><div class="l">Playoff W-D-L</div></div>
+        <div class="card-stat"><div class="v">${playoffGF}</div><div class="l">Playoff GF</div></div>
+        <div class="card-stat"><div class="v">${playoffGA}</div><div class="l">Playoff GA</div></div>
+        <div class="card-stat"><div class="v">${playoffGD >= 0 ? '+' : ''}${playoffGD}</div><div class="l">Playoff GD</div></div>
+      </div>
+      <div style="font-size:11px;margin:8px 0;padding:8px 10px;background:var(--surface2);border-radius:6px;line-height:1.6">
+        <div><b style="color:var(--muted)">Group ${gsGroup}:</b> ${gs.w}W-${gs.d}D-${gs.l}L, ${gs.gf}-${gs.ga}</div>
+        <div><b style="color:var(--muted)">R16:</b> ${r16Me}-${r16Opp} vs ${GROUP_DISPLAY[r16OppName] || r16OppName}</div>
+        <div><b style="color:var(--muted)">QF:</b> ${qfMe}-${qfOpp}${qfPK} vs ${GROUP_DISPLAY[qfOppName] || qfOppName}</div>
+      </div>
+      <div class="card-profile">${narr.take || ''}</div>
+      <div style="font-size:11px;margin-top:8px;padding:7px 10px;background:#8b5cf611;border:1px solid #8b5cf655;border-radius:6px;color:var(--text)">
+        ➜ <b>ECNL Boys National Finals</b> · Richmond, VA · July 17–19, 2026
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ============================================================
@@ -2868,6 +2996,7 @@ buildFlags();
 buildGroups();
 buildR16();
 buildQF();
+buildFinalFour();
 initH2HSelectors();
 initGameLogSelector();
 
