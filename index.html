@@ -787,7 +787,7 @@
 <div class="section" style="margin-top:32px" id="finalFourSection">
   <div class="section-title">Final Four Deep Dive — Road to Richmond</div>
   <div class="section-sub">
-    Playoff-weighted read on the 4 teams heading to Richmond. Full-season stats above cover 15–23 games of regular-season/showcase play; the numbers below isolate just the <b style="color:var(--text)">5 games that mattered most</b> — Group Stage + R16 + QF — since that's the form (and, per ECNL's roster call-up rule allowing up to 3 players moved up from a younger age group for Finals-qualified teams, potentially the personnel) most likely to carry into Richmond. Grades are this dashboard's own qualitative read of playoff performance, not an official ECNL ranking.
+    Playoff-weighted read on the 4 teams heading to Richmond. Full-season stats above cover 15–23 games of regular-season/showcase play; the numbers below isolate just the <b style="color:var(--text)">5 games that mattered most</b> — Group Stage + R16 + QF — since that's the form (and, per ECNL's roster call-up rule allowing up to 3 players moved up from a younger age group for Finals-qualified teams, potentially the personnel) most likely to carry into Richmond.
   </div>
   <div class="top10-grid" id="finalFourGrid"></div>
 </div>
@@ -2907,20 +2907,36 @@ function buildQF() {
 // ============================================================
 const FINAL_FOUR_NARRATIVE = {
   'XF Academy': {
-    grade: 'A-',
-    take: "One of three Final Four teams with a perfect 5-0-0 record across Group + R16 + QF (14 GF, 3 GA) — but the only one of the three that needed penalties to get there. The nation's only 16-0-0 team in the regular season and a 4-0 R16 rout of Beach FC (CA), XF Academy then ran into a 0-0 stalemate with DKSC in the QF that took a shootout to settle. Still the stingiest defense left in the field; worth watching whether Richmond opponents have found a blueprint for slowing down the attack."
+    take: "One of three Final Four teams with a perfect 5-0-0 record across Group + R16 + QF (14 GF, 3 GA) — the nation's only 16-0-0 team in the regular season and a 4-0 R16 rout of Beach FC (CA), before a 0-0 stalemate with DKSC in the QF that took a shootout to settle.",
+    positives: [
+      "Nation's only 16-0-0 team in the 2025-26 regular season — entered San Diego as the #1 overall seed",
+      "Stingiest defense of the Final Four: 3 GA across 5 playoff games (0.60 GA/game)",
+      "Multi-age-group club strength — the B08 cohort won the 2025 U17 National Championship"
+    ]
   },
   'Pateadores': {
-    grade: 'B',
-    take: "The only Final Four team with a blemish on the ledger — a single Group M loss puts them at 4-0-1 for the tournament, and both knockout wins have come by a single goal (2-1 over OK Energy FC in the R16, 1-0 over Oregon Premier FC in the QF). +6 GD across 5 playoff games is roughly half of what the other three teams are carrying into Richmond — proven in tight games, but the least margin for error of the four."
+    take: "The only Final Four team with a blemish on the ledger — a single Group M loss puts them at 4-0-1 for the tournament — but both knockout wins have come by a single goal (2-1 over OK Energy FC in the R16, 1-0 over Oregon Premier FC in the QF).",
+    positives: [
+      "Parent club won the 2025 U16 Boys National Championship",
+      "Won both knockout rounds by grinding out single-goal results under pressure",
+      "Peaked at the right time — closed Group M with an emphatic 5-1 win over PacNW SC to take first"
+    ]
   },
   'Concorde Fire Platinum': {
-    grade: 'A',
-    take: "5-0-0 across Group + R16 + QF with 15 GF and only 2 GA — the most goals scored of any Final Four team and the tournament's most emphatic knockout result, a 5-0 demolition of Rebels SC in the QF after a 3-1 R16 win over Pipeline SC. Group O was also a perfect 3-0-0 (7-1). No team enters Richmond in sharper attacking form."
+    take: "5-0-0 across Group + R16 + QF with 15 GF and only 2 GA — the most goals scored of any Final Four team, capped by the tournament's most emphatic knockout result: a 5-0 demolition of Rebels SC in the QF after a 3-1 R16 win over Pipeline SC.",
+    positives: [
+      "Most goals scored of the Final Four: 15 GF across 5 playoff games",
+      "Perfect record since Group O began (5-0-0) — hasn't trailed once in the knockout rounds",
+      "2025 QF pedigree — already has national playoff experience at this stage"
+    ]
   },
   'Dallas Texans Academy': {
-    grade: 'A',
-    take: "5-0-0 across Group + R16 + QF and the only Final Four team yet to concede a goal in the playoffs — 0 GA in five straight matches (10-0 in Group N, 2-0 over Davis Legacy in the R16, 1-0 over San Diego Surf in the QF). +13 GD ties Concorde Fire Platinum for the best mark of the four, built on defense rather than one standout scoreline. The 2024 U14 National Finalist run (PK loss to LAFC So Cal) gives this group the most prior big-stage experience of the Final Four."
+    take: "5-0-0 across Group + R16 + QF and the only Final Four team yet to concede a goal in the playoffs — 0 GA in five straight matches (10-0 in Group N, 2-0 over Davis Legacy in the R16, 1-0 over San Diego Surf in the QF).",
+    positives: [
+      "Zero goals allowed in 5 straight playoff matches — the only unblemished defense left in the field",
+      "2024 U14 National Finalist pedigree gives this group the most prior big-stage experience of the four",
+      "Backed by one of the largest, most resourced clubs in the country, with depth across every age group"
+    ]
   }
 };
 
@@ -2958,6 +2974,10 @@ function buildFinalFour() {
     const dn = GROUP_DISPLAY[name] || name;
     const t = teams.find(x => x.name === name);
 
+    const positivesHtml = (narr.positives || []).map(p =>
+      `<li>${p}</li>`
+    ).join('');
+
     return `<div class="team-card" style="border-color:#8b5cf655">
       <div class="card-rank" style="color:#8b5cf6">ECNL FINALS QUALIFIER</div>
       <div class="card-header">
@@ -2965,7 +2985,6 @@ function buildFinalFour() {
           <div class="card-name">${dn}</div>
           <div class="card-conf">Group ${gsGroup} winner · Seed #${t ? t.seed : '—'}</div>
         </div>
-        <div class="card-score" style="color:#8b5cf6">${narr.grade || ''}</div>
       </div>
       <div class="card-stats">
         <div class="card-stat"><div class="v">${playoffW}-${playoffD}-${playoffL}</div><div class="l">Playoff W-D-L</div></div>
@@ -2979,6 +2998,7 @@ function buildFinalFour() {
         <div><b style="color:var(--muted)">QF:</b> ${qfMe}-${qfOpp}${qfPK} vs ${GROUP_DISPLAY[qfOppName] || qfOppName}</div>
       </div>
       <div class="card-profile">${narr.take || ''}</div>
+      ${positivesHtml ? `<ul style="font-size:11px;color:var(--green);margin:8px 0 0;padding-left:16px;line-height:1.6">${positivesHtml}</ul>` : ''}
       <div style="font-size:11px;margin-top:8px;padding:7px 10px;background:#8b5cf611;border:1px solid #8b5cf655;border-radius:6px;color:var(--text)">
         ➜ <b>ECNL Boys National Finals</b> · Richmond, VA · July 17–19, 2026
       </div>
